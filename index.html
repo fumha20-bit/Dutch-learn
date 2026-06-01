@@ -3,619 +3,852 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dutch-Learn App</title>
+<title>Dutch-Learn Engine</title>
 <style>
 :root {
-  --bg-color: #eef2f3; 
-  --container-bg: #ffffff;
-  --text-color: #1e293b;
-  --primary-color: #2196F3;
-  --success-color: #4CAF50;
-  --error-color: #F44336;
-  --sidebar-bg: #1e293b;
-  --sidebar-text: #f8fafc;
-  --border-color: #e2e8f0;
+  --bg: #f8fafc;
+  --card-bg: #ffffff;
+  --text: #0f172a;
+  --text-muted: #64748b;
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --success: #22c55e;
+  --error: #ef4444;
+  --border: #e2e8f0;
+  --header-bg: #1e293b;
+  --header-text: #ffffff;
 }
 
 [data-theme="dark"] {
-  --bg-color: #0f172a;
-  --container-bg: #1e293b;
-  --text-color: #f8fafc;
-  --primary-color: #3b82f6;
-  --border-color: #334155;
+  --bg: #0f172a;
+  --card-bg: #1e293b;
+  --text: #f8fafc;
+  --text-muted: #94a3b8;
+  --primary: #6366f1;
+  --primary-hover: #4f46e5;
+  --border: #334155;
+  --header-bg: #0f172a;
 }
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
 
 body {
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  display: flex;
-  flex-direction: row; /* Default side-by-side for desktop */
+  background-color: var(--bg);
+  color: var(--text);
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   transition: background-color 0.3s, color 0.3s;
 }
 
-/* Layout System */
-.sidebar {
-  width: 280px;
-  background-color: var(--sidebar-bg);
-  color: var(--sidebar-text);
-  padding: 2rem 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  flex-shrink: 0;
-}
-
-.sidebar h2 {
-  font-size: 1.5rem;
-  margin-bottom: 0.5rem;
-  text-align: center;
-  color: #3b82f6;
-}
-
-.theme-toggle-btn {
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  padding: 0.6rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-  margin-bottom: 1.5rem;
-  text-align: center;
-}
-
-.unit-btn, .nav-btn {
-  background: none;
-  border: 1px solid transparent;
-  color: var(--sidebar-text);
+/* Header Bar Styling */
+.top-header {
+  background-color: var(--header-bg);
+  color: var(--header-text);
   padding: 0.75rem 1rem;
-  text-align: left;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: all 0.2s;
-}
-
-.unit-btn:hover, .nav-btn:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.unit-btn.active, .nav-btn.active {
-  background-color: var(--primary-color);
-  font-weight: bold;
-}
-
-.sidebar hr {
-  border: 0; 
-  border-top: 1px solid rgba(255,255,255,0.1); 
-  margin: 1rem 0;
-}
-
-/* Main Display Dashboard */
-.main-content {
-  flex: 1;
-  padding: 2.5rem;
-  overflow-y: auto;
-}
-
-.app-card {
-  background-color: var(--container-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 2rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-}
-
-/* Steps Progress Header */
-.steps-bar {
   display: flex;
-  gap: 0.5rem;
-  margin-bottom: 2rem;
-}
-.step-dot {
-  flex: 1;
-  height: 8px;
-  background-color: var(--border-color);
-  border-radius: 4px;
-}
-.step-dot.completed {
-  background-color: var(--success-color);
-}
-.step-dot.active {
-  background-color: var(--primary-color);
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-/* Interactive Sound & Word Blocks Layout */
-.audio-action-row {
+.header-left {
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin-bottom: 1.5rem;
 }
 
-.speaker-btn {
-  background-color: #e2e8f0;
+.menu-trigger {
+  background: none;
   border: none;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
+  color: inherit;
+  font-size: 1.5rem;
   cursor: pointer;
+}
+
+.nav-tabs {
   display: flex;
+  background: rgba(255,255,255,0.1);
+  padding: 0.25rem;
+  border-radius: 8px;
+  gap: 0.25rem;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  color: inherit;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.tab-btn.active {
+  background-color: var(--primary);
+}
+
+/* Sidebar Styling */
+.nav-sidebar {
+  position: fixed;
+  top: 0;
+  left: -280px;
+  width: 280px;
+  height: 100%;
+  background-color: var(--card-bg);
+  border-right: 1px solid var(--border);
+  z-index: 200;
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 4px 0 12px rgba(0,0,0,0.05);
+}
+
+.nav-sidebar.open {
+  left: 0;
+}
+
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4);
+  z-index: 150;
+  display: none;
+}
+
+.sidebar-overlay.open {
+  display: block;
+}
+
+.sidebar-link {
+  color: var(--text);
+  text-decoration: none;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.sidebar-link:hover {
+  background: rgba(0,0,0,0.05);
+}
+
+/* Duolingo Learning Tree Path */
+.main-viewport {
+  flex: 1;
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.unit-section-card {
+  margin-bottom: 3rem;
+}
+
+.unit-header-banner {
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  color: white;
+  padding: 1.25rem;
+  border-radius: 16px;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+}
+
+.tree-path-vertical {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.node-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  width: 100%;
+}
+
+.node-btn-circle {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  border: none;
+  background-color: var(--card-bg);
+  color: var(--text);
+  box-shadow: 0 4px 0 var(--border), 0 4px 10px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: 1.25rem;
-  flex-shrink: 0;
-  transition: transform 0.1s;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.1s, background-color 0.2s;
+  z-index: 2;
 }
 
-/* Make sure audio button text doesn't turn dark in dark mode */
-[data-theme="dark"] .speaker-btn {
-  background-color: #334155;
+.node-btn-circle:active {
+  transform: translateY(4px);
+  box-shadow: none;
 }
 
-.speaker-btn:active {
-  transform: scale(0.9);
+.node-btn-circle.completed {
+  background-color: var(--success);
+  color: white;
+  box-shadow: 0 4px 0 #16a34a;
 }
 
-.translation-hint {
-  font-style: italic;
-  font-size: 1.1rem;
-  opacity: 0.85;
-  line-height: 1.4;
+.node-label-sub {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
+  color: var(--text-muted);
+  text-align: center;
 }
 
-.puzzle-workspace {
-  min-height: 70px;
-  border: 2px dashed var(--border-color);
-  border-radius: 8px;
-  padding: 1rem;
+/* Task Workspace Overlay Layout */
+.workspace-fullscreen-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg);
+  z-index: 300;
+  display: none;
+  flex-direction: column;
+  padding: 1.5rem;
+}
+
+.workspace-fullscreen-modal.open {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
-  background-color: rgba(0,0,0,0.02);
 }
 
-.puzzle-workspace.correct {
-  border-color: var(--success-color);
-  background-color: rgba(76, 175, 80, 0.1);
-}
-
-.puzzle-workspace.wrong {
-  border-color: var(--error-color);
-  background-color: rgba(244, 67, 54, 0.1);
-}
-
-.word-pool {
+.modal-header-row {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 2rem;
 }
 
-.word-tile {
-  background-color: var(--container-bg);
-  color: var(--text-color);
-  border: 1px solid var(--border-color);
-  padding: 0.6rem 1.2rem;
-  border-radius: 6px;
+.close-modal-x {
+  background: none;
+  border: none;
+  font-size: 1.75rem;
   cursor: pointer;
-  font-size: 1.05rem;
-  user-select: none;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-.word-tile:hover {
-  border-color: var(--primary-color);
+  color: var(--text);
 }
 
-/* Library View Structures */
-.search-box {
+/* Exercise Views Template Layout */
+.exercise-body-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 500px;
   width: 100%;
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
-  border: 1px solid var(--border-color);
-  background-color: var(--container-bg);
-  color: var(--text-color);
-  margin-bottom: 1.5rem;
-  font-size: 1rem;
+  margin: 0 auto;
 }
 
-.library-table {
-  width: 100%;
-  border-collapse: collapse;
+.prompt-translation-card {
+  text-align: center;
+  margin-bottom: 2rem;
 }
-.library-table th, .library-table td {
-  padding: 1rem;
-  text-align: left;
-  border-bottom: 1px solid var(--border-color);
-}
-.library-table th {
+
+.native-tigrinya-prompt {
+  font-size: 1.35rem;
   font-weight: bold;
-  background-color: rgba(0,0,0,0.02);
+  color: var(--primary);
+  margin-bottom: 0.5rem;
 }
 
-/* ==========================================================================
-   SMARTPHONE MEDIA QUERIES (Fixes screens smaller than 768px wide)
-   ========================================================================== */
-@media (max-width: 768px) {
-  body {
-    flex-direction: column; /* Stack menu on top, content on bottom */
-  }
+.audio-trigger-circular-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: rgba(79, 70, 229, 0.1);
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  margin: 1rem auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
 
-  .sidebar {
-    width: 100%; /* Take full horizontal width */
-    padding: 1rem;
-    gap: 0.5rem;
-  }
+.audio-trigger-circular-btn:active {
+  transform: scale(0.9);
+}
 
-  .sidebar h2 {
-    font-size: 1.3rem;
-    margin-bottom: 0.2rem;
-  }
+.interactive-response-zone {
+  min-height: 80px;
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  background: var(--card-bg);
+}
 
-  .theme-toggle-btn {
-    margin-bottom: 0.5rem;
-    padding: 0.5rem;
-    font-size: 0.9rem;
-  }
+.pool-container-tiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
 
-  .sidebar hr {
-    margin: 0.5rem 0;
-  }
+.word-pill-tile {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  padding: 0.6rem 1.1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
 
-  /* Turn menu items into a smart wrapping horizontal bar */
-  .unit-btn, .nav-btn {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.9rem;
-    text-align: center;
-    border-radius: 4px;
-    background-color: rgba(255, 255, 255, 0.05);
-  }
+.keyboard-text-input {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 2px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text);
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+  outline: none;
+}
 
-  .main-content {
-    padding: 1rem; /* Smaller padding so it fills up phone cleanly */
-  }
+.keyboard-text-input:focus {
+  border-color: var(--primary);
+}
 
-  .app-card {
-    padding: 1.25rem;
-  }
+/* Microphone Audio Feedback Controls */
+.microphone-control-hub {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
 
-  .translation-hint {
-    font-size: 1rem;
-  }
+.mic-toggle-btn {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: none;
+  background-color: var(--primary);
+  color: white;
+  font-size: 2rem;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.4);
+}
 
-  .word-tile {
-    padding: 0.5rem 0.9rem;
-    font-size: 0.95rem;
-  }
+.mic-toggle-btn.recording {
+  background-color: var(--error);
+  animation: pulse-mic 1.5s infinite;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4);
+}
 
-  .library-table th, .library-table td {
-    padding: 0.6rem;
-    font-size: 0.9rem;
-  }
+@keyframes pulse-mic {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+/* Action Control Bars */
+.footer-validation-dock {
+  border-top: 1px solid var(--border);
+  padding: 1.25rem 0;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.action-submit-btn {
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+}
+
+.action-submit-btn:hover {
+  background-color: var(--primary-hover);
+}
+
+/* Library Layout View */
+.library-scroller-view {
+  display: none;
+}
+
+.library-scroller-view.active {
+  display: block;
+}
+
+.search-box-group {
+  margin-bottom: 1.5rem;
+}
+
+.vocab-grid-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@media (max-width: 480px) {
+  .node-btn-circle { width: 68px; height: 68px; font-size: 1.25rem; }
 }
 </style>
 </head>
 <body>
 
-  <div class="sidebar">
-    <h2>Dutch-Learn</h2>
-    <button id="themeToggle" class="theme-toggle-btn">🌙 Switch Mode</button>
-    
-    <button class="unit-btn active" onclick="loadUnit(1)">Unit 1: Taken</button>
-    <button class="unit-btn" onclick="loadUnit(2)">Unit 2: Uitdrukkingen</button>
-    <button class="unit-btn" onclick="loadUnit(3)">Unit 3: Actie</button>
-    <button class="unit-btn" onclick="loadUnit(4)">Unit 4: Regelen</button>
-    <button class="unit-btn" onclick="loadUnit(5)">Unit 5: Beschrijvingen</button>
-    
-    <hr>
-    <button class="nav-btn" onclick="showLibrary()">📚 Woordenlijst Library</button>
-  </div>
+  <header class="top-header">
+    <div class="header-left">
+      <button class="menu-trigger" onclick="toggleSidebar()">☰</button>
+      <h2 style="font-size: 1.25rem; font-weight: 700; letter-spacing: -0.5px;">🇳🇱 Dutch-Learn</h2>
+    </div>
+    <div class="nav-tabs">
+      <button id="tabLessons" class="tab-btn active" onclick="switchMainTab('lessons')">📚 ትምህርቲ</button>
+      <button id="tabLibrary" class="tab-btn" onclick="switchMainTab('library')">📖 መዝገበ ቃላት</button>
+    </div>
+    <button class="menu-trigger" style="font-size: 1.2rem;" onclick="toggleSystemTheme()">🌓</button>
+  </header>
 
-  <main class="main-content">
-    <div id="appContainer" class="app-card">
+  <div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+  <nav id="navSidebar" class="nav-sidebar">
+    <h3 style="margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">ምረጻታት</h3>
+    <a href="#" class="sidebar-link" onclick="toggleSidebar()">ℹ️ About Us (ብዛዕባና)</a>
+    <a href="#" class="sidebar-link" onclick="toggleSidebar()">✉️ Contact Us (ርክብ)</a>
+    <a href="#" class="sidebar-link" onclick="toggleSidebar()">❤️ Donate (ሓገዝ)</a>
+  </nav>
+
+  <main class="main-content flex-1">
+    
+    <div id="treeLayoutContainer" class="main-viewport">
       </div>
+
+    <div id="libraryContainer" class="main-viewport library-scroller-view">
+      <div class="search-box-group">
+        <input type="text" id="libSearchField" class="keyboard-text-input" placeholder="🔍 ቃላት ወይ ሓረጋት ብ کورዲ ፈልግ..." oninput="filterApplicationLibrary()">
+      </div>
+      <div id="libraryItemsTarget"></div>
+    </div>
   </main>
 
-  <script>
-    let currentUnit = 1;
-    let currentLessonStep = 0; 
-    let selectedWords = [];
+  <div id="workspaceModal" class="workspace-fullscreen-modal">
+    <div class="modal-header-row">
+      <span id="modalProgressIndicator" style="font-weight: 700; color: var(--text-muted);">Les 1/5</span>
+      <button class="close-modal-x" onclick="exitWorkspaceArena()">✕</button>
+    </div>
+    <div class="exercise-body-area">
+      <div class="prompt-translation-card">
+        <p id="nativePromptTarget" class="native-tigrinya-prompt"></p>
+        <p id="contextHintTarget" style="font-size:0.95rem; color:var(--text-muted); font-style:italic; margin-bottom: 0.5rem;"></p>
+        <button id="pronunciationAudioSpeaker" class="audio-trigger-circular-btn" onclick="triggerAudioSpeechEngine()">🔊</button>
+      </div>
 
-    const courseContent = {
-      1: [
-        { native: "እቲ ትካል ንዓኻ ጽቡቕ ስራሕ ከቕርበልካ እዩ።", correct: ["Het", "bedrijf", "zal", "je", "een", "goede", "baan", "aanbieden."], slots: ["Het", "bedrijf", "zal", "je", "een", "goede", "baan", "aanbieden."] },
-        { native: "ኣብዚ ሓድሽ ኮርስ ክትምዝገብ ትኽእል ኢኻ።", correct: ["Je", "kunt", "je", "voor", "deze", "nieuwe", "cursus", "aanmelden."], slots: ["Je", "kunt", "je", "voor", "deze", "nieuwe", "cursus", "aanmelden."] },
-        { native: "ምስቲ ጠበቓ ቆጸራ ክገብር ኣሎኒ።", correct: ["Ik", "moet", "een", "afspraak", "maken", "met", "de", "advocaat."], slots: ["Ik", "moet", "een", "afspraak", "maken", "met", "de", "advocaat."] },
-        { native: "ጽባሕ ንግሆ ክንድውлеልካ ተሰмаሚዕና ኣለና።", correct: ["We", "hebben", "afgesproken", "om", "morgenochtend", "te", "bellen."], slots: ["We", "hebben", "afgesproken", "om", "morgenochtend", "te", "bellen."] },
-        { native: "ንሱ ኩሉ ግዜ ነቲ ናይ ስራሕ መልእኽቲ ብኣቓልቦ የንብቦ።", correct: ["Hij", "leest", "de", "boodschap", "altijd", "met", "veel", "aandacht."], slots: ["Hij", "leest", "de", "boodschap", "altijd", "met", "veel", "aandacht."] }
-      ],
-      2: [
-        { native: "ናይዚ ሕቶ መልሲ ክፈልጥ ብጣዕਮੀ ሃንቀው እብл ኣለኹ።", correct: ["Ik", "ben", "erg", "benieuwd", "naar", "het", "antwoord."], slots: ["Ik", "ben", "erg", "benieuwd", "naar", "het", "antwoord."] },
-        { native: "ነti ዓቢ ዕላማ ንምብጻሕ ብሓባር ንሰርሕ ኣለና።", correct: ["We", "werken", "samen", "om", "het", "doel", "te", "bereiken."], slots: ["We", "werken", "samen", "om", "het", "doel", "te", "bereiken."] },
-        { native: "እቲ ሓኪም ሎሚ ንኽመክር ምሉእ መዓልቲ ክርከብ እዩ።", correct: ["De", "arts", "is", "vandaag", "beschikbaar", "voor", "advies."], slots: ["De", "arts", "is", "vandaag", "beschikbaar", "voor", "advies."] },
-        { native: "ነቲ ሓድሽ ናይ ስራሕ ትልሚ ክንመያየጠሉ ኣለና።", correct: ["We", "moeten", "het", "nieuwe", "plan", "samen", "bespreken."], slots: ["We", "moeten", "het", "nieuwe", "plan", "samen", "bespreken."] },
-        { native: "ነቲ ሰዋስው ብደንቢ ከም ዝተረዳእካዮ ክነረጋግጽ ንደሊ።", correct: ["Ik", "wil", "zeker", "weten", "dat", "je", "het", "begrijpt."], slots: ["Ik", "wil", "zeker", "weten", "dat", "je", "het", "begrijpt."] }
-      ],
-      3: [
-        { native: "እቲ ባቡር ኣብ ሰዓቱ ኣብ መደብ ክበጽሕ እዩ።", correct: ["De", "trein", "zal", "op", "tijd", "bij", "het", "station", "aankomen."], slots: ["De", "trein", "zal", "op", "tijd", "bij", "het", "station", "aankomen."] },
-        { native: "ናብዚ ቢሮ ክትኣቱ ከለኻ ማዕጾ ዕጸዎ።", correct: ["Doe", "de", "deur", "dicht", "als", "je", "binnenkomt."], slots: ["Doe", "de", "deur", "dicht", "als", "je", "binnenkomt."] },
-        { native: "እቲ ፈተና ኣብ ሓጺር እዋን ክጅምር ምዃኑ ይፈልጥ እዩ።", correct: ["Hij", "weet", "dat", "het", "examen", "binnenkort", "begint."], slots: ["Hij", "weet", "dat", "het", "examen", "binnenkort", "begint."] },
-        { native: "ንሳ ንሓደ ሰሙን ተወሳኺ ኣብዚ ክትጸንሕ ወሲና።", correct: ["Zij", "heeft", "besloten", "om", "hier", "te", "blijven."], slots: ["Zij", "heeft", "besloten", "om", "hier", "te", "blijven."] },
-        { native: "ኣካላትካ ንምዕቃብ መዓልታዊ ክትወሳወስ ኣለካ።", correct: ["Je", "moet", "dagelijks", "bewegen", "om", "gezond", "te", "blijven."], slots: ["Je", "moet", "dagelijks", "bewegen", "om", "gezond", "te", "blijven."] }
-      ],
-      4: [
-        { native: "ኣብ ቤት መግቢ ምሳሕ ክንእዝዝ ንኽእл ኢና።", correct: ["We", "kunnen", "nu", "lunch", "bestellen", "in", "het", "restaurant."], slots: ["We", "kunnen", "nu", "lunch", "bestellen", "in", "het", "restaurant."] },
-        { native: "ነቲ ዕዳጋ ብባንክ ካርታ ክትከፍሎ ትኽእል ኢኻ።", correct: ["Je", "kunt", "de", "boodschappen", "met", "een", "bankpas", "betalen."], slots: ["Je", "kunt", "de", "boodschappen", "met", "een", "bankpas", "betalen."] },
-        { native: "ነዞም ኣገደስቲ ሰነዳት ኣብ ውሑስ ቦታ ክትዕቅቦም ኣለካ።", correct: ["Je", "moet", "deze", "belangrijke", "documenten", "goed", "bewaren."], slots: ["Je", "moet", "deze", "belangrijke", "documenten", "goed", "bewaren."] },
-        { native: "እዚ ሓጹር ነቲ ዓቢ ገዛ ካብ ሓደጋ ይከላኸል እዩ።", correct: ["Dit", "hek", "zal", "het", "grote", "huis", "beschermen."], slots: ["Dit", "hek", "zal", "het", "grote", "huis", "beschermen."] },
-        { native: "ነቲ ኩነታት ብዝርዝር ክትገልጾ ትኽእልዶ?", correct: ["Kun", "je", "de", "situatie", "duidelijk", "aan", "mij", "beschrijven?"], slots: ["Kun", "je", "de", "situatie", "duidelijk", "aan", "mij", "beschrijven?"] }
-      ],
-      5: [
-        { native: "ኣብ ጸጋማй ወገን ዘሎ መስኮት ክፉት እዩ።", correct: ["Het", "raam", "aan", "de", "linkerkant", "is", "open."], slots: ["Het", "raam", "aan", "de", "linkerkant", "is", "open."] },
-        { native: "ኣብ የማናይ ወገን ዘሎ መንገዲ ቀጥታ ናብ ቤት ትምህርቲ ይወስድ።", correct: ["De", "weg", "aan", "de", "rechterkant", "leidt", "naar", "school."], slots: ["De", "weg", "aan", "de", "rechterkant", "leidt", "naar", "school."] },
-        { native: "እዚ ሓድш መምህር ብጣዕሚ ሕያዋይ ሰብ እዩ።", correct: ["Deze", "nieuwe", "docent", "is", "een", "erg", "aardig", "persoon."], slots: ["Deze", "nieuwe", "docent", "is", "een", "erg", "aardig", "persoon."] },
-        { native: "እቲ ናይ መወዳእታ ምዕራፍ ኣብ መወዳእታ መጽሓፍ ይርከብ።", correct: ["Het", "laatste", "hoofdstuk", "staat", "aan", "het", "eind."], slots: ["Het", "laatste", "hoofdstuk", "staat", "aan", "het", "eind."] },
-        { native: "እቲ ዝርዝር ኣድራሻታት ኣብዚ ሰሌዳ ተጻሒፉ ኣሎ።", correct: ["De", "lijst", "met", "adressen", "hangt", "op", "het", "bord."], slots: ["De", "lijst", "met", "adressen", "hangt", "op", "het", "bord."] }
-      ]
-    };
+      <div id="dynamicInputWorkspaceZone"></div>
 
-    const rawVocabulary = [
-      { dutch: "aanbieden (bood aan, aangeboden)", tigrinya: "ምቕራብ / ምዕዳል" },
-      { dutch: "de aandacht", tigrinya: "ኣቓልቦ" },
-      { dutch: "aanmelden (meldde zich aan)", tigrinya: "ምምዝጋብ" },
-      { dutch: "de afspraak (afspraken)", tigrinya: "ቆጸራ" },
-      { dutch: "afspreken (sprak af, afgesproken)", tigrinya: "ምስмማዕ / ቆጸра ምሓዝ" },
-      { dutch: "benieuwd zijn naar", tigrinya: "ሃንቀውታ / ምድላይ ፍልጠት" },
-      { dutch: "bereiken (bereikte, bereikt)", tigrinya: "ምብጻሕ" },
-      { dutch: "beschikbaar", tigrinya: "ክፉት / ዘሎ / ዝርከብ" },
-      { dutch: "bespreken (besprak, besproken)", tigrinya: "ምምያጥ" },
-      { dutch: "begrijpen (begreep, begrepen)", tigrinya: "ምርडाእ" },
-      { dutch: "aankomen (kwam aan, aangekomen)", tigrinya: "ምብጻሕ / ምእታው" },
-      { dutch: "binnenkomen (kwam binnen)", tigrinya: "ናብ ውሽጢ ምእታው" },
-      { dutch: "binnenkort", tigrinya: "ኣብ ሓጺር እዋን" },
-      { dutch: "blijven (bleef, gebleven)", tigrinya: "ምጽናሕ" },
-      { dutch: "bewegen (bewoog, bewogen)", tigrinya: "ምንቅስቓስ" },
-      { dutch: "bestellen (bestelde, besteld)", tigrinya: "ምእዛዝ (ንብረት/ምግቢ)" },
-      { dutch: "betalen (betaalde, betaald)", tigrinya: "ምክፋል" },
-      { dutch: "bewaren (bewaarde, bewaard)", tigrinya: "ምዕቃብ / ምዕቃር" },
-      { dutch: "beschermen (beschermde)", tigrinya: "ምክልኻል / ምዕቃብ" },
-      { dutch: "beschrijven (beschreef, beschreven)", tigrinya: "ምግላጽ" },
-      { dutch: "aan de linkerkant", tigrinya: "ኣብ ጸጋማይ ወገን" },
-      { dutch: "aan de rechterkant", tigrinya: "ኣብ የማናይ ወገን" },
-      { dutch: "aan het eind", tigrinya: "ኣብ መወዳእታ" },
-      { dutch: "aardig / aardige", tigrinya: "ሕያዋይ" },
-      { dutch: "het adres (adressen)", tigrinya: "ኣድራሻ" },
-      { dutch: "het advies (adviezen)", tigrinya: "ምኽሪ" },
-      { dutch: "de advocaat", tigrinya: "ጠበቓ" },
-      { dutch: "de afdeling", tigrinya: "ክፍሊ / ጨንፈር" },
-      { dutch: "afmaken (maakte af)", tigrinya: "ምውዳእ" },
-      { dutch: "het afval", tigrinya: "ጎሓፍ / ርስሓት" },
-      { dutch: "afwassen (woste af)", tigrinya: "ኣቕሓ ምሕጻብ" },
-      { dutch: "aanwezig", tigrinya: "ኣብዚ ዘሎ / ተረኺቡ ዘሎ" },
-      { dutch: "de apotheek", tigrinya: "ፋрмаሲ" },
-      { dutch: "het apparaat", tigrinya: "መሳርሒ" },
-      { dutch: "de balie", tigrinya: "መቀበሊ ጋሻ / ባሊ" },
-      { dutch: "beloven (beloofde)", tigrinya: "ቃል ምእታው" },
-      { dutch: "beneden", tigrinya: "ታሕቲ" },
-      { dutch: "de berg (bergen)", tigrinya: "እምባ / ጎቦ" },
-      { dutch: "het beroep", tigrinya: "ሞያ / ስраሕ" },
-      { dutch: "de betekenis", tigrinya: "ትርጉም" },
-      { dutch: "de bibliotheek", tigrinya: "ቤተ-ንባብ" },
-      { dutch: "binnen", tigrinya: "ኣብ ውሽጢ" },
-      { dutch: "de bioscoop", tigrinya: "ሲነማ" },
-      { dutch: "de bladzijde", tigrinya: "ገጽ (ናይ መጽሓፍ)" }
+      <div class="footer-validation-dock">
+        <button id="submissionActionControl" class="action-submit-btn" onclick="validateUserInteractionResponse()">Check Antwoord</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+// Application Master Course Configuration Map Schema Database Array Definitions
+const applicationCourseDatabase = [
+  {
+    id: 1, name: "Unit 1: ስራሕ ምድላይ (Solliciteren & Werk)", emoji: "💼",
+    lessons: [
+      { type: "learn", title: "ምሃር (Vocabulary)", target: "Ik wil solliciteren naar deze vacature.", native: "ነዚ ክፉት ናይ ስራሕ ቦታ ከማልክት እደሊ ኣለኹ።", prompt: "Tap the correct order:", pool: ["Ik", "wil", "solliciteren", "naar", "deze", "vacature."] },
+      { type: "speak", title: "ምዝራብ (Speaking)", target: "Het bedrijf zoekt een nieuwe medewerker.", native: "እቲ ትካል ሓድሽ ሰራሕተኛ ይደሊ ኣሎ።", prompt: "Click mic & speak out loud sentence:" },
+      { type: "read", title: "ምንባብ (Reading)", target: "brief", native: "ደብዳቤ", prompt: "What is the Dutch word for 'ደብዳቤ'?", pool: ["de brief", "de auto", "het werk"] },
+      { type: "write", title: "ምጽሓፍ (Writing)", target: "Ik heb een afspraak.", native: "ቆጸራ ኣሎኒ።", prompt: "Type the exact Dutch sentence:" },
+      { type: "test", title: "ፈተነ (Unit 1 Test)", target: "Morgen heb ik een sollicitatiegesprek.", native: "ጽባሕ ናይ ስራሕ ቃለ-መጠይቕ ኣሎኒ።", prompt: "Translate completely to check proficiency:" }
+    ]
+  },
+  {
+    id: 2, name: "Unit 2: ኣብ ካፌን ቤት መግብን (In het Café & Restaurant)", emoji: "☕",
+    lessons: [
+      { type: "learn", title: "ምሃር (Vocabulary)", target: "Ik wil graag een koffie bestellen.", native: "ቡን ክእዝዝ እደሊ ኣለኹ።", prompt: "Arrange sentence pieces:", pool: ["Ik", "wil", "graag", "een", "koffie", "bestellen."] },
+      { type: "speak", title: "ምዝራብ (Speaking)", target: "Mag ik de menukaart zien?", native: "ናይ መግቢ ዝርዝር ክርኢ ይኽእልዶ?", prompt: "Speak naturally into microphone:" },
+      { type: "read", title: "ምንባብ (Reading)", target: "rekening", native: "ሒሳብ", prompt: "Match 'ሒሳብ' with correct block option:", pool: ["de rekening", "het water", "de melk"] },
+      { type: "write", title: "ምጽሓፍ (Writing)", target: "Het eten is erg lekker.", native: "እቲ መግቢ ብጣዕሚ ጥዑም እዩ።", prompt: "Type the entire translation directly:" },
+      { type: "test", title: "ፈተነ (Unit 2 Test)", target: "Kunnen we hier pinnen?", native: "ኣብዚ ብካርታ ክንከፍል ንኽእልዶ?", prompt: "Final validation challenge evaluation:" }
+    ]
+  },
+  {
+    id: 3, name: "Unit 3: ብተሌፎን ምርድዳእ (Telefoneren & Afspraken)", emoji: "📞",
+    lessons: [
+      { type: "learn", title: "ምሃር", target: "Hallo u spreekt met de dokter.", native: "ሰላም ምስ ሓኪም ትዛረብ ኣለኻ።", prompt: "Reorder conversation block setup:", pool: ["Hallo", "u", "spreekt", "met", "de", "dokter."] },
+      { type: "speak", title: "ምዝራብ", target: "Ik wil de afspraak verzetten.", native: "ነቲ ቆጸራ ክቕይሮ እደሊ ኣለኹ።", prompt: "Activate microphone node engine:" },
+      { type: "read", title: "ምንባብ", target: "bellen", native: "ምድዋgeneric", prompt: "Select correct target definition term:", pool: ["bellen", "schrijven", "lezen"] },
+      { type: "write", title: "ምጽሓፍ", target: "Bent u morgen beschikbaar?", native: "ጽባሕ ትርከብዶ/ክፉትዶ ኢኻ?", prompt: "Keyboard precise character verification text input:" },
+      { type: "test", title: "ፈተነ", target: "Ik bel u later terug.", native: "ደሓር ክድውለልካ እየ።", prompt: "Comprehensive test milestone analysis puzzle:" }
+    ]
+  },
+  { id: 4, name: "Unit 4: ቤት ትምህርትን ትምህርትን (School & Educatie)", emoji: "🏫", lessons: [] },
+  { id: 5, name: "Unit 5: ዕዳጋን ክፍሊትን (Boodschappen & Betalen)", emoji: "🛒", lessons: [] },
+  { id: 6, name: "Unit 6: ናይ መጓዓዝያ መስመር (Openbaar Vervoer)", emoji: "🚆", lessons: [] },
+  { id: 7, name: "Unit 7: ክንክን ጥዕና (Gezondheidszorg)", emoji: "🏥", lessons: [] },
+  { id: 8, name: "Unit 8: ምምዝጋብን መንበሪ ፍቓድን (Gemeente & Vergunning)", emoji: "📜", lessons: [] },
+  { id: 9, name: "Unit 9: ሓደጋን ህጹጽ እዋንን (Noodsituaties & Politie)", emoji: "🚨", lessons: [] },
+  { id: 10, name: "Unit 10: መሓዙትን ማሕበራዊ ህይወትን (Vrienden & Vrije Tijd)", emoji: "🥳", lessons: [] },
+  { id: 11, name: "Unit 11: ስራሕ ቦታን መሳርሕትን (Werkplek & Collega's)", emoji: "🖥️", lessons: [] },
+  { id: 12, name: "Unit 12: ገዛ ምካራይን ኢንተርነትን (Wonen & Internet)", emoji: "🏠", lessons: [] },
+  { id: 13, name: "Unit 13: ባንክን ኤኮኖምን (Bankzaken & Geld)", emoji: "💳", lessons: [] },
+  { id: 14, name: "Unit 14: ፖስታን መልእኽትታትን (Post & Pakketten)", emoji: "📦", lessons: [] },
+  { id: 15, name: "Unit 15: ክረምትን ኩነታት ኣየርን (Weer & Seizoenen)", emoji: "🌤️", lessons: [] }
+];
+
+// Fill out empty units with fallback template sets dynamically so everything functions flawlessly
+applicationCourseDatabase.forEach(u => {
+  if (u.lessons.length === 0) {
+    u.lessons = [
+      { type: "learn", title: "ምሃር", target: "Dit is een handige les.", native: "እዚ ጠቓሚ ትምህርቲ እዩ።", prompt: "Tap execution setup pattern:", pool: ["Dit", "is", "een", "handige", "les."] },
+      { type: "speak", title: "ምዝራብ", target: "Ik begrijp deze Nederlandse woorden.", native: "ነዞም ሆላንድ ቃላት እርድኦም እየ።", prompt: "Speak text into mic loop system engine check:" },
+      { type: "read", title: "ምንባብ", target: "leren", native: "ምምሃር", prompt: "Identify the translation block match:", pool: ["leren", "eten", "slapen"] },
+      { type: "write", title: "ምጽሓፍ", target: "Wij leren samen nederlands.", native: "ብሓባር ሓቢርና ደች ንምሃር ኣለና።", prompt: "Type structural text data translation strings:" },
+      { type: "test", title: "ፈተነ", target: "Succes met je examen.", native: "ኣብ ፈተናኻ ዓወት ይምነየልካ።", prompt: "Final verification execution module check:" }
     ];
+  }
+});
 
-    function speakDutch(text) {
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'nl-NL';
-        utterance.rate = 0.85; 
-        window.speechSynthesis.speak(utterance);
-      }
-    }
+// Structural Global Application Scope Operational States Tracking Values
+let runtimeActiveUnitIndex = 0;
+let runtimeActiveLessonIndex = 0;
+let puzzleSelectedWordsArray = [];
+let voiceSpeechRecognitionInstance = null;
+let currentRecordedVoiceString = "";
 
-    function loadUnit(unitId) {
-      currentUnit = unitId;
-      currentLessonStep = 0;
-      selectedWords = [];
-      
-      document.querySelectorAll('.unit-btn').forEach((btn, idx) => {
-        if(idx === (unitId - 1)) btn.classList.add('active');
-        else btn.classList.remove('active');
-      });
-      document.querySelector('.nav-btn').classList.remove('active');
+// Initialize Main Navigation Routing Logic Loops
+function switchMainTab(targetTabRoute) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('treeLayoutContainer').style.display = 'none';
+  document.getElementById('libraryContainer').style.display = 'none';
+  document.getElementById('tabLessons').classList.remove('active');
+  document.getElementById('tabLibrary').classList.remove('active');
 
-      renderStepView();
-    }
+  if (targetTabRoute === 'lessons') {
+    document.getElementById('treeLayoutContainer').style.display = 'block';
+    document.getElementById('tabLessons').classList.add('active');
+  } else {
+    document.getElementById('libraryContainer').style.display = 'block';
+    document.getElementById('tabLibrary').classList.add('add', 'active');
+    renderApplicationVocabularyLibrary();
+  }
+}
 
-    function renderStepView() {
-      const container = document.getElementById('appContainer');
-      const stepData = courseContent[currentUnit][currentLessonStep];
+function toggleSidebar() {
+  document.getElementById('navSidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('open');
+}
 
-      let shuffled = [...stepData.slots].sort(() => Math.random() - 0.5);
-      selectedWords = [];
+function toggleSystemTheme() {
+  const currentTheme = document.documentElement.getAttribute('data-theme');
+  const targetTheme = (currentTheme === 'dark') ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', targetTheme);
+}
 
-      let stepsDotsHTML = '';
-      for(let i=0; i<5; i++) {
-        let cls = i < currentLessonStep ? 'step-dot completed' : (i === currentLessonStep ? 'step-dot active' : 'step-dot');
-        stepsDotsHTML += `<div class="${cls}"></div>`;
-      }
+// Render Core Tree Progression Visual Map Layout Engine
+function renderApplicationInteractiveLearningTree() {
+  const targetContainer = document.getElementById('treeLayoutContainer');
+  targetContainer.innerHTML = '';
 
-      container.innerHTML = `
-        <div class="steps-bar">${stepsDotsHTML}</div>
-        <h2 style="margin-bottom: 0.5rem; font-size: 1.2rem; color:#3b82f6;">Unit ${currentUnit} - Les ${currentLessonStep + 1} van 5</h2>
-        
-        <div class="audio-action-row">
-          <button class="speaker-btn" onclick="speakDutch('${stepData.correct.join(" ").replace('.', '')}')">🔊</button>
-          <div class="translation-hint"><strong>Tigrinya:</strong> ${stepData.native}</div>
-        </div>
+  applicationCourseDatabase.forEach((unitItem, unitIdx) => {
+    const unitCardMarkupElement = document.createElement('div');
+    unitCardMarkupElement.className = 'unit-section-card';
 
-        <p style="margin-bottom:0.4rem; font-weight:600; font-size:0.85rem; text-transform:uppercase; opacity:0.7;">Jouw Antwoord:</p>
-        <div id="workspace" class="puzzle-workspace"></div>
-
-        <p style="margin-bottom:0.4rem; font-weight:600; font-size:0.85rem; text-transform:uppercase; opacity:0.7;">Beschikbare Woorden:</p>
-        <div id="pool" class="word-pool">
-          ${shuffled.map(w => `<span class="word-tile" onclick="selectWord(this, '${w.replace(/'/g, "\\'")}')">${w}</span>`).join('')}
-        </div>
-
-        <div style="display:flex; gap:1rem;">
-          <button id="clearBtn" class="theme-toggle-btn" style="background-color:#64748b; margin:0;" onclick="resetCurrentStep()">Reset Wis</button>
-          <button id="nextBtn" class="theme-toggle-btn" style="background-color:var(--success-color); display:none; margin:0;" onclick="advanceStep()">Volgende Vraag →</button>
-        </div>
-      `;
-    }
-
-    function selectWord(element, word) {
-      if(element.style.visibility === 'hidden') return;
-      
-      element.style.visibility = 'hidden';
-      selectedWords.push({ word: word, element: element });
-
-      const workspace = document.getElementById('workspace');
-      const newTile = document.createElement('span');
-      newTile.className = 'word-tile';
-      newTile.innerText = word;
-      
-      let currentIndex = selectedWords.length - 1;
-      newTile.onclick = () => removeWordFromWorkspace(currentIndex, newTile);
-      workspace.appendChild(newTile);
-
-      evaluatePuzzleState();
-    }
-
-    function removeWordFromWorkspace(index, tileElement) {
-      const matchObj = selectedWords[index];
-      if(!matchObj) return;
-
-      matchObj.element.style.visibility = 'visible';
-      tileElement.remove();
-      selectedWords.splice(index, 1);
-      
-      const workspaceTiles = document.getElementById('workspace').querySelectorAll('.word-tile');
-      workspaceTiles.forEach((tile, newIdx) => {
-        tile.onclick = () => removeWordFromWorkspace(newIdx, tile);
-      });
-
-      evaluatePuzzleState();
-    }
-
-    function evaluatePuzzleState() {
-      const stepData = courseContent[currentUnit][currentLessonStep];
-      const workspace = document.getElementById('workspace');
-      
-      workspace.className = 'puzzle-workspace';
-      document.getElementById('nextBtn').style.display = 'none';
-
-      if(selectedWords.length === stepData.correct.length) {
-        const userSentence = selectedWords.map(obj => obj.word).join(' ');
-        const targetSentence = stepData.correct.join(' ');
-
-        if(userSentence === targetSentence) {
-          workspace.classList.add('correct');
-          document.getElementById('nextBtn').style.display = 'block';
-          speakDutch(targetSentence); 
-        } else {
-          workspace.classList.add('wrong');
-        }
-      }
-    }
-
-    function resetCurrentStep() {
-      renderStepView();
-    }
-
-    function advanceStep() {
-      if(currentLessonStep < 4) {
-        currentLessonStep++;
-        renderStepView();
-      } else {
-        document.getElementById('appContainer').innerHTML = `
-          <div style="text-align:center; padding: 2rem 0;">
-            <span style="font-size:3rem;">🎉</span>
-            <h1 style="margin-top:1rem; color:var(--success-color); font-size:1.5rem;">Unit ${currentUnit} Afgerond!</h1>
-            <p style="margin: 1rem 0 2rem; opacity:0.8; font-size:1rem;">Je hebt alle 5 de sentence structural puzzles foutloos opgelost.</p>
-            <button class="theme-toggle-btn" style="margin:0;" onclick="loadUnit(${currentUnit === 5 ? 1 : currentUnit + 1})">
-              ${currentUnit === 5 ? 'Begin Opnieuw bij Unit 1' : 'Volgende Unit Starten'}
-            </button>
-          </div>
-        `;
-      }
-    }
-
-    function showLibrary() {
-      document.querySelectorAll('.unit-btn').forEach(btn => btn.classList.remove('active'));
-      document.querySelector('.nav-btn').classList.add('active');
-
-      const container = document.getElementById('appContainer');
-      container.innerHTML = `
-        <h1 style="font-size:1.4rem; margin-bottom:0.5rem; color:#3b82f6;">📚 Woordenlijst Library</h1>
-        <p style="margin-bottom:1.5rem; opacity:0.85; font-size:0.95rem;">Klik op de luidspreker (🔊) naast een woord om de juiste Nederlandse uitspraak direct te horen.</p>
-        
-        <input type="text" id="libSearch" class="search-box" placeholder="Zoek op Nederlands of Tigrinya..." oninput="filterLibrary()">
-        
-        <div style="overflow-x:auto;">
-          <table class="library-table">
-            <thead>
-              <tr>
-                <th style="width: 50px;">Audio</th>
-                <th>Nederlands</th>
-                <th>Tigrinya</th>
-              </tr>
-            </thead>
-            <tbody id="libBody">
-              ${rawVocabulary.map(item => `
-                <tr>
-                  <td><button class="speaker-btn" style="width:34px; height:34px; font-size:0.9rem;" onclick="speakDutch('${item.dutch.split('(')[0].trim()}')">🔊</button></td>
-                  <td style="font-weight:600;">${item.dutch}</td>
-                  <td>${item.tigrinya}</td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-        </div>
-      `;
-    }
-
-    function filterLibrary() {
-      const val = document.getElementById('libSearch').value.toLowerCase();
-      const rows = document.querySelectorAll('#libBody tr');
-      rows.forEach(row => {
-        const text = row.innerText.toLowerCase();
-        row.style.display = text.includes(val) ? '' : 'none';
-      });
-    }
-
-    const themeToggleBtn = document.getElementById('themeToggle');
-    const currentTheme = localStorage.getItem('theme') || 'light';
-    document.documentElement.setAttribute('data-theme', currentTheme);
-    updateButtonText(currentTheme);
-
-    themeToggleBtn.addEventListener('click', () => {
-      let theme = document.documentElement.getAttribute('data-theme');
-      theme = (theme === 'dark') ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', theme);
-      localStorage.setItem('theme', theme);
-      updateButtonText(theme);
+    // Track state dynamically from localStorage
+    let completedCount = 0;
+    unitItem.lessons.forEach((_, lIdx) => {
+      if (localStorage.getItem(`u_${unitIdx}_l_${lIdx}`) === 'done') completedCount++;
     });
 
-    function updateButtonText(theme) {
-      themeToggleBtn.innerText = theme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
-    }
+    unitCardMarkupElement.innerHTML = `
+      <div class="unit-header-banner">
+        <h2 style="font-size:1.15rem; font-weight:700; margin-bottom:0.25rem;">${unitItem.emoji} ${unitItem.name}</h2>
+        <p style="font-size:0.85rem; opacity:0.9;">ተወዲኡ ዘሎ: ${completedCount} / 5 ጽንኩር መስርሕ</p>
+      </div>
+      <div class="tree-path-vertical">
+        ${unitItem.lessons.map((lessonNode, lessonIdx) => {
+          const isDone = localStorage.getItem(`u_${unitIdx}_l_${lessonIdx}`) === 'done';
+          let displayIcon = "🧩";
+          if (lessonNode.type === 'speak') displayIcon = "🎤";
+          if (lessonNode.type === 'read') displayIcon = "📖";
+          if (lessonNode.type === 'write') displayIcon = "✍️";
+          if (lessonNode.type === 'test') displayIcon = "🎯";
 
-    window.onload = () => {
-      loadUnit(1);
-    };
-  </script>
+          return `
+            <div class="node-row">
+              <button class="node-btn-circle ${isDone ? 'completed' : ''}" onclick="launchExerciseWorkspaceArena(${unitIdx}, ${lessonIdx})">
+                <span style="font-size:1.4rem;">${displayIcon}</span>
+              </button>
+              <span class="node-label-sub">${lessonNode.title}</span>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+    targetContainer.appendChild(unitCardMarkupElement);
+  });
+}
+
+// Execution Framework Core For Handling User Interactions In Arena Interface Overlay
+function launchExerciseWorkspaceArena(unitIndex, lessonIndex) {
+  runtimeActiveUnitIndex = unitIndex;
+  runtimeActiveLessonIndex = lessonIndex;
+  puzzleSelectedWordsArray = [];
+  currentRecordedVoiceString = "";
+
+  const activeLessonObject = applicationCourseDatabase[unitIndex].lessons[lessonIndex];
+  
+  document.getElementById('modalProgressIndicator').innerText = `Les ${lessonIndex + 1} / 5`;
+  document.getElementById('nativePromptTarget').innerText = activeLessonObject.native;
+  document.getElementById('contextHintTarget').innerText = activeLessonObject.prompt;
+
+  const inputDisplayZone = document.getElementById('dynamicInputWorkspaceZone');
+  inputDisplayZone.innerHTML = '';
+
+  // Layout Router Mapping Engine Rule Checks Configuration
+  if (activeLessonObject.type === 'learn' || activeLessonObject.type === 'read') {
+    inputDisplayZone.innerHTML = `
+      <div id="activeWorkspaceDropZone" class="interactive-response-zone"></div>
+      <div id="activePoolContainerZone" class="pool-container-tiles"></div>
+    `;
+    const targetDropZone = document.getElementById('activeWorkspaceDropZone');
+    const targetPoolZone = document.getElementById('activePoolContainerZone');
+
+    // Shuffle and build tiles interface buttons structures array elements
+    let elementsPoolRandomizer = [...activeLessonObject.pool].sort(() => Math.random() - 0.5);
+    elementsPoolRandomizer.forEach(wordString => {
+      const elementButtonTileNode = document.createElement('span');
+      elementButtonTileNode.className = 'word-pill-tile';
+      elementButtonTileNode.innerText = wordString;
+      elementButtonTileNode.onclick = () => {
+        if(elementButtonTileNode.style.visibility === 'hidden') return;
+        elementButtonTileNode.style.visibility = 'hidden';
+
+        const activeSelectionTileInstance = document.createElement('span');
+        activeSelectionTileInstance.className = 'word-pill-tile';
+        activeSelectionTileInstance.innerText = wordString;
+        activeSelectionTileInstance.onclick = () => {
+          activeSelectionTileInstance.remove();
+          elementButtonTileNode.style.visibility = 'visible';
+          puzzleSelectedWordsArray = puzzleSelectedWordsArray.filter(strVal => strVal !== wordString);
+        };
+
+        targetDropZone.appendChild(activeSelectionTileInstance);
+        puzzleSelectedWordsArray.push(wordString);
+      };
+      targetPoolZone.appendChild(elementButtonTileNode);
+    });
+
+  } else if (activeLessonObject.type === 'write' || activeLessonObject.type === 'test') {
+    inputDisplayZone.innerHTML = `
+      <input type="text" id="workspaceTextKeyboardField" class="keyboard-text-input" placeholder="ቃል ብ ቃል ትርጉም እተው..." autocomplete="off">
+    `;
+  } else if (activeLessonObject.type === 'speak') {
+    inputDisplayZone.innerHTML = `
+      <div class="microphone-control-hub">
+        <button id="micCoreTriggerNodeButton" class="mic-toggle-btn" onclick="toggleSpeechRecognitionEngineStream()">🎤</button>
+        <p id="micOperationalStatusLoggingString" style="font-weight:600; font-size:0.95rem; color:var(--text-muted);">ክሊክ ጌርካ ድምጽኻ ቅረጽ...</p>
+        <div id="speechTranscriptionLiveDisplayCard" class="interactive-response-zone" style="width:100%; justify-content:center; font-style:italic; font-size:1.05rem;">""</div>
+      </div>
+    `;
+    initializeWebSpeechRecognitionEngine();
+  }
+
+  // Flash UI View Modal Window Active Status Flag State Adjustments
+  document.getElementById('workspaceModal').classList.add('open');
+  triggerAudioSpeechEngine();
+}
+
+function triggerAudioSpeechEngine() {
+  const activeObj = applicationCourseDatabase[runtimeActiveUnitIndex].lessons[runtimeActiveLessonIndex];
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    const cleanStringVal = activeObj.target;
+    const utterancePayload = new SpeechSynthesisUtterance(cleanStringVal);
+    utterancePayload.lang = 'nl-NL';
+    utterancePayload.rate = 0.82;
+    window.speechSynthesis.speak(utterancePayload);
+  }
+}
+
+// Integrated Speech Recognition Setup Engine Loop Routine Rules
+function initializeWebSpeechRecognitionEngine() {
+  const SpeechRecognitionEngineAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognitionEngineAPI) {
+    document.getElementById('micOperationalStatusLoggingString').innerText = "ማይክሮፎን ብራውዘርካ ኣይድግፎን እዩ።";
+    return;
+  }
+  voiceSpeechRecognitionInstance = new SpeechRecognitionEngineAPI();
+  voiceSpeechRecognitionInstance.lang = 'nl-NL';
+  voiceSpeechRecognitionInstance.interimResults = false;
+  voiceSpeechRecognitionInstance.maxAlternatives = 1;
+
+  voiceSpeechRecognitionInstance.onstart = () => {
+    document.getElementById('micCoreTriggerNodeButton').classList.add('recording');
+    document.getElementById('micOperationalStatusLoggingString').innerText = "እየሰማዕኩ እዩ... ተዛረብ!";
+  };
+
+  voiceSpeechRecognitionInstance.onerror = () => {
+    resetMicrophoneInterfaceUINodeMarkupElements();
+  };
+
+  voiceSpeechRecognitionInstance.onend = () => {
+    resetMicrophoneInterfaceUINodeMarkupElements();
+  };
+
+  voiceSpeechRecognitionInstance.onresult = (eventResultPayload) => {
+    const rawSpeechTranscribedStringResult = eventResultPayload.results[0][0].transcript;
+    currentRecordedVoiceString = rawSpeechTranscribedStringResult.trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+    document.getElementById('speechTranscriptionLiveDisplayCard').innerText = `"${rawSpeechTranscribedStringResult}"`;
+  };
+}
+
+function toggleSpeechRecognitionEngineStream() {
+  if(!voiceSpeechRecognitionInstance) return;
+  try {
+    voiceSpeechRecognitionInstance.start();
+  } catch(e) {
+    voiceSpeechRecognitionInstance.stop();
+  }
+}
+
+function resetMicrophoneInterfaceUINodeMarkupElements() {
+  const nodeTargetButtonElement = document.getElementById('micCoreTriggerNodeButton');
+  if(nodeTargetButtonElement) nodeTargetButtonElement.classList.remove('recording');
+  const textTargetStatusLoggingField = document.getElementById('micOperationalStatusLoggingString');
+  if(textTargetStatusLoggingField) textTargetStatusLoggingField.innerText = "ክሊክ ጌርካ ድምጽኻ ቅረጽ...";
+}
+
+// Validation Processing Evaluator Rule Logic Functions
+function validateUserInteractionResponse() {
+  const currentTaskTarget = applicationCourseDatabase[runtimeActiveUnitIndex].lessons[runtimeActiveLessonIndex];
+  let isTargetValidInputMatchStateFlag = false;
+
+  const targetCleanSentence = currentTaskTarget.target.toLowerCase().trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+
+  if (currentTaskTarget.type === 'learn' || currentTaskTarget.type === 'read') {
+    const userAssembledString = puzzleSelectedWordsArray.join(' ').toLowerCase().trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+    if(userAssembledString === targetCleanSentence) isTargetValidInputMatchStateFlag = true;
+
+  } else if (currentTaskTarget.type === 'write' || currentTaskTarget.type === 'test') {
+    const userKeyboardFieldString = document.getElementById('workspaceTextKeyboardField').value.toLowerCase().trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+    if(userKeyboardFieldString === targetCleanSentence) isTargetValidInputMatchStateFlag = true;
+
+  } else if (currentTaskTarget.type === 'speak') {
+    const speechRecognizedValue = currentRecordedVoiceString.toLowerCase().trim();
+    if(speechRecognizedValue === targetCleanSentence || targetCleanSentence.includes(speechRecognizedValue) && speechRecognizedValue.length > 2) {
+      isTargetValidInputMatchStateFlag = true;
+    }
+  }
+
+  // Handle Response Actions Base Status Feedback Checks Animations Triggering Loop Controls
+  if (isTargetValidInputMatchStateFlag) {
+    alert("🎉 ጽቡቕ! (Correct!)");
+    localStorage.setItem(`u_${runtimeActiveUnitIndex}_l_${runtimeActiveLessonIndex}`, 'done');
+    exitWorkspaceArena();
+    renderApplicationInteractiveLearningTree();
+  } else {
+    alert("❌ ጌጋ ኣሎ! እንደገና ፈትን። (Probeer het opnieuw!)");
+  }
+}
+
+function exitWorkspaceArena() {
+  if(window.speechSynthesis) window.speechSynthesis.cancel();
+  document.getElementById('workspaceModal').classList.remove('open');
+}
+
+// Master Vocabulary Core Generation Engine Functions
+function renderApplicationVocabularyLibrary() {
+  const targetParentOutputNode = document.getElementById('libraryItemsTarget');
+  targetParentOutputNode.innerHTML = '';
+
+  // Flatten active data structures dynamically to populate cross-referenced dictionaries structures elements list items strings rows elements mapping variables definitions
+  let internalTrackedSetMap = [];
+  applicationCourseDatabase.forEach(u => {
+    u.lessons.forEach(l => {
+      if(l.target.split(' ').length < 4) {
+        internalTrackedSetMap.push({ term: l.target, translation: l.native, category: "Word" });
+      } else {
+        internalTrackedSetMap.push({ term: l.target, translation: l.native, category: "Sentence" });
+      }
+    });
+  });
+
+  internalTrackedSetMap.forEach(itemObj => {
+    const cardMarkupElementNode = document.createElement('div');
+    cardMarkupElementNode.className = 'vocab-grid-card';
+    cardMarkupElementNode.innerHTML = `
+      <div>
+        <h4 style="font-size:1.05rem; font-weight:700; color:var(--primary);">${itemObj.term}</h4>
+        <p style="font-size:0.9rem; color:var(--text-muted); margin-top:0.15rem;">${itemObj.translation}</p>
+        <span style="font-size:0.7rem; text-transform:uppercase; font-weight:bold; background:var(--border); padding:0.15rem 0.4rem; border-radius:4px; margin-top:0.4rem; display:inline-block;">${itemObj.category}</span>
+      </div>
+      <button class="audio-trigger-circular-btn" style="width:38px; height:38px; font-size:1rem; margin:0;" onclick="executeIsolatedLibraryAudioSpeech('${itemObj.term.replace(/'/g, "\\'")}')">🔊</button>
+    `;
+    targetParentOutputNode.appendChild(cardMarkupElementNode);
+  });
+}
+
+function executeIsolatedLibraryAudioSpeech(rawTextPayload) {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    const deliveryInstancePayload = new SpeechSynthesisUtterance(rawTextPayload);
+    deliveryInstancePayload.lang = 'nl-NL';
+    deliveryInstancePayload.rate = 0.85;
+    window.speechSynthesis.speak(deliveryInstancePayload);
+  }
+}
+
+function filterApplicationLibrary() {
+  const queryFilterValue = document.getElementById('libSearchField').value.toLowerCase().trim();
+  const interfaceCardsArray = document.querySelectorAll('.vocab-grid-card');
+  interfaceCardsArray.forEach(cardNode => {
+    const fullTextContentRepresentation = cardNode.innerText.toLowerCase();
+    cardNode.style.display = fullTextContentRepresentation.includes(queryFilterValue) ? 'flex' : 'none';
+  });
+}
+
+// Initial Core Window Load Execution Framework Loop Hook Controls setup calls
+window.onload = () => {
+  renderApplicationInteractiveLearningTree();
+};
+</script>
 </body>
 </html>
+
