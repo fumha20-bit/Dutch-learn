@@ -36,6 +36,7 @@ body {
   background-color: var(--bg-color);
   color: var(--text-color);
   display: flex;
+  flex-direction: row; /* Default side-by-side for desktop */
   min-height: 100vh;
   transition: background-color 0.3s, color 0.3s;
 }
@@ -92,6 +93,12 @@ body {
   font-weight: bold;
 }
 
+.sidebar hr {
+  border: 0; 
+  border-top: 1px solid rgba(255,255,255,0.1); 
+  margin: 1rem 0;
+}
+
 /* Main Display Dashboard */
 .main-content {
   flex: 1;
@@ -145,8 +152,15 @@ body {
   align-items: center;
   justify-content: center;
   font-size: 1.25rem;
+  flex-shrink: 0;
   transition: transform 0.1s;
 }
+
+/* Make sure audio button text doesn't turn dark in dark mode */
+[data-theme="dark"] .speaker-btn {
+  background-color: #334155;
+}
+
 .speaker-btn:active {
   transform: scale(0.9);
 }
@@ -155,6 +169,7 @@ body {
   font-style: italic;
   font-size: 1.1rem;
   opacity: 0.85;
+  line-height: 1.4;
 }
 
 .puzzle-workspace {
@@ -188,6 +203,7 @@ body {
 
 .word-tile {
   background-color: var(--container-bg);
+  color: var(--text-color);
   border: 1px solid var(--border-color);
   padding: 0.6rem 1.2rem;
   border-radius: 6px;
@@ -225,6 +241,67 @@ body {
   font-weight: bold;
   background-color: rgba(0,0,0,0.02);
 }
+
+/* ==========================================================================
+   SMARTPHONE MEDIA QUERIES (Fixes screens smaller than 768px wide)
+   ========================================================================== */
+@media (max-width: 768px) {
+  body {
+    flex-direction: column; /* Stack menu on top, content on bottom */
+  }
+
+  .sidebar {
+    width: 100%; /* Take full horizontal width */
+    padding: 1rem;
+    gap: 0.5rem;
+  }
+
+  .sidebar h2 {
+    font-size: 1.3rem;
+    margin-bottom: 0.2rem;
+  }
+
+  .theme-toggle-btn {
+    margin-bottom: 0.5rem;
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  .sidebar hr {
+    margin: 0.5rem 0;
+  }
+
+  /* Turn menu items into a smart wrapping horizontal bar */
+  .unit-btn, .nav-btn {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+    text-align: center;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+
+  .main-content {
+    padding: 1rem; /* Smaller padding so it fills up phone cleanly */
+  }
+
+  .app-card {
+    padding: 1.25rem;
+  }
+
+  .translation-hint {
+    font-size: 1rem;
+  }
+
+  .word-tile {
+    padding: 0.5rem 0.9rem;
+    font-size: 0.95rem;
+  }
+
+  .library-table th, .library-table td {
+    padding: 0.6rem;
+    font-size: 0.9rem;
+  }
+}
 </style>
 </head>
 <body>
@@ -233,13 +310,13 @@ body {
     <h2>Dutch-Learn</h2>
     <button id="themeToggle" class="theme-toggle-btn">🌙 Switch Mode</button>
     
-    <button class="unit-btn active" onclick="loadUnit(1)">Unit 1: Taken & Berichten</button>
+    <button class="unit-btn active" onclick="loadUnit(1)">Unit 1: Taken</button>
     <button class="unit-btn" onclick="loadUnit(2)">Unit 2: Uitdrukkingen</button>
-    <button class="unit-btn" onclick="loadUnit(3)">Unit 3: Actie & Tijd</button>
-    <button class="unit-btn" onclick="loadUnit(4)">Unit 4: Regelen & Kopen</button>
+    <button class="unit-btn" onclick="loadUnit(3)">Unit 3: Actie</button>
+    <button class="unit-btn" onclick="loadUnit(4)">Unit 4: Regelen</button>
     <button class="unit-btn" onclick="loadUnit(5)">Unit 5: Beschrijvingen</button>
     
-    <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 1rem 0;">
+    <hr>
     <button class="nav-btn" onclick="showLibrary()">📚 Woordenlijst Library</button>
   </div>
 
@@ -249,23 +326,21 @@ body {
   </main>
 
   <script>
-    // System Application Configuration State
     let currentUnit = 1;
-    let currentLessonStep = 0; // 0 to 4 (5 distinct puzzle steps)
+    let currentLessonStep = 0; 
     let selectedWords = [];
 
-    // Comprehensive Bilingual Course Curriculum Database Struct
     const courseContent = {
       1: [
         { native: "እቲ ትካል ንዓኻ ጽቡቕ ስራሕ ከቕርበልካ እዩ።", correct: ["Het", "bedrijf", "zal", "je", "een", "goede", "baan", "aanbieden."], slots: ["Het", "bedrijf", "zal", "je", "een", "goede", "baan", "aanbieden."] },
         { native: "ኣብዚ ሓድሽ ኮርስ ክትምዝገብ ትኽእል ኢኻ።", correct: ["Je", "kunt", "je", "voor", "deze", "nieuwe", "cursus", "aanmelden."], slots: ["Je", "kunt", "je", "voor", "deze", "nieuwe", "cursus", "aanmelden."] },
         { native: "ምስቲ ጠበቓ ቆጸራ ክገብር ኣሎኒ።", correct: ["Ik", "moet", "een", "afspraak", "maken", "met", "de", "advocaat."], slots: ["Ik", "moet", "een", "afspraak", "maken", "met", "de", "advocaat."] },
-        { native: "ጽባሕ ንግሆ ክንድውለልካ ተሰማሚዕና ኣለና።", correct: ["We", "hebben", "afgesproken", "om", "morgenochtend", "te", "bellen."], slots: ["We", "hebben", "afgesproken", "om", "morgenochtend", "te", "bellen."] },
+        { native: "ጽባሕ ንግሆ ክንድውлеልካ ተሰмаሚዕና ኣለና።", correct: ["We", "hebben", "afgesproken", "om", "morgenochtend", "te", "bellen."], slots: ["We", "hebben", "afgesproken", "om", "morgenochtend", "te", "bellen."] },
         { native: "ንሱ ኩሉ ግዜ ነቲ ናይ ስራሕ መልእኽቲ ብኣቓልቦ የንብቦ።", correct: ["Hij", "leest", "de", "boodschap", "altijd", "met", "veel", "aandacht."], slots: ["Hij", "leest", "de", "boodschap", "altijd", "met", "veel", "aandacht."] }
       ],
       2: [
-        { native: "ናይዚ ሕቶ መልሲ ክፈልጥ ብጣዕሚ ሃንቀው እብል ኣለኹ።", correct: ["Ik", "ben", "erg", "benieuwd", "naar", "het", "antwoord."], slots: ["Ik", "ben", "erg", "benieuwd", "naar", "het", "antwoord."] },
-        { native: "ነቲ ዓቢ ዕላማ ንምብጻሕ ብሓባር ንሰርሕ ኣለና።", correct: ["We", "werken", "samen", "om", "het", "doel", "te", "bereiken."], slots: ["We", "werken", "samen", "om", "het", "doel", "te", "bereiken."] },
+        { native: "ናይዚ ሕቶ መልሲ ክፈልጥ ብጣዕਮੀ ሃንቀው እብл ኣለኹ።", correct: ["Ik", "ben", "erg", "benieuwd", "naar", "het", "antwoord."], slots: ["Ik", "ben", "erg", "benieuwd", "naar", "het", "antwoord."] },
+        { native: "ነti ዓቢ ዕላማ ንምብጻሕ ብሓባር ንሰርሕ ኣለና።", correct: ["We", "werken", "samen", "om", "het", "doel", "te", "bereiken."], slots: ["We", "werken", "samen", "om", "het", "doel", "te", "bereiken."] },
         { native: "እቲ ሓኪም ሎሚ ንኽመክር ምሉእ መዓልቲ ክርከብ እዩ።", correct: ["De", "arts", "is", "vandaag", "beschikbaar", "voor", "advies."], slots: ["De", "arts", "is", "vandaag", "beschikbaar", "voor", "advies."] },
         { native: "ነቲ ሓድሽ ናይ ስራሕ ትልሚ ክንመያየጠሉ ኣለና።", correct: ["We", "moeten", "het", "nieuwe", "plan", "samen", "bespreken."], slots: ["We", "moeten", "het", "nieuwe", "plan", "samen", "bespreken."] },
         { native: "ነቲ ሰዋስው ብደንቢ ከም ዝተረዳእካዮ ክነረጋግጽ ንደሊ።", correct: ["Ik", "wil", "zeker", "weten", "dat", "je", "het", "begrijpt."], slots: ["Ik", "wil", "zeker", "weten", "dat", "je", "het", "begrijpt."] }
@@ -278,33 +353,32 @@ body {
         { native: "ኣካላትካ ንምዕቃብ መዓልታዊ ክትወሳወስ ኣለካ።", correct: ["Je", "moet", "dagelijks", "bewegen", "om", "gezond", "te", "blijven."], slots: ["Je", "moet", "dagelijks", "bewegen", "om", "gezond", "te", "blijven."] }
       ],
       4: [
-        { native: "ኣብ ቤት መግቢ ምሳሕ ክንእዝዝ ንኽእል ኢና።", correct: ["We", "kunnen", "nu", "lunch", "bestellen", "in", "het", "restaurant."], slots: ["We", "kunnen", "nu", "lunch", "bestellen", "in", "het", "restaurant."] },
+        { native: "ኣብ ቤት መግቢ ምሳሕ ክንእዝዝ ንኽእл ኢና።", correct: ["We", "kunnen", "nu", "lunch", "bestellen", "in", "het", "restaurant."], slots: ["We", "kunnen", "nu", "lunch", "bestellen", "in", "het", "restaurant."] },
         { native: "ነቲ ዕዳጋ ብባንክ ካርታ ክትከፍሎ ትኽእል ኢኻ።", correct: ["Je", "kunt", "de", "boodschappen", "met", "een", "bankpas", "betalen."], slots: ["Je", "kunt", "de", "boodschappen", "met", "een", "bankpas", "betalen."] },
         { native: "ነዞም ኣገደስቲ ሰነዳት ኣብ ውሑስ ቦታ ክትዕቅቦም ኣለካ።", correct: ["Je", "moet", "deze", "belangrijke", "documenten", "goed", "bewaren."], slots: ["Je", "moet", "deze", "belangrijke", "documenten", "goed", "bewaren."] },
         { native: "እዚ ሓጹር ነቲ ዓቢ ገዛ ካብ ሓደጋ ይከላኸል እዩ።", correct: ["Dit", "hek", "zal", "het", "grote", "huis", "beschermen."], slots: ["Dit", "hek", "zal", "het", "grote", "huis", "beschermen."] },
         { native: "ነቲ ኩነታት ብዝርዝር ክትገልጾ ትኽእልዶ?", correct: ["Kun", "je", "de", "situatie", "duidelijk", "aan", "mij", "beschrijven?"], slots: ["Kun", "je", "de", "situatie", "duidelijk", "aan", "mij", "beschrijven?"] }
       ],
       5: [
-        { native: "ኣብ ጸጋማይ ወገን ዘሎ መስኮት ክፉት እዩ።", correct: ["Het", "raam", "aan", "de", "linkerkant", "is", "open."], slots: ["Het", "raam", "aan", "de", "linkerkant", "is", "open."] },
+        { native: "ኣብ ጸጋማй ወገን ዘሎ መስኮት ክፉት እዩ።", correct: ["Het", "raam", "aan", "de", "linkerkant", "is", "open."], slots: ["Het", "raam", "aan", "de", "linkerkant", "is", "open."] },
         { native: "ኣብ የማናይ ወገን ዘሎ መንገዲ ቀጥታ ናብ ቤት ትምህርቲ ይወስድ።", correct: ["De", "weg", "aan", "de", "rechterkant", "leidt", "naar", "school."], slots: ["De", "weg", "aan", "de", "rechterkant", "leidt", "naar", "school."] },
-        { native: "እዚ ሓድሽ መምህር ብጣዕሚ ሕያዋይ ሰብ እዩ።", correct: ["Deze", "nieuwe", "docent", "is", "een", "erg", "aardig", "persoon."], slots: ["Deze", "nieuwe", "docent", "is", "een", "erg", "aardig", "persoon."] },
+        { native: "እዚ ሓድш መምህር ብጣዕሚ ሕያዋይ ሰብ እዩ።", correct: ["Deze", "nieuwe", "docent", "is", "een", "erg", "aardig", "persoon."], slots: ["Deze", "nieuwe", "docent", "is", "een", "erg", "aardig", "persoon."] },
         { native: "እቲ ናይ መወዳእታ ምዕራፍ ኣብ መወዳእታ መጽሓፍ ይርከብ።", correct: ["Het", "laatste", "hoofdstuk", "staat", "aan", "het", "eind."], slots: ["Het", "laatste", "hoofdstuk", "staat", "aan", "het", "eind."] },
         { native: "እቲ ዝርዝር ኣድራሻታት ኣብዚ ሰሌዳ ተጻሒፉ ኣሎ።", correct: ["De", "lijst", "met", "adressen", "hangt", "op", "het", "bord."], slots: ["De", "lijst", "met", "adressen", "hangt", "op", "het", "bord."] }
       ]
     };
 
-    // Dictionary Vocabulary Master Core Object Array
     const rawVocabulary = [
       { dutch: "aanbieden (bood aan, aangeboden)", tigrinya: "ምቕራብ / ምዕዳል" },
       { dutch: "de aandacht", tigrinya: "ኣቓልቦ" },
       { dutch: "aanmelden (meldde zich aan)", tigrinya: "ምምዝጋብ" },
       { dutch: "de afspraak (afspraken)", tigrinya: "ቆጸራ" },
-      { dutch: "afspreken (sprak af, afgesproken)", tigrinya: "ምስምማዕ / ቆጸራ ምሓዝ" },
+      { dutch: "afspreken (sprak af, afgesproken)", tigrinya: "ምስмማዕ / ቆጸра ምሓዝ" },
       { dutch: "benieuwd zijn naar", tigrinya: "ሃንቀውታ / ምድላይ ፍልጠት" },
       { dutch: "bereiken (bereikte, bereikt)", tigrinya: "ምብጻሕ" },
       { dutch: "beschikbaar", tigrinya: "ክፉት / ዘሎ / ዝርከብ" },
       { dutch: "bespreken (besprak, besproken)", tigrinya: "ምምያጥ" },
-      { dutch: "begrijpen (begreep, begrepen)", tigrinya: "ምርዳእ" },
+      { dutch: "begrijpen (begreep, begrepen)", tigrinya: "ምርडाእ" },
       { dutch: "aankomen (kwam aan, aangekomen)", tigrinya: "ምብጻሕ / ምእታው" },
       { dutch: "binnenkomen (kwam binnen)", tigrinya: "ናብ ውሽጢ ምእታው" },
       { dutch: "binnenkort", tigrinya: "ኣብ ሓጺር እዋን" },
@@ -316,7 +390,7 @@ body {
       { dutch: "beschermen (beschermde)", tigrinya: "ምክልኻል / ምዕቃብ" },
       { dutch: "beschrijven (beschreef, beschreven)", tigrinya: "ምግላጽ" },
       { dutch: "aan de linkerkant", tigrinya: "ኣብ ጸጋማይ ወገን" },
-      { dutch: "aan de rechterkant", tigrinya: "ኣብ የማናй ወገን" },
+      { dutch: "aan de rechterkant", tigrinya: "ኣብ የማናይ ወገን" },
       { dutch: "aan het eind", tigrinya: "ኣብ መወዳእታ" },
       { dutch: "aardig / aardige", tigrinya: "ሕያዋይ" },
       { dutch: "het adres (adressen)", tigrinya: "ኣድራሻ" },
@@ -327,13 +401,13 @@ body {
       { dutch: "het afval", tigrinya: "ጎሓፍ / ርስሓት" },
       { dutch: "afwassen (woste af)", tigrinya: "ኣቕሓ ምሕጻብ" },
       { dutch: "aanwezig", tigrinya: "ኣብዚ ዘሎ / ተረኺቡ ዘሎ" },
-      { dutch: "de apotheek", tigrinya: "ፋርማሲ" },
+      { dutch: "de apotheek", tigrinya: "ፋрмаሲ" },
       { dutch: "het apparaat", tigrinya: "መሳርሒ" },
       { dutch: "de balie", tigrinya: "መቀበሊ ጋሻ / ባሊ" },
       { dutch: "beloven (beloofde)", tigrinya: "ቃል ምእታው" },
       { dutch: "beneden", tigrinya: "ታሕቲ" },
       { dutch: "de berg (bergen)", tigrinya: "እምባ / ጎቦ" },
-      { dutch: "het beroep", tigrinya: "ሞያ / ስራሕ" },
+      { dutch: "het beroep", tigrinya: "ሞያ / ስраሕ" },
       { dutch: "de betekenis", tigrinya: "ትርጉም" },
       { dutch: "de bibliotheek", tigrinya: "ቤተ-ንባብ" },
       { dutch: "binnen", tigrinya: "ኣብ ውሽጢ" },
@@ -341,26 +415,21 @@ body {
       { dutch: "de bladzijde", tigrinya: "ገጽ (ናይ መጽሓፍ)" }
     ];
 
-    // Engine Audio Implementation (Web Speech Synthesizer Interface)
     function speakDutch(text) {
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = 'nl-NL';
-        utterance.rate = 0.85; // Natural speed cadence for learning focus
+        utterance.rate = 0.85; 
         window.speechSynthesis.speak(utterance);
-      } else {
-        alert("Audio speech tool is not fully supported in this browser viewport.");
       }
     }
 
-    // App Component Core View Engine
     function loadUnit(unitId) {
       currentUnit = unitId;
       currentLessonStep = 0;
       selectedWords = [];
       
-      // Toggle CSS Sidebar Classes
       document.querySelectorAll('.unit-btn').forEach((btn, idx) => {
         if(idx === (unitId - 1)) btn.classList.add('active');
         else btn.classList.remove('active');
@@ -374,9 +443,7 @@ body {
       const container = document.getElementById('appContainer');
       const stepData = courseContent[currentUnit][currentLessonStep];
 
-      // Shuffle logic for sentence structure tiles
       let shuffled = [...stepData.slots].sort(() => Math.random() - 0.5);
-      // Guarantee clean strip arrays avoiding reference linkage pointers
       selectedWords = [];
 
       let stepsDotsHTML = '';
@@ -387,24 +454,24 @@ body {
 
       container.innerHTML = `
         <div class="steps-bar">${stepsDotsHTML}</div>
-        <h2 style="margin-bottom: 0.5rem; font-size: 1.35rem; color:#3b82f6;">Unit ${currentUnit} - Les ${currentLessonStep + 1} van 5</h2>
+        <h2 style="margin-bottom: 0.5rem; font-size: 1.2rem; color:#3b82f6;">Unit ${currentUnit} - Les ${currentLessonStep + 1} van 5</h2>
         
         <div class="audio-action-row">
           <button class="speaker-btn" onclick="speakDutch('${stepData.correct.join(" ").replace('.', '')}')">🔊</button>
           <div class="translation-hint"><strong>Tigrinya:</strong> ${stepData.native}</div>
         </div>
 
-        <p style="margin-bottom:0.5rem; font-weight:600; font-size:0.9rem; text-transform:uppercase; letter-spacing:0.5px; opacity:0.7;">Jouw Antwoord:</p>
+        <p style="margin-bottom:0.4rem; font-weight:600; font-size:0.85rem; text-transform:uppercase; opacity:0.7;">Jouw Antwoord:</p>
         <div id="workspace" class="puzzle-workspace"></div>
 
-        <p style="margin-bottom:0.5rem; font-weight:600; font-size:0.9rem; text-transform:uppercase; letter-spacing:0.5px; opacity:0.7;">Beschikbare Woorden:</p>
+        <p style="margin-bottom:0.4rem; font-weight:600; font-size:0.85rem; text-transform:uppercase; opacity:0.7;">Beschikbare Woorden:</p>
         <div id="pool" class="word-pool">
           ${shuffled.map(w => `<span class="word-tile" onclick="selectWord(this, '${w.replace(/'/g, "\\'")}')">${w}</span>`).join('')}
         </div>
 
         <div style="display:flex; gap:1rem;">
-          <button id="clearBtn" class="theme-toggle-btn" style="background-color:#64748b;" onclick="resetCurrentStep()">Reset Wis</button>
-          <button id="nextBtn" class="theme-toggle-btn" style="background-color:var(--success-color); display:none;" onclick="advanceStep()">Volgende Vraag →</button>
+          <button id="clearBtn" class="theme-toggle-btn" style="background-color:#64748b; margin:0;" onclick="resetCurrentStep()">Reset Wis</button>
+          <button id="nextBtn" class="theme-toggle-btn" style="background-color:var(--success-color); display:none; margin:0;" onclick="advanceStep()">Volgende Vraag →</button>
         </div>
       `;
     }
@@ -420,7 +487,6 @@ body {
       newTile.className = 'word-tile';
       newTile.innerText = word;
       
-      // Track back target matching references
       let currentIndex = selectedWords.length - 1;
       newTile.onclick = () => removeWordFromWorkspace(currentIndex, newTile);
       workspace.appendChild(newTile);
@@ -436,7 +502,6 @@ body {
       tileElement.remove();
       selectedWords.splice(index, 1);
       
-      // Re-index remaining workspace nodes
       const workspaceTiles = document.getElementById('workspace').querySelectorAll('.word-tile');
       workspaceTiles.forEach((tile, newIdx) => {
         tile.onclick = () => removeWordFromWorkspace(newIdx, tile);
@@ -459,7 +524,7 @@ body {
         if(userSentence === targetSentence) {
           workspace.classList.add('correct');
           document.getElementById('nextBtn').style.display = 'block';
-          speakDutch(targetSentence); // Pronounce validation reinforcement
+          speakDutch(targetSentence); 
         } else {
           workspace.classList.add('wrong');
         }
@@ -475,13 +540,12 @@ body {
         currentLessonStep++;
         renderStepView();
       } else {
-        // Unit Completion Shield Display UI Window
         document.getElementById('appContainer').innerHTML = `
           <div style="text-align:center; padding: 2rem 0;">
-            <span style="font-size:4rem;">🎉</span>
-            <h1 style="margin-top:1rem; color:var(--success-color);">Unit ${currentUnit} Afgerond!</h1>
-            <p style="margin: 1rem 0 2rem; opacity:0.8;">Je hebt alle 5 de sentence structural puzzles foutloos opgelost.</p>
-            <button class="theme-toggle-btn" onclick="loadUnit(${currentUnit === 5 ? 1 : currentUnit + 1})">
+            <span style="font-size:3rem;">🎉</span>
+            <h1 style="margin-top:1rem; color:var(--success-color); font-size:1.5rem;">Unit ${currentUnit} Afgerond!</h1>
+            <p style="margin: 1rem 0 2rem; opacity:0.8; font-size:1rem;">Je hebt alle 5 de sentence structural puzzles foutloos opgelost.</p>
+            <button class="theme-toggle-btn" style="margin:0;" onclick="loadUnit(${currentUnit === 5 ? 1 : currentUnit + 1})">
               ${currentUnit === 5 ? 'Begin Opnieuw bij Unit 1' : 'Volgende Unit Starten'}
             </button>
           </div>
@@ -489,15 +553,14 @@ body {
       }
     }
 
-    // Module Library Rendering System Interface
     function showLibrary() {
       document.querySelectorAll('.unit-btn').forEach(btn => btn.classList.remove('active'));
       document.querySelector('.nav-btn').classList.add('active');
 
       const container = document.getElementById('appContainer');
       container.innerHTML = `
-        <h1 style="font-size:1.65rem; margin-bottom:0.5rem; color:#3b82f6;">📚 Woordenlijst Library</h1>
-        <p style="margin-bottom:1.5rem; opacity:0.85;">Klik op de luidspreker (🔊) naast een woord om de juiste Nederlandse uitspraak direct te horen.</p>
+        <h1 style="font-size:1.4rem; margin-bottom:0.5rem; color:#3b82f6;">📚 Woordenlijst Library</h1>
+        <p style="margin-bottom:1.5rem; opacity:0.85; font-size:0.95rem;">Klik op de luidspreker (🔊) naast een woord om de juiste Nederlandse uitspraak direct te horen.</p>
         
         <input type="text" id="libSearch" class="search-box" placeholder="Zoek op Nederlands of Tigrinya..." oninput="filterLibrary()">
         
@@ -505,9 +568,9 @@ body {
           <table class="library-table">
             <thead>
               <tr>
-                <th style="width: 70px;">Audio</th>
-                <th>Nederlands (Taalcompleet)</th>
-                <th>Tigrinya (ትርጉም)</th>
+                <th style="width: 50px;">Audio</th>
+                <th>Nederlands</th>
+                <th>Tigrinya</th>
               </tr>
             </thead>
             <tbody id="libBody">
@@ -515,7 +578,7 @@ body {
                 <tr>
                   <td><button class="speaker-btn" style="width:34px; height:34px; font-size:0.9rem;" onclick="speakDutch('${item.dutch.split('(')[0].trim()}')">🔊</button></td>
                   <td style="font-weight:600;">${item.dutch}</td>
-                  <td style="direction:ltr;">${item.tigrinya}</td>
+                  <td>${item.tigrinya}</td>
                 </tr>
               `).join('')}
             </tbody>
@@ -533,7 +596,6 @@ body {
       });
     }
 
-    // Toggle Mode Code Base Storage Initialization Mapping
     const themeToggleBtn = document.getElementById('themeToggle');
     const currentTheme = localStorage.getItem('theme') || 'light';
     document.documentElement.setAttribute('data-theme', currentTheme);
@@ -551,7 +613,6 @@ body {
       themeToggleBtn.innerText = theme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
     }
 
-    // Window Init Event Loop Bootloader
     window.onload = () => {
       loadUnit(1);
     };
