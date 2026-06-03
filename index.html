@@ -1,359 +1,848 @@
-<!-- ========================================== -->
-<!-- 1. MENU NAVIGATION SECTIONS -->
-<!-- (Place this at the bottom of your page) -->
-<!-- ========================================== -->
-<hr style="margin-top: 50px; border: 0; border-top: 2px dashed #ccc;">
+!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dutch-Learn Engine</title>
+<style>
+:root {
+  --bg: #f8fafc;
+  --card-bg: #ffffff;
+  --text: #0f172a;
+  --text-muted: #64748b;
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --success: #22c55e;
+  --error: #ef4444;
+  --border: #e2e8f0;
+  --header-bg: #1e293b;
+  --header-text: #ffffff;
+}
 
-<section id="about-us" style="padding: 25px; margin-top: 20px; border-radius: 8px;">
-  <h2>ℹ️ About Us (ብዛዕባና)</h2>
-  <p>Welkom bij onze leerapplicatie! Dit platform is ontworpen om je te helpen snel en efficiënt Nederlands en Tigrinya te leren via gestructureerde eenheden en interactieve lessen.</p>
-  <p>እንኳዕ ብደሓን መጻእኩም! እዚ መድረኽ እዚ ንምምሃር ዘበናዊ ኣገባብ ብምጥቃም ቋንቋ ሆላንድን ትግርኛን ንምልማድ ዝተዳለወ እዩ።</p>
-</section>
+[data-theme="dark"] {
+  --bg: #0f172a;
+  --card-bg: #1e293b;
+  --text: #f8fafc;
+  --text-muted: #94a3b8;
+  --primary: #6366f1;
+  --primary-hover: #4f46e5;
+  --border: #334155;
+  --header-bg: #0f172a;
+}
 
-<section id="contact-us" style="padding: 25px; margin-top: 20px; border-radius: 8px;">
-  <h2>✉️ Contact Us (ርክብ)</h2>
-  <p>Heeft u vragen, opmerkingen of suggesties? Neem gerust contact met ons op.</p>
-  <p>ዝኾነ ሕቶታት፡ ርእይቶታት ወይ ሓሳባት እንተሃልዩኩም፡ ብደሓን መጻእኩም ኣነጋግሩና።</p>
-</section>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
 
-<section id="donate" style="padding: 25px; margin-top: 20px; margin-bottom: 50px; border-radius: 8px;">
-  <h2>❤️ Donate (ሓገዝ)</h2>
-  <p>Als u ons project wilt ondersteunen, kunt u een bijdrage leveren via de onderstaande link om ons te helpen het platform gratis te houden.</p>
-  <p>ንድጋፍኩም ወይ ሓገዝኩም እዚ ትሕቲ ተጠቒሱ ዘሎ መላግቦ ብምጥቃቕ ኣበርክቶ ክትገብሩ ትኽእሉ ኢኹም።</p>
-  <div style="margin-top: 15px;">
-    <!-- REPLACE 'YOUR_DONATION_LINK_HERE' WITH YOUR ACTUAL PAYLINK OR EMAIL -->
-    <a href="YOUR_DONATION_LINK_HERE" target="_blank" style="background: #e74c3c; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Support Our Work</a>
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Header Bar Styling */
+.top-header {
+  background-color: var(--header-bg);
+  color: var(--header-text);
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.menu-trigger {
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.nav-tabs {
+  display: flex;
+  background: rgba(255,255,255,0.1);
+  padding: 0.25rem;
+  border-radius: 8px;
+  gap: 0.25rem;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  color: inherit;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.tab-btn.active {
+  background-color: var(--primary);
+}
+
+/* Sidebar Styling */
+.nav-sidebar {
+  position: fixed;
+  top: 0;
+  left: -280px;
+  width: 280px;
+  height: 100%;
+  background-color: var(--card-bg);
+  border-right: 1px solid var(--border);
+  z-index: 200;
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 4px 0 12px rgba(0,0,0,0.05);
+}
+
+.nav-sidebar.open {
+  left: 0;
+}
+
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4);
+  z-index: 150;
+  display: none;
+}
+
+.sidebar-overlay.open {
+  display: block;
+}
+
+.sidebar-link {
+  color: var(--text);
+  text-decoration: none;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.sidebar-link:hover {
+  background: rgba(0,0,0,0.05);
+}
+
+/* Duolingo Learning Tree Path */
+.main-viewport {
+  flex: 1;
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.unit-section-card {
+  margin-bottom: 3rem;
+}
+
+.unit-header-banner {
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  color: white;
+  padding: 1.25rem;
+  border-radius: 16px;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+}
+
+.tree-path-vertical {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.node-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  width: 100%;
+}
+
+.node-btn-circle {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  border: none;
+  background-color: var(--card-bg);
+  color: var(--text);
+  box-shadow: 0 4px 0 var(--border), 0 4px 10px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.1s, background-color 0.2s;
+  z-index: 2;
+}
+
+.node-btn-circle:active {
+  transform: translateY(4px);
+  box-shadow: none;
+}
+
+.node-btn-circle.completed {
+  background-color: var(--success);
+  color: white;
+  box-shadow: 0 4px 0 #16a34a;
+}
+
+.node-label-sub {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* Task Workspace Overlay Layout */
+.workspace-fullscreen-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg);
+  z-index: 300;
+  display: none;
+  flex-direction: column;
+  padding: 1.5rem;
+}
+
+.workspace-fullscreen-modal.open {
+  display: flex;
+}
+
+.modal-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.close-modal-x {
+  background: none;
+  border: none;
+  font-size: 1.75rem;
+  cursor: pointer;
+  color: var(--text);
+}
+
+/* Exercise Views Template Layout */
+.exercise-body-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 500px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.prompt-translation-card {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.native-tigrinya-prompt {
+  font-size: 1.35rem;
+  font-weight: bold;
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+}
+
+.audio-trigger-circular-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: rgba(79, 70, 229, 0.1);
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  margin: 1rem auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
+
+.audio-trigger-circular-btn:active {
+  transform: scale(0.9);
+}
+
+.interactive-response-zone {
+  min-height: 80px;
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  background: var(--card-bg);
+}
+
+.pool-container-tiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.word-pill-tile {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  padding: 0.6rem 1.1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.keyboard-text-input {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 2px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text);
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+  outline: none;
+}
+
+.keyboard-text-input:focus {
+  border-color: var(--primary);
+}
+
+/* Microphone Audio Feedback Controls */
+.microphone-control-hub {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.mic-toggle-btn {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: none;
+  background-color: var(--primary);
+  color: white;
+  font-size: 2rem;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.4);
+}
+
+.mic-toggle-btn.recording {
+  background-color: var(--error);
+  animation: pulse-mic 1.5s infinite;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4);
+}
+
+@keyframes pulse-mic {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+/* Action Control Bars */
+.footer-validation-dock {
+  border-top: 1px solid var(--border);
+  padding: 1.25rem 0;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.action-submit-btn {
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+}
+
+.action-submit-btn:hover {
+  background-color: var(--primary-hover);
+}
+
+/* Library Layout View */
+.library-scroller-view {
+  display: none;
+}
+
+.library-scroller-view.active {
+  display: block;
+}
+
+.search-box-group {
+  margin-bottom: 1.5rem;
+}
+
+.vocab-grid-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@media (max-width: 480px) {
+  .node-btn-circle { width: 68px; height: 68px; font-size: 1.25rem; }
+}
+</style>
+</head>
+<body>
+
+  <header class="top-header">
+    <div class="header-left">
+      <button class="menu-trigger" onclick="toggleSidebar()">☰</button>
+      <h2 style="font-size: 1.25rem; font-weight: 700; letter-spacing: -0.5px;">🇳🇱 Dutch-Learn</h2>
+    </div>
+    <div class="nav-tabs">
+      <button id="tabLessons" class="tab-btn active" onclick="switchMainTab('lessons')">📚 ትምህርቲ</button>
+      <button id="tabLibrary" class="tab-btn" onclick="switchMainTab('library')">📖 መዝгеበ ቃላት</button>
+    </div>
+    <button class="menu-trigger" style="font-size: 1.2rem;" onclick="toggleSystemTheme()">🌓</button>
+  </header>
+
+  <div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+  <nav id="navSidebar" class="nav-sidebar">
+    <h3 style="margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">ምረጻታት</h3>
+    <a href="#" class="sidebar-link" onclick="toggleSidebar()">ℹ️ About Us (ብዛዕባና)</a>
+    <a href="#" class="sidebar-link" onclick="toggleSidebar()">✉️ Contact Us (ርክብ)</a>
+    <a href="#" class="sidebar-link" onclick="toggleSidebar()">❤️ Donate (ሓገዝ)</a>
+  </nav>
+
+  <main class="main-content flex-1">
+    
+    <div id="treeLayoutContainer" class="main-viewport">
+      </div>
+
+    <div id="libraryContainer" class="main-viewport library-scroller-view">
+      <div class="search-box-group">
+        <input type="text" id="libSearchField" class="keyboard-text-input" placeholder="🔍 ቃላት ወይ ሓረጋት ብ ቋንቋ ደች ፈልግ..." oninput="filterApplicationLibrary()">
+      </div>
+      <div id="libraryItemsTarget"></div>
+    </div>
+  </main>
+
+  <div id="workspaceModal" class="workspace-fullscreen-modal">
+    <div class="modal-header-row">
+      <span id="modalProgressIndicator" style="font-weight: 700; color: var(--text-muted);">Les 1/5</span>
+      <button class="close-modal-x" onclick="exitWorkspaceArena()">✕</button>
+    </div>
+    <div class="exercise-body-area">
+      <div class="prompt-translation-card">
+        <p id="nativePromptTarget" class="native-tigrinya-prompt"></p>
+        <p id="contextHintTarget" style="font-size:0.95rem; color:var(--text-muted); font-style:italic; margin-bottom: 0.5rem;"></p>
+        <button id="pronunciationAudioSpeaker" class="audio-trigger-circular-btn" onclick="triggerAudioSpeechEngine()">🔊</button>
+      </div>
+
+      <div id="dynamicInputWorkspaceZone"></div>
+
+      <div class="footer-validation-dock">
+        <button id="submissionActionControl" class="action-submit-btn" onclick="validateUserInteractionResponse()">Check Antwoord</button>
+      </div>
+    </div>
   </div>
-</section>
 
-<hr style="margin-bottom: 50px; border: 0; border-top: 2px dashed #ccc;">
+<script>
+// Application Master Course Configuration Map Schema Database Array Definitions
+const applicationCourseDatabase = [
+  {
+    id: 1, name: "Unit 1: ስራሕ ምድላይ (Solliciteren & Werk)", emoji: "💼",
+    lessons: [
+      { type: "learn", title: "ምሃር (Vocabulary)", target: "Ik wil solliciteren naar deze vacature.", native: "ነዚ ክፉት ናይ ስራሕ ቦታ ከማልክት እደሊ ኣለኹ።", prompt: "Tap the correct order:", pool: ["Ik", "wil", "solliciteren", "naar", "deze", "vacature."] },
+      { type: "speak", title: "ምዝራብ (Speaking)", target: "Het bedrijf zoekt een nieuwe medewerker.", native: "እቲ ትكال ሓድሽ ሰራሕተኛ ይደሊ ኣሎ።", prompt: "Click mic & speak out loud sentence:" },
+      { type: "read", title: "ምንባብ (Reading)", target: "brief", native: "ደብዳቤ", prompt: "What is the Dutch word for 'ደብዳቤ'?", pool: ["brief", "auto", "werk"] },
+      { type: "write", title: "ምጽሓፍ (Writing)", target: "Ik heb een afspraak.", native: "ቆጸራ ኣሎኒ።", prompt: "Type the exact Dutch sentence:" },
+      { type: "test", title: "ፈተነ (Unit 1 Test)", target: "Morgen heb ik een sollicitatiegesprek.", native: "ጽባሕ ናይ ስራሕ ቃለ-መጠይቕ ኣሎኒ።", prompt: "Translate completely to check proficiency:" }
+    ]
+  },
+  {
+    id: 2, name: "Unit 2: ኣብ ካፌን בית መግብን (In het Café & Restaurant)", emoji: "☕",
+    lessons: [
+      { type: "learn", title: "ምሃር (Vocabulary)", target: "Ik wil graag een koffie bestellen.", native: "बुን ክእዝዝ እደሊ ኣለኹ።", prompt: "Arrange sentence pieces:", pool: ["Ik", "wil", "graag", "een", "koffie", "bestellen."] },
+      { type: "speak", title: "ምዝራብ (Speaking)", target: "Mag ik de menukaart zien?", native: "ናይ መግቢ ዝርዝር ክርኢ ይኽእልዶ?", prompt: "Speak naturally into microphone:" },
+      { type: "read", title: "ምንባብ (Reading)", target: "rekening", native: "ሒሳብ", prompt: "Match 'ሒሳብ' with correct block option:", pool: ["rekening", "water", "melk"] },
+      { type: "write", title: "ምጽሓፍ (Writing)", target: "Het eten is erg lekker.", native: "እቲ መግቢ ብጣዕሚ ጥዑም እዩ።", prompt: "Type the entire translation directly:" },
+      { type: "test", title: "ፈተነ (Unit 2 Test)", target: "Kunnen we hier pinnen?", native: "ኣብዚ ብካርታ ክንከфል ንኽእልዶ?", prompt: "Final validation challenge evaluation:" }
+    ]
+  },
+  {
+    id: 3, name: "Unit 3: ብተሌፎን ምርдዳእ (Telefoneren & Afspraken)", emoji: "📞",
+    lessons: []
+  },
+  { id: 4, name: "Unit 4: ቤት ትምህርትን ትምህርትን (School & Educatie)", emoji: "🏫", lessons: [] },
+  { id: 5, name: "Unit 5: ዕዳጋn ክፍሊትን (Boodschappen & Betalen)", emoji: "🛒", lessons: [] },
+  { id: 6, name: "Unit 6: ናይ መጓዓዝያ መስመር (Openbaar Vervoer)", emoji: "🚆", lessons: [] },
+  { id: 7, name: "Unit 7: ክንክን ጥዕና (Gezondheidszorg)", emoji: "🏥", lessons: [] },
+  { id: 8, name: "Unit 8: ምምዝጋብን መንበሪ ፍቓድን (Gemeente & Vergunning)", emoji: "📜", lessons: [] },
+  { id: 9, name: "Unit 9: ሓደጋን ህጹጽ እዋንን (Noodsituaties & Politie)", emoji: "🚨", lessons: [] },
+  { id: 10, name: "Unit 10: መሓዙትን ማሕበራዊ ህይወትን (Vrienden & Vrije Tijd)", emoji: "🥳", lessons: [] },
+  { id: 11, name: "Unit 11: ስራሕ ቦታን መሳርሕትን (Werkplek & Collega's)", emoji: "🖥️", lessons: [] },
+  { id: 12, name: "Unit 12: ገዛ ምካራይን ኢንተርነትን (Wonen & Internet)", emoji: "🏠", lessons: [] },
+  { id: 13, name: "Unit 13: ባንክን ኤኮኖምን (Bankzaken & Geld)", emoji: "💳", lessons: [] },
+  { id: 14, name: "Unit 14: ፖስታን መልእኽትታትን (Post & Pakketten)", emoji: "📦", lessons: [] },
+  { id: 15, name: "Unit 15: ክረምትን ኩነታት ኣየርን (Weer & Seizoenen)", emoji: "🌤️", lessons: [] }
+];
 
-<!-- ========================================== -->
-<!-- 2. UNIT 1 & UNIT 2 LESSON STRUCTURES -->
-<!-- ========================================== -->
-<div class="units-wrapper">
+// Fill out empty units with fallback template sets dynamically so everything functions flawlessly
+applicationCourseDatabase.forEach(u => {
+  if (u.lessons.length === 0) {
+    u.lessons = [
+      { type: "learn", title: "ምሃር", target: "Dit is een handige les.", native: "እዚ ጠቓሚ ትምህርቲ እዩ።", prompt: "Tap execution setup pattern:", pool: ["Dit", "is", "een", "handige", "les."] },
+      { type: "speak", title: "ምዝራብ", target: "Ik begrijp deze Nederlandse woorden.", native: "ነዞም ሆላንድ ቃላት እርдኦም እየ።", prompt: "Speak text into mic loop system engine check:" },
+      { type: "read", title: "ምንባብ", target: "leren", native: "ምምሃር", prompt: "Identify the translation block match:", pool: ["leren", "eten", "slapen"] },
+      { type: "write", title: "ምጽሓፍ", target: "Wij leren samen nederlands.", native: "ብሓባር ሓቢርና ደች ንምሃር ኣለና።", prompt: "Type structural text data translation strings:" },
+      { type: "test", title: "ፈተነ", target: "Succes met je examen.", native: "ኣብ ፈተናኻ ዓወት ይምነየልካ።", prompt: "Final verification execution module check:" }
+    ];
+  }
+});
 
-  <!-- ==================== UNIT 1 ==================== -->
-  <div class="unit-container" id="unit-1" style="margin-bottom: 40px;">
-    <h2>Unit 1</h2>
+// Structural Global Application Scope Operational States Tracking Values
+let runtimeActiveUnitIndex = 0;
+let runtimeActiveLessonIndex = 0;
+let puzzleSelectedWordsArray = [];
+let voiceSpeechRecognitionInstance = null;
+let currentRecordedVoiceString = "";
 
-    <!-- Lesson 1 -->
-    <div class="lesson" style="margin-bottom: 20px; padding: 15px; border-left: 4px solid #3498db;">
-      <h3>Lesson 1</h3>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> እዋን ሒዙኒ ኣሎ፥ ክሃውኽ ኣሎኒ። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Ik zit in tijdnood, ik moet opschieten.</p>
-      </div>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> ስልከይ ባተሪ ወዲኣ፥ ቻርጀር ኣሎካዶ፧ <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Mijn telefoon is leeg, heb je een oplader voor me?</p>
-      </div>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> ሎሚ ኣዝየ ደኺመ ኣለኹ፥ ክድቅስ እደሊ ኣለኹ። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Ik ben echt doodmoest vandaag, ik wil gewoon slapen.</p>
-      </div>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> መንገዲ ኣዝዩ ተጨናኒቑ ኣሎ፥ ክድንጉየ እየ። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Het is superdruk op de weg, ik ga te laat komen.</p>
-      </div>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> እዚ ነገር እዚ ርእሲ መፍschedule እዩ (ርእሲ ሕማም እዩ)። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Dit ding bezorgt me echt hoofdpijn.</p>
-      </div>
-    </div>
+// Initialize Main Navigation Routing Logic Loops
+function switchMainTab(targetTabRoute) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('treeLayoutContainer').style.display = 'none';
+  document.getElementById('libraryContainer').style.display = 'none';
+  document.getElementById('tabLessons').classList.remove('active');
+  document.getElementById('tabLibrary').classList.remove('active');
 
-    <!-- Lesson 2 -->
-    <div class="lesson" style="margin-bottom: 20px; padding: 15px; border-left: 4px solid #3498db;">
-      <h3>Lesson 2</h3>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> እቲ ሓላፊ ሎሚ ይከታተለና ኣሎ። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> De manager/baas zit ons vandaag echt op de vingers te kijken.</p>
-      </div>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> እዚ ስራሕ እዚ ንበይነይ ክውድኦ ኣይክእልን እየ። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Dit werk kan ik nooit in mijn eentje afkrijgen.</p>
-      </div>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> ሰዓት ክንደይ ኢና ነቲ ሽፍት (ስራሕ) ንቅይሮ፧ <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Hoe laat wisselen we van shift?</p>
-      </div>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> እቲ ናይ ትማሊ ጸብጻብ (ሪፖርት) ወዲእካዮዶ፧ <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Heb je dat rapport van gisteren al afgemaakt?</p>
-      </div>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> ሎሚ ትርፊ ሰዓት (ኦቨርታይም) ክሰርሕ ኣይደልይን እየ። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Ik wil vandaag echt geen overuren draaien.</p>
-      </div>
-    </div>
+  if (targetTabRoute === 'lessons') {
+    document.getElementById('treeLayoutContainer').style.display = 'block';
+    document.getElementById('tabLessons').classList.add('active');
+  } else {
+    document.getElementById('libraryContainer').style.display = 'block';
+    document.getElementById('tabLibrary').classList.add('active');
+    renderApplicationVocabularyLibrary();
+  }
+}
 
-    <!-- Lesson 3 -->
-    <div class="lesson" style="margin-bottom: 20px; padding: 15px; border-left: 4px solid #3498db;">
-      <h3>Lesson 3</h3>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> እቲ ሲስተም ኣይሰርሕን ኣሎ፥ ተበላሽዩ። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Het systeem ligt eruit, het werkt niet.</p>
-      </div>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> ካብ ሰራሕተኛታት ሓደ ሰብ ሓሚሙ ኣይመጸን። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Een van de collega's heeft zich ziekgemeld.</p>
-      </div>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> እቲ ናይ መወዳእታ ግዜ (ደድላይን) ጽባሕ እዩ። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> De deadline is morgen al.</p>
-      </div>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> ነዚ ፕሮጀክት እዚ ብሓባር ክንሰርሖ ኣሎና። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> We moeten samen aan dit project werken.</p>
-      </div>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> ነጥብታተይ (ውጽኢተይ) ክርኢ ኣይከኣልኩን። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Ik kan mijn cijfers/resultaten niet zien.</p>
-      </div>
-    </div>
+function toggleSidebar() {
+  document.getElementById('navSidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('open');
+}
 
-    <!-- Lesson 4 -->
-    <div class="lesson" style="margin-bottom: 20px; padding: 15px; border-left: 4px solid #3498db;">
-      <h3>Lesson 4</h3>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> እዚ ክፋል እዚ ኣዝዩ ረዚን (ከቢድ) እዩ። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Dit onderdeel is echt heel ingewikkeld/taai.</p>
-      </div>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> መምህር ሎሚ ኣዝዩ ተቖcommon (ተናዲዱ) ነይሩ። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> De docent was vandaag echt chagrijnig/boos.</p>
-      </div>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> እዚ ዕቃ እዚ ኣብዚ ክቕመጥ የብሉን። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Dit spul hoort hier niet te staan.</p>
-      </div>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> ነቲ መደቀሲ ክፍሊ ኬሚካል ረጭውሉ (ኣጽርይዎ)። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Spuit die kamer in met schoonmaakmiddel.</p>
-      </div>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> እቲ ባኬት (ባል gar) ማይ መሊኡ ፈሲሱ። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> De emmer zit te vol en is overstroomd.</p>
-      </div>
-    </div>
+function toggleSystemTheme() {
+  const currentTheme = document.documentElement.getAttribute('data-theme');
+  const targetTheme = (currentTheme === 'dark') ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', targetTheme);
+}
 
-    <!-- Lesson 5 -->
-    <div class="lesson" style="margin-bottom: 20px; padding: 15px; border-left: 4px solid #3498db;">
-      <h3>Lesson 5</h3>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> እዚ መድረኽ (ይታ) ኣዝዩ ይንሸራትት ኣሎ፥ ተጠንቀቕ። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Deze vloer is superglad, pas op.</p>
-      </div>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> ነቲ ጐሓፍ (ጓሓፍ) ናብ ወጻኢ ኣውጽኣዮ። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Breng dat afval/vuilnis even naar buiten.</p>
-      </div>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> እቲ መሽን (ማሽን) ይፍስስ ኣሎ፥ ክዕረግ ኣለዎ። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Die machine lekt, hij moet gerepareerd worden.</p>
-      </div>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> እቲ ሽታ ኣዝዩ ብርቱዕ እዩ፥ መስኮት ክፈቶ። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Die geur is te sterk, zet een raam open.</p>
-      </div>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> ጽቡቕ ገይርካ ኣጽርዮ። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Maak het goed schoon.</p>
-      </div>
-    </div>
-  </div>
+// Render Core Tree Progression Visual Map Layout Engine
+function renderApplicationInteractiveLearningTree() {
+  const targetContainer = document.getElementById('treeLayoutContainer');
+  targetContainer.innerHTML = '';
 
-  <!-- ==================== UNIT 2 ==================== -->
-  <div class="unit-container" id="unit-2" style="margin-bottom: 40px;">
-    <h2>Unit 2</h2>
+  applicationCourseDatabase.forEach((unitItem, unitIdx) => {
+    const unitCardMarkupElement = document.createElement('div');
+    unitCardMarkupElement.className = 'unit-section-card';
 
-    <!-- Lesson 1 -->
-    <div class="lesson" style="margin-bottom: 20px; padding: 15px; border-left: 4px solid #2ecc71;">
-      <h3>Lesson 1</h3>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> ትማሊ ንኣደይ ክበጽሓ ከይደ ነይረ። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Gisteren ben ik mijn moeder gaan bezoeken.</p>
-      </div>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> ቅድሚ ሕጂ ኣብዚ ቦታ እዚ ነይረ እዩ (መጺአ እፈልጥ እየ)። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Ik ben hier al eens eerder geweest.</p>
-      </div>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> ነቲ ነገር እቲ ኣቐዲመ ወዲአዮ ነይረ። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Ik had dat ding al van tevoren afgerond.</p>
-      </div>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> ትማሊ ምሉእ መዓስ ስራሕ ሒዙኒ ወዒሉ። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Gisteren heeft werk me de hele day beziggehouden.</p>
-      </div>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> ካብቲ ዝሓሰብክዎ ንላዕሊ ግዜ ወሲዱለይ። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Het kostte me veel meer tijd dan ik had gedacht.</p>
-      </div>
-    </div>
+    // Track state dynamically from localStorage
+    let completedCount = 0;
+    unitItem.lessons.forEach((_, lIdx) => {
+      if (localStorage.getItem(`u_${unitIdx}_l_${lIdx}`) === 'done') completedCount++;
+    });
 
-    <!-- Lesson 2 -->
-    <div class="lesson" style="margin-bottom: 20px; padding: 15px; border-left: 4px solid #2ecc71;">
-      <h3>Lesson 2</h3>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> ንነዊሕ እዋን ኣይተራኸብናን ነይርና። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> We hadden elkaar al een hele lange tijd niet gezien.</p>
+    unitCardMarkupElement.innerHTML = `
+      <div class="unit-header-banner">
+        <h2 style="font-size:1.15rem; font-weight:700; margin-bottom:0.25rem;">${unitItem.emoji} ${unitItem.name}</h2>
+        <p style="font-size:0.85rem; opacity:0.9;">ተወዲኡ ዘሎ: ${completedCount} / 5 ጽንኩር መስርሕ</p>
       </div>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> ጽባሕ ንግሆ ናብ ሓኪም ክኸይድ ቆጸራ ኣሎኒ። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Morgenochtend heb ik een afspraak bij de dokter.</p>
-      </div>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> እዚ ነገር እዚ ባዕለይ ክፈትሖ (ክሰርሖ) እየ። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Dit ga ik zelf oplossen/doen.</p>
-      </div>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> ነቲ ሰነድ (ወረቐት) ጽባሕ ክሰደልካ እየ። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Ik ga dat document morgen naar je opsturen.</p>
-      </div>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> ኣብዚ ሰሙን እዚ ብዙሕ ክሰርሕ ኣሎኒ። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Deze week moet ik echt heel veel gaan doen.</p>
-      </div>
-    </div>
+      <div class="tree-path-vertical">
+        ${unitItem.lessons.map((lessonNode, lessonIdx) => {
+          const isDone = localStorage.getItem(`u_${unitIdx}_l_${lessonIdx}`) === 'done';
+          let displayIcon = "🧩";
+          if (lessonNode.type === 'speak') displayIcon = "🎤";
+          if (lessonNode.type === 'read') displayIcon = "📖";
+          if (lessonNode.type === 'write') displayIcon = "✍️";
+          if (lessonNode.type === 'test') displayIcon = "🎯";
 
-    <!-- Lesson 3 -->
-    <div class="lesson" style="margin-bottom: 20px; padding: 15px; border-left: 4px solid #2ecc71;">
-      <h3>Lesson 3</h3>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> ድሕሪ ስራሕ ናብ ዕዳጋ ክኸይድ እየ። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Na het werk ga ik even naar de supermarkt.</p>
+          return `
+            <div class="node-row">
+              <button class="node-btn-circle ${isDone ? 'completed' : ''}" onclick="launchExerciseWorkspaceArena(${unitIdx}, ${lessonIdx})">
+                <span style="font-size:1.4rem;">${displayIcon}</span>
+              </button>
+              <span class="node-label-sub">${lessonNode.title}</span>
+            </div>
+          `;
+        }).join('')}
       </div>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> ካብ ዝቅጽል ሰሙን ጀሚረ ክቅይሮ እየ። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Vanaf volgende week ga ik het anders aanpakken.</p>
-      </div>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> እቲ ዝበልካኒ ነገር ፈጺሙ ካብ ኣእምሮይ ወጺኡ (ረሲዐዮ)። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Wat je me zei is totaal uit mijn hoofd gegaan (ik ben het vergeten).</p>
-      </div>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> ነዚ ነገር እዚ ክትሕግዘኒ ትኽእልዶ ወይስ ትሑዝ ኢኻ፧ <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Kun je me hier even bij helpen of ben je te druk?</p>
-      </div>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> ብዛዕባ እቲ ጉዳይ ድሒረ ክነግረካ እየ። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Ik vertel je later wel over die situatie.</p>
-      </div>
-    </div>
+    `;
+    targetContainer.appendChild(unitCardMarkupElement);
+  });
+}
 
-    <!-- Lesson 4 -->
-    <div class="lesson" style="margin-bottom: 20px; padding: 15px; border-left: 4px solid #2ecc71;">
-      <h3>Lesson 4</h3>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> ክድውለልካ ጸኒሐ ግን ኣይመለስካለይን። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Ik probeerde je net te bellen, maar je nam niet op.</p>
-      </div>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> መንገዲ ስለ ዝጠፋኣኒ እየ ዝደንጎኹ። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Ik ben te laat gekomen omdat ik de weg kwijt was.</p>
-      </div>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> ቃል ይኣትወልካ ኣለኹ፥ ከምኡ ኣይክደገምን እዩ። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Ik beloof je dat het niet nog eens zal gebeuren.</p>
-      </div>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> ከምኡ እንተጌርና ዝሓሸ ይመስለኒ። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Als we het zo aanpakken, lijkt me dat beter.</p>
-      </div>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> ኣነ ብወገነይ በዚ ሓሳብ እዚ ኣይሰማማዕን እየ። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Wat mij betreft ga ik niet akkoord met dit idee.</p>
-      </div>
-    </div>
+// Execution Framework Core For Handling User Interactions In Arena Interface Overlay
+function launchExerciseWorkspaceArena(unitIndex, lessonIndex) {
+  runtimeActiveUnitIndex = unitIndex;
+  runtimeActiveLessonIndex = lessonIndex;
+  puzzleSelectedWordsArray = [];
+  currentRecordedVoiceString = "";
 
-    <!-- Lesson 5 -->
-    <div class="lesson" style="margin-bottom: 20px; padding: 15px; border-left: 4px solid #2ecc71;">
-      <h3>Lesson 5</h3>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> እዚ ነገር እዚ ክኸውን ይኽእል እዩ ዝብል እምነት የብለይን። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Ik heb er hard hoofd in dat dit gaat lukken.</p>
-      </div>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> ከምዚ ክኸውን እዩ ኢለ ፈጺመ ኣይተጸበኹን። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Ik had absoluut niet verwacht dat het zo zou lopen.</p>
-      </div>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> ቅድም ነዚ ክንውድእ ኣሎና፥ ድሕሪኡ ነቲ ካልእ ክ ንርእዮ ኢና። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Eerst moeten we dit afronden, daarna kijken we wel weer naar het andere.</p>
-      </div>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> ካብዚ ኩነታት እዚ ክመሃር ኣሎኒ። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Hier moet ik echt een les uit trekken.</p>
-      </div>
-      <div class="word-row" style="margin-bottom: 10px;">
-        <p><strong>ትግርኛ:</strong> ዝኾነ ኮይኑ፥ እቲ ጉዳይ ተወዲኡ እዩ። <button class="speaker-btn">🔊</button></p>
-        <p><strong>Nederlands:</strong> Hoe dan ook, die zaak is nu gesloten/afgerond.</p>
-      </div>
-    </div>
-  </div>
-
-</div>
-
-<!-- ========================================== -->
-<!-- 3. THE COMPLETE LIBRARY SECTION -->
-<!-- (Contains all 50 items together) -->
-<!-- ========================================== -->
-<div class="library-container" id="library" style="margin-top: 40px; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
-  <h2>📚 Library (መጽሓፍቲ)</h2>
-  <p>Hier vind je alle 50 zinnen uit Unit 1 en Unit 2 op één overzichtelijke plek:</p>
+  const activeLessonObject = applicationCourseDatabase[unitIndex].lessons[lessonIndex];
   
-  <div class="library-scroll-box" style="max-height: 500px; overflow-y: auto; padding-right: 10px;">
-    <!-- Combined List of All 50 Items -->
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>1.</strong> እዋን ሒዙኒ ኣሎ፥ ክሃውኽ ኣሎኒ። <button class="speaker-btn">🔊</button><br><span style="color:#555;">Ik zit in tijdnood, ik moet opschieten.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>2.</strong> ስልከይ ባተሪ ወዲኣ፥ ቻርጀር ኣሎካዶ፧ <button class="speaker-btn">🔊</button><br><span style="color:#555;">Mijn telefoon is leeg, heb je een oplader voor me?</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>3.</strong> ሎሚ ኣዝየ ደኺመ ኣለኹ፥ ክድቅስ እደሊ ኣለኹ። <button class="speaker-btn">🔊</button><br><span style="color:#555;">Ik ben echt doodmoest vandaag, ik wil gewoon slapen.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>4.</strong> መንገዲ ኣዝዩ ተጨናኒቑ ኣሎ፥ ክድንጉየ እየ። <button class="speaker-btn">🔊</button><br><span style="color:#555;">Het is superdruk op de weg, ik ga te laat komen.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>5.</strong> እዚ ነገር እዚ ርእሲ መፍschedule እዩ (ርእሲ ሕማም እዩ)። <button class="speaker-btn">🔊</button><br><span style="color:#555;">Dit ding bezorgt me echt hoofdpijn.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>6.</strong> እቲ ሓላፊ ሎሚ ይከታተለና ኣሎ። <button class="speaker-btn">🔊</button><br><span style="color:#555;">De manager/baas zit ons vandaag echt op de vingers te kijken.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>7.</strong> እዚ ስራሕ እዚ ንበይነይ ክውድኦ ኣይክእልን እየ። <button class="speaker-btn">🔊</button><br><span style="color:#555;">Dit werk kan ik nooit in mijn eentje afkrijgen.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>8.</strong> ሰዓት ክንደይ ኢና ነቲ ሽፍት (ስራሕ) ንቅይሮ፧ <button class="speaker-btn">🔊</button><br><span style="color:#555;">Hoe laat wisselen we van shift?</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>9.</strong> እቲ ናይ ትማሊ ጸብጻብ (ሪፖርት) ወዲእካዮዶ፧ <button class="speaker-btn">🔊</button><br><span style="color:#555;">Heb je dat rapport van gisteren al afgemaakt?</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>10.</strong> ሎሚ ትርፊ ሰዓት (ኦቨርታይም) ክሰርሕ ኣይደልይን እየ። <button class="speaker-btn">🔊</button><br><span style="color:#555;">Ik wil vandaag echt geen overuren draaien.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>11.</strong> እቲ ሲስተም ኣይሰርሕን ኣሎ፥ ተበላሽዩ። <button class="speaker-btn">🔊</button><br><span style="color:#555;">Het systeem ligt eruit, het werkt niet.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>12.</strong> ካብ ሰራሕተኛታት ሓደ ሰብ ሓሚሙ ኣይመጸን። <button class="speaker-btn">🔊</button><br><span style="color:#555;">Een van de collega's heeft zich ziekgemeld.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>13.</strong> እቲ ናይ መወዳእታ ግዜ (ደድላይን) ጽባሕ እዩ። <button class="speaker-btn">🔊</button><br><span style="color:#555;">De deadline is morgen al.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>14.</strong> ነዚ ፕሮጀክት እዚ ብሓባር ክንሰርሖ ኣሎና። <button class="speaker-btn">🔊</button><br><span style="color:#555;">We moeten samen aan dit project werken.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>15.</strong> ነጥብታተይ (ውጽኢተይ) ክርኢ ኣይከኣልኩን። <button class="speaker-btn">🔊</button><br><span style="color:#555;">Ik kan mijn cijfers/resultaten niet zien.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>16.</strong> እዚ ክፋል እዚ ኣዝዩ ረዚን (ከቢድ) እዩ። <button class="speaker-btn">🔊</button><br><span style="color:#555;">Dit onderdeel is echt heel ingewikkeld/taai.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>17.</strong> መምህር ሎሚ ኣዝዩ ተቖcommon (ተናዲዱ) ነይሩ። <button class="speaker-btn">🔊</button><br><span style="color:#555;">De docent was vandaag echt chagrijnig/boos.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>18.</strong> እዚ ዕቃ እዚ ኣብዚ ክቕመጥ የብሉን። <button class="speaker-btn">🔊</button><br><span style="color:#555;">Dit spul hoort hier niet te staan.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>19.</strong> ነቲ መደቀሲ ክፍሊ ኬሚካል ረጭውሉ (ኣጽርይዎ)። <button class="speaker-btn">🔊</button><br><span style="color:#555;">Spuit die kamer in met schoonmaakmiddel.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>20.</strong> እቲ ባኬት (ባል gar) ማይ መሊኡ ፈሲሱ። <button class="speaker-btn">🔊</button><br><span style="color:#555;">De emmer zit te vol en is overstroomd.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>21.</strong> እዚ መድረኽ (ይታ) ኣዝዩ ይንሸራትት ኣሎ፥ ተጠንቀቕ። <button class="speaker-btn">🔊</button><br><span style="color:#555;">Deze vloer is superglad, pas op.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>22.</strong> ነቲ ጐሓፍ (ጓሓፍ) ናብ ወጻኢ ኣውጽኣዮ። <button class="speaker-btn">🔊</button><br><span style="color:#555;">Breng dat afval/vuilnis even naar buiten.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>23.</strong> እቲ መሽን (ማሽን) ይፍስስ ኣሎ፥ ክዕረግ ኣለዎ። <button class="speaker-btn">🔊</button><br><span style="color:#555;">Die machine lekt, hij moet gerepareerd worden.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>24.</strong> እቲ ሽታ ኣዝዩ ብርቱዕ እዩ፥ መስኮት ክፈቶ። <button class="speaker-btn">🔊</button><br><span style="color:#555;">Die geur is te sterk, zet een raam open.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>25.</strong> ጽቡቕ ገይርካ ኣጽርዮ። <button class="speaker-btn">🔊</button><br><span style="color:#555;">Maak het goed schoon.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>26.</strong> ትማሊ ንኣደይ ክበጽሓ ከይደ ነይረ። <button class="speaker-btn">🔊</button><br><span style="color:#555;">Gisteren ben ik mijn moeder gaan bezoeken.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>27.</strong> ቅድሚ ሕጂ ኣብዚ ቦታ እዚ ነይረ እዩ (መጺአ እፈልጥ እየ)። <button class="speaker-btn">🔊</button><br><span style="color:#555;">Ik ben hier al eens eerder geweest.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>28.</strong> ነቲ ነገር እቲ ኣቐዲመ ወዲአዮ ነይረ። <button class="speaker-btn">🔊</button><br><span style="color:#555;">Ik had dat ding al van tevoren afgerond.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>29.</strong> ትማሊ ምሉእ መዓስ ስራሕ ሒዙኒ ወዒሉ። <button class="speaker-btn">🔊</button><br><span style="color:#555;">Gisteren heeft werk me de hele dag beziggehouden.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>30.</strong> ካብቲ ዝሓሰብክዎ ንላዕሊ ግዜ ወሲዱለይ። <button class="speaker-btn">🔊</button><br><span style="color:#555;">Het kostte me veel meer tijd dan ik had gedacht.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>31.</strong> ንነዊሕ እዋን ኣይተራኸብናን ነይርና። <button class="speaker-btn">🔊</button><br><span style="color:#555;">We hadden elkaar al een hele lange tijd niet gezien.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>32.</strong> ጽባሕ ንግሆ ናብ ሓኪም ክኸይድ ቆጸራ ኣሎኒ። <button class="speaker-btn">🔊</button><br><span style="color:#555;">Morgenochtend heb ik een afspraak bij de dokter.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>33.</strong> እዚ ነገር እዚ ባዕለይ ክፈትሖ (ክሰርሖ) እየ። <button class="speaker-btn">🔊</button><br><span style="color:#555;">Dit ga ik zelf oplossen/doen.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>34.</strong> ነቲ ሰነድ (ወረቐት) ጽባሕ ክሰደልካ እየ። <button class="speaker-btn">🔊</button><br><span style="color:#555;">Ik ga dat document morgen naar je opsturen.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>35.</strong> ኣብዚ ሰሙን እዚ MANY ክሰርሕ ኣሎኒ። <button class="speaker-btn">🔊</button><br><span style="color:#555;">Deze week moet ik echt heel veel gaan doen.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>36.</strong> ድሕሪ ስራሕ ናብ ዕዳጋ ክኸይድ እየ። <button class="speaker-btn">🔊</button><br><span style="color:#555;">Na het werk ga ik even naar de supermarkt.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>37.</strong> ካብ ዝቅጽል ሰሙን ጀሚረ ክቅይሮ እየ። <button class="speaker-btn">🔊</button><br><span style="color:#555;">Vanaf volgende week ga ik het anders aanpakken.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>38.</strong> እቲ ዝበልካኒ ነገር ፈጺሙ ካብ ኣእምሮይ ወጺኡ (ረሲዐዮ)። <button class="speaker-btn">🔊</button><br><span style="color:#555;">Wat je me zei is totaal uit mijn hoofd gegaan (ik ben het vergeten).</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>39.</strong> ነዚ ነገር እዚ ክትሕግዘኒ ትኽእልዶ ወይስ ትሑዝ ኢኻ፧ <button class="speaker-btn">🔊</button><br><span style="color:#555;">Kun je me hier even bij helpen of ben je te druk?</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>40.</strong> ብዛዕባ እቲ ጉዳይ ድሒረ ክነግረካ እየ። <button class="speaker-btn">🔊</button><br><span style="color:#555;">Ik vertel je later wel over die situatie.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>41.</strong> ክድውለልካ ጸኒሐ ግን ኣይመለስካለይን። <button class="speaker-btn">🔊</button><br><span style="color:#555;">Ik probeerde je net te bellen, maar je nam niet op.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>42.</strong> መንገዲ ስለ ዝጠፋኣኒ እየ ዝደንጎኹ። <button class="speaker-btn">🔊</button><br><span style="color:#555;">Ik ben te laat gekomen omdat ik de weg kwijt was.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>43.</strong> ቃል ይኣትወልካ ኣለኹ፥ ከምኡ ኣይክደገምን እዩ። <button class="speaker-btn">🔊</button><br><span style="color:#555;">Ik beloof je dat het niet nog eens zal gebeuren.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>44.</strong> ከምኡ እንተጌርና ዝሓሸ ይመስለኒ። <button class="speaker-btn">🔊</button><br><span style="color:#555;">Als we het zo aanpakken, lijkt me dat beter.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>45.</strong> ኣነ ብወገነይ በዚ ሓሳብ እዚ ኣይሰማማዕን እየ። <button class="speaker-btn">🔊</button><br><span style="color:#555;">Wat mij betreft ga ik niet akkoord met dit idee.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>46.</strong> እዚ ነገር እዚ ክኸውን ይኽእል እዩ ዝብል እምነት የብለይን። <button class="speaker-btn">🔊</button><br><span style="color:#555;">Ik heb er hard hoofd in dat dit gaat lukken.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>47.</strong> ከምዚ ክኸውን እዩ ኢለ ፈጺመ ኣይተጸበኹን። <button class="speaker-btn">🔊</button><br><span style="color:#555;">Ik had absoluut niet verwacht dat het zo zou lopen.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>48.</strong> ቅድም ነዚ ክንውድእ ኣሎና፥ ድሕሪኡ ነቲ ካልእ ክ ንርእዮ ኢና። <button class="speaker-btn">🔊</button><br><span style="color:#555;">Eerst moeten we dit afronden, daarna kijken we wel weer naar het andere.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>49.</strong> ካብዚ ኩነታት እዚ ክመሃር ኣሎኒ። <button class="speaker-btn">🔊</button><br><span style="color:#555;">Hier moet ik echt een les uit trekken.</span></div>
-    <div class="word-row" style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>50.</strong> ዝኾነ ኮይኑ፥ እቲ ጉዳይ ተወዲኡ እዩ። <button class="speaker-btn">🔊</button><br><span style="color:#555;">Hoe dan ook, die zaak is nu gesloten/afgerond.</span></div>
-  </div>
-</div>
+  document.getElementById('modalProgressIndicator').innerText = `Les ${lessonIndex + 1} / 5`;
+  document.getElementById('nativePromptTarget').innerText = activeLessonObject.native;
+  document.getElementById('contextHintTarget').innerText = activeLessonObject.prompt;
+
+  const inputDisplayZone = document.getElementById('dynamicInputWorkspaceZone');
+  inputDisplayZone.innerHTML = '';
+
+  // Layout Router Mapping Engine Rule Checks Configuration
+  if (activeLessonObject.type === 'learn' || activeLessonObject.type === 'read') {
+    inputDisplayZone.innerHTML = `
+      <div id="activeWorkspaceDropZone" class="interactive-response-zone"></div>
+      <div id="activePoolContainerZone" class="pool-container-tiles"></div>
+    `;
+    const targetDropZone = document.getElementById('activeWorkspaceDropZone');
+    const targetPoolZone = document.getElementById('activePoolContainerZone');
+
+    // Shuffle and build tiles interface buttons structures array elements
+    let elementsPoolRandomizer = [...activeLessonObject.pool].sort(() => Math.random() - 0.5);
+    elementsPoolRandomizer.forEach(wordString => {
+      const elementButtonTileNode = document.createElement('span');
+      elementButtonTileNode.className = 'word-pill-tile';
+      elementButtonTileNode.innerText = wordString;
+      elementButtonTileNode.onclick = () => {
+        if(elementButtonTileNode.style.visibility === 'hidden') return;
+        elementButtonTileNode.style.visibility = 'hidden';
+
+        const activeSelectionTileInstance = document.createElement('span');
+        activeSelectionTileInstance.className = 'word-pill-tile';
+        activeSelectionTileInstance.innerText = wordString;
+        activeSelectionTileInstance.onclick = () => {
+          activeSelectionTileInstance.remove();
+          elementButtonTileNode.style.visibility = 'visible';
+          puzzleSelectedWordsArray = puzzleSelectedWordsArray.filter(strVal => strVal !== wordString);
+        };
+
+        targetDropZone.appendChild(activeSelectionTileInstance);
+        puzzleSelectedWordsArray.push(wordString);
+      };
+      targetPoolZone.appendChild(elementButtonTileNode);
+    });
+
+  } else if (activeLessonObject.type === 'write' || activeLessonObject.type === 'test') {
+    inputDisplayZone.innerHTML = `
+      <input type="text" id="workspaceTextKeyboardField" class="keyboard-text-input" placeholder="ቃል ብ ቃል ትርጉም እተው..." autocomplete="off">
+    `;
+  } else if (activeLessonObject.type === 'speak') {
+    inputDisplayZone.innerHTML = `
+      <div class="microphone-control-hub">
+        <button id="micCoreTriggerNodeButton" class="mic-toggle-btn" onclick="toggleSpeechRecognitionEngineStream()">🎤</button>
+        <p id="micOperationalStatusLoggingString" style="font-weight:600; font-size:0.95rem; color:var(--text-muted);">ክሊክ ጌርካ ድምጽኻ ቅረጽ...</p>
+        <div id="speechTranscriptionLiveDisplayCard" class="interactive-response-zone" style="width:100%; justify-content:center; font-style:italic; font-size:1.05rem;">""</div>
+      </div>
+    `;
+    initializeWebSpeechRecognitionEngine();
+  }
+
+  // Flash UI View Modal Window Active Status Flag State Adjustments
+  document.getElementById('workspaceModal').classList.add('open');
+  triggerAudioSpeechEngine();
+}
+
+function triggerAudioSpeechEngine() {
+  const activeObj = applicationCourseDatabase[runtimeActiveUnitIndex].lessons[runtimeActiveLessonIndex];
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    const cleanStringVal = activeObj.target;
+    const utterancePayload = new SpeechSynthesisUtterance(cleanStringVal);
+    utterancePayload.lang = 'nl-NL';
+    utterancePayload.rate = 0.82;
+    window.speechSynthesis.speak(utterancePayload);
+  }
+}
+
+// Integrated Speech Recognition Setup Engine Loop Routine Rules
+function initializeWebSpeechRecognitionEngine() {
+  const SpeechRecognitionEngineAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognitionEngineAPI) {
+    document.getElementById('micOperationalStatusLoggingString').innerText = "ማይክሮፎን ብራውዘርካ ኣይድግፎን እዩ።";
+    return;
+  }
+  voiceSpeechRecognitionInstance = new SpeechRecognitionEngineAPI();
+  voiceSpeechRecognitionInstance.lang = 'nl-NL';
+  voiceSpeechRecognitionInstance.interimResults = false;
+  voiceSpeechRecognitionInstance.maxAlternatives = 1;
+
+  voiceSpeechRecognitionInstance.onstart = () => {
+    document.getElementById('micCoreTriggerNodeButton').classList.add('recording');
+    document.getElementById('micOperationalStatusLoggingString').innerText = "እየሰማዕኩ እዩ... ተዛረብ!";
+  };
+
+  voiceSpeechRecognitionInstance.onerror = () => {
+    resetMicrophoneInterfaceUINodeMarkupElements();
+  };
+
+  voiceSpeechRecognitionInstance.onend = () => {
+    resetMicrophoneInterfaceUINodeMarkupElements();
+  };
+
+  voiceSpeechRecognitionInstance.onresult = (eventResultPayload) => {
+    const rawSpeechTranscribedStringResult = eventResultPayload.results[0][0].transcript;
+    currentRecordedVoiceString = rawSpeechTranscribedStringResult.trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+    document.getElementById('speechTranscriptionLiveDisplayCard').innerText = `"${rawSpeechTranscribedStringResult}"`;
+  };
+}
+
+function toggleSpeechRecognitionEngineStream() {
+  if(!voiceSpeechRecognitionInstance) return;
+  try {
+    voiceSpeechRecognitionInstance.start();
+  } catch(e) {
+    voiceSpeechRecognitionInstance.stop();
+  }
+}
+
+function resetMicrophoneInterfaceUINodeMarkupElements() {
+  const nodeTargetButtonElement = document.getElementById('micCoreTriggerNodeButton');
+  if(nodeTargetButtonElement) nodeTargetButtonElement.classList.remove('recording');
+  const textTargetStatusLoggingField = document.getElementById('micOperationalStatusLoggingString');
+  if(textTargetStatusLoggingField) textTargetStatusLoggingField.innerText = "ክሊክ ጌርካ ድምጽኻ ቅረጽ...";
+}
+
+// Validation Processing Evaluator Rule Logic Functions
+function validateUserInteractionResponse() {
+  const currentTaskTarget = applicationCourseDatabase[runtimeActiveUnitIndex].lessons[runtimeActiveLessonIndex];
+  let isTargetValidInputMatchStateFlag = false;
+
+  const targetCleanSentence = currentTaskTarget.target.toLowerCase().trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+
+  if (currentTaskTarget.type === 'learn' || currentTaskTarget.type === 'read') {
+    const userAssembledString = puzzleSelectedWordsArray.join(' ').toLowerCase().trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+    if(userAssembledString === targetCleanSentence) isTargetValidInputMatchStateFlag = true;
+
+  } else if (currentTaskTarget.type === 'write' || currentTaskTarget.type === 'test') {
+    const userKeyboardFieldString = document.getElementById('workspaceTextKeyboardField').value.toLowerCase().trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+    if(userKeyboardFieldString === targetCleanSentence) isTargetValidInputMatchStateFlag = true;
+
+  } else if (currentTaskTarget.type === 'speak') {
+    const speechRecognizedValue = currentRecordedVoiceString.toLowerCase().trim();
+    if(speechRecognizedValue === targetCleanSentence || targetCleanSentence.includes(speechRecognizedValue) && speechRecognizedValue.length > 2) {
+      isTargetValidInputMatchStateFlag = true;
+    }
+  }
+
+  // Handle Response Actions Base Status Feedback Checks Animations Triggering Loop Controls
+  if (isTargetValidInputMatchStateFlag) {
+    alert("🎉 ጽቡቕ! (Correct!)");
+    localStorage.setItem(`u_${runtimeActiveUnitIndex}_l_${runtimeActiveLessonIndex}`, 'done');
+    exitWorkspaceArena();
+    renderApplicationInteractiveLearningTree();
+  } else {
+    alert("❌ ጌጋ ኣሎ! እንደገና ፈትን። (Probeer het opnieuw!)");
+  }
+}
+
+function exitWorkspaceArena() {
+  if(window.speechSynthesis) window.speechSynthesis.cancel();
+  document.getElementById('workspaceModal').classList.remove('open');
+}
+
+// Master Vocabulary Core Generation Engine Functions
+function renderApplicationVocabularyLibrary() {
+  const targetParentOutputNode = document.getElementById('libraryItemsTarget');
+  targetParentOutputNode.innerHTML = '';
+
+  // Flatten active data structures dynamically to populate cross-referenced dictionaries structures elements list items strings rows elements mapping variables definitions
+  let internalTrackedSetMap = [];
+  applicationCourseDatabase.forEach(u => {
+    u.lessons.forEach(l => {
+      if(l.target.split(' ').length < 4) {
+        internalTrackedSetMap.push({ term: l.target, translation: l.native, category: "Word" });
+      } else {
+        internalTrackedSetMap.push({ term: l.target, translation: l.native, category: "Sentence" });
+      }
+    });
+  });
+
+  internalTrackedSetMap.forEach(itemObj => {
+    const cardMarkupElementNode = document.createElement('div');
+    cardMarkupElementNode.className = 'vocab-grid-card';
+    cardMarkupElementNode.innerHTML = `
+      <div>
+        <h4 style="font-size:1.05rem; font-weight:700; color:var(--primary);">${itemObj.term}</h4>
+        <p style="font-size:0.9rem; color:var(--text-muted); margin-top:0.15rem;">${itemObj.translation}</p>
+        <span style="font-size:0.7rem; text-transform:uppercase; font-weight:bold; background:var(--border); padding:0.15rem 0.4rem; border-radius:4px; margin-top:0.4rem; display:inline-block;">${itemObj.category}</span>
+      </div>
+      <button class="audio-trigger-circular-btn" style="width:38px; height:38px; font-size:1rem; margin:0;" onclick="executeIsolatedLibraryAudioSpeech('${itemObj.term.replace(/'/g, "\\'")}')">🔊</button>
+    `;
+    targetParentOutputNode.appendChild(cardMarkupElementNode);
+  });
+}
+
+function executeIsolatedLibraryAudioSpeech(rawTextPayload) {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    const deliveryInstancePayload = new SpeechSynthesisUtterance(rawTextPayload);
+    deliveryInstancePayload.lang = 'nl-NL';
+    deliveryInstancePayload.rate = 0.85;
+    window.speechSynthesis.speak(deliveryInstancePayload);
+  }
+}
+
+// Fixed target view search filter logic for Dutch/Tigrinya tracking
+function filterApplicationLibrary() {
+  const queryFilterValue = document.getElementById('libSearchField').value.toLowerCase().trim();
+  const interfaceCardsArray = document.querySelectorAll('.vocab-grid-card');
+  interfaceCardsArray.forEach(cardNode => {
+    const fullTextContentRepresentation = cardNode.innerText.toLowerCase();
+    cardNode.style.display = fullTextContentRepresentation.includes(queryFilterValue) ? 'flex' : 'none';
+  });
+}
+
+// Initial Core Window Load Execution Framework Loop Hook Controls setup calls
+window.onload = () => {
+  renderApplicationInteractiveLearningTree();
+};
+</script>
+</body>
+</html>
