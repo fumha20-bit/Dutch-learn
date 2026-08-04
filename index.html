@@ -1,1430 +1,1009 @@
-<!DOCTYPE html><html lang="nl">
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dutch-Learn Engine Pro</title>
+<title>Lingo — Learn Dutch</title>
 <style>
 :root {
-  --bg: #f8fafc;
-  --card-bg: #ffffff;
-  --text: #0f172a;
-  --text-muted: #64748b;
-  --primary: #4f46e5;
-  --primary-hover: #4338ca;
+  --bg: #f3f4f6;
+  --surface: #ffffff;
+  --surface-hover: #f9fafb;
+  --text: #111827;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+  --border: #e5e7eb;
+  --primary: #ff6b6b;
+  --primary-hover: #e85555;
+  --primary-soft: rgba(255,107,107,0.1);
   --success: #22c55e;
+  --success-soft: rgba(34,197,94,0.1);
+  --warning: #f59e0b;
   --error: #ef4444;
-  --border: #e2e8f0;
-  --header-bg: #1e293b;
-  --header-text: #ffffff;
+  --nav-bg: #0f0f1a;
+  --nav-text: #ffffff;
+  --nav-text-muted: rgba(255,255,255,0.6);
+  --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.05);
+  --shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
+  --radius: 16px;
+  --radius-sm: 12px;
+  --radius-xs: 8px;
+  --transition: 0.2s ease;
 }
-
 [data-theme="dark"] {
-  --bg: #0f172a;
-  --card-bg: #1e293b;
-  --text: #f8fafc;
-  --text-muted: #94a3b8;
-  --primary: #6366f1;
-  --primary-hover: #4f46e5;
-  --border: #334155;
-  --header-bg: #0f172a;
+  --bg: #0b0b14;
+  --surface: #16162a;
+  --surface-hover: #1e1e3a;
+  --text: #f3f4f6;
+  --text-secondary: #a1a1aa;
+  --text-muted: #71717a;
+  --border: #27274a;
+  --primary: #ff8585;
+  --primary-hover: #ff9a9a;
+  --primary-soft: rgba(255,133,133,0.15);
+  --nav-bg: #07070f;
+  --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.3);
+  --shadow: 0 4px 6px -1px rgba(0,0,0,0.4), 0 2px 4px -2px rgba(0,0,0,0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.5), 0 4px 6px -4px rgba(0,0,0,0.4);
 }
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
 }
-
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
 body {
-  background-color: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  transition: background-color 0.3s, color 0.3s;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.5; -webkit-font-smoothing: antialiased;
 }
-
-.top-header {
-  background-color: var(--header-bg);
-  color: var(--header-text);
-  padding: 0.75rem 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+button, a, input, textarea, select, [tabindex] { outline: none; }
+button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible {
+  outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 4px;
 }
-
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+.top-nav {
+  background: var(--nav-bg); color: var(--nav-text); padding: 0 1.5rem; height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.06);
 }
-
-.menu-trigger {
-  background: none;
-  border: none;
-  color: inherit;
-  font-size: 1.5rem;
-  cursor: pointer;
+.nav-left, .nav-center, .nav-right { display: flex; align-items: center; gap: 1rem; }
+.nav-center { gap: 0.25rem; flex: 1; justify-content: center; }
+.logo-mark {
+  width: 32px; height: 32px; background: linear-gradient(135deg, #ff6b6b, #ff8585);
+  border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 1.1rem; color: white; flex-shrink: 0;
 }
-
-.nav-tabs {
-  display: flex;
-  background: rgba(255,255,255,0.1);
-  padding: 0.25rem;
-  border-radius: 8px;
-  gap: 0.25rem;
+.logo-text { font-size: 1.35rem; font-weight: 700; letter-spacing: -0.5px; color: white; }
+.level-badge {
+  background: rgba(255,255,255,0.1); color: var(--nav-text-muted); font-size: 0.7rem; font-weight: 600;
+  padding: 0.2rem 0.5rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.08);
+  text-transform: uppercase; letter-spacing: 0.5px;
 }
-
-.tab-btn {
-  background: none;
-  border: none;
-  color: inherit;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 0.9rem;
-  transition: all 0.2s;
+.nav-tab {
+  background: none; border: none; color: var(--nav-text-muted); padding: 0.5rem 0.875rem;
+  border-radius: 8px; font-size: 0.85rem; font-weight: 500; cursor: pointer;
+  transition: all var(--transition); white-space: nowrap;
 }
-
-.tab-btn.active {
-  background-color: var(--primary);
+.nav-tab:hover { color: white; background: rgba(255,255,255,0.06); }
+.nav-tab.active { color: white; background: rgba(255,255,255,0.1); }
+.nav-btn {
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1); color: white;
+  padding: 0.45rem 1rem; border-radius: 8px; font-size: 0.8rem; font-weight: 600;
+  cursor: pointer; transition: all var(--transition);
 }
-
-.nav-sidebar {
-  position: fixed;
-  top: 0;
-  left: -280px;
-  width: 280px;
-  height: 100%;
-  background-color: var(--card-bg);
-  border-right: 1px solid var(--border);
-  z-index: 200;
-  padding: 2rem 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 4px 0 12px rgba(0,0,0,0.05);
+.nav-btn:hover { background: rgba(255,255,255,0.15); }
+.nav-btn-primary { background: var(--primary); border-color: var(--primary); }
+.nav-btn-primary:hover { background: var(--primary-hover); }
+.theme-toggle {
+  width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.1); color: white; display: flex;
+  align-items: center; justify-content: center; cursor: pointer; font-size: 1rem;
+  transition: all var(--transition);
 }
-
-.nav-sidebar.open {
-  left: 0;
+.theme-toggle:hover { background: rgba(255,255,255,0.15); transform: rotate(15deg); }
+.avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 0.85rem; color: white; cursor: pointer;
+  border: 2px solid rgba(255,255,255,0.1); flex-shrink: 0;
 }
-
-.sidebar-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.4);
-  z-index: 150;
-  display: none;
+.mobile-menu-btn { display: none; background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; }
+.mobile-drawer {
+  position: fixed; top: 0; left: 0; width: 280px; height: 100%; background: var(--nav-bg);
+  z-index: 200; padding: 1.5rem; transform: translateX(-100%);
+  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1); display: flex; flex-direction: column; gap: 0.5rem;
 }
-
-.sidebar-overlay.open {
-  display: block;
+.mobile-drawer.open { transform: translateX(0); }
+.drawer-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 150; display: none;
 }
-
-.sidebar-link {
-  color: var(--text);
-  text-decoration: none;
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
-  font-weight: 500;
-  transition: background 0.2s;
+.drawer-overlay.open { display: block; }
+.drawer-link {
+  color: var(--nav-text-muted); text-decoration: none; padding: 0.75rem 1rem;
+  border-radius: 8px; font-weight: 500; transition: all var(--transition);
 }
-
-.sidebar-link:hover {
-  background: rgba(0,0,0,0.05);
+.drawer-link:hover, .drawer-link.active { color: white; background: rgba(255,255,255,0.08); }
+.main-container { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+.page-title { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.25rem; letter-spacing: -0.5px; }
+.page-subtitle { color: var(--text-secondary); font-size: 1rem; margin-bottom: 2rem; }
+.dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+@media (max-width: 900px) {
+  .dashboard-grid { grid-template-columns: repeat(2, 1fr); }
+  .nav-center { display: none; }
+  .mobile-menu-btn { display: block; }
 }
-
-.main-viewport {
-  flex: 1;
-  max-width: 600px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 2rem 1rem;
+@media (max-width: 560px) {
+  .dashboard-grid { grid-template-columns: 1fr; }
+  .top-nav { padding: 0 1rem; }
+  .main-container { padding: 1.5rem 1rem; }
 }
-
-.unit-section-card {
-  margin-bottom: 3rem;
+.card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1.5rem; box-shadow: var(--shadow-sm); transition: all var(--transition);
+  cursor: pointer; position: relative; overflow: hidden;
 }
-
-.unit-header-banner {
-  background: linear-gradient(135deg, #4f46e5, #6366f1);
-  color: white;
-  padding: 1.25rem;
-  border-radius: 16px;
-  margin-bottom: 2rem;
-  box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+.card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); border-color: var(--primary-soft); }
+.card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--primary), #ff9a9a); opacity: 0; transition: opacity var(--transition);
 }
-
-.tree-path-vertical {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.5rem;
+.card:hover::before { opacity: 1; }
+.card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 0.75rem; }
+.card-icon {
+  width: 44px; height: 44px; border-radius: var(--radius-xs);
+  display: flex; align-items: center; justify-content: center; font-size: 1.4rem;
 }
-
-.node-row {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-  width: 100%;
+.card-icon.grammar { background: var(--primary-soft); }
+.card-icon.reading { background: rgba(59,130,246,0.1); }
+.card-icon.listening { background: rgba(168,85,247,0.1); }
+.card-icon.flashcards { background: var(--success-soft); }
+.card-icon.ai { background: rgba(245,158,11,0.1); }
+.card-icon.translator { background: rgba(14,165,233,0.1); }
+.ai-badge {
+  background: linear-gradient(135deg, #f59e0b, #d97706); color: white; font-size: 0.6rem;
+  font-weight: 700; padding: 0.25rem 0.5rem; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px;
 }
-
-.node-btn-circle {
-  width: 76px;
-  height: 76px;
-  border-radius: 50%;
-  border: none;
-  background-color: var(--card-bg);
-  color: var(--text);
-  box-shadow: 0 4px 0 var(--border), 0 4px 10px rgba(0,0,0,0.05);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  position: relative;
-  transition: transform 0.1s, background-color 0.2s;
-  z-index: 2;
+.card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.25rem; }
+.card p { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.4; }
+.progress-bar-bg { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-bottom: 0.5rem; }
+.progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--primary), #ff9a9a); border-radius: 3px; transition: width 0.6s cubic-bezier(0.4,0,0.2,1); }
+.progress-text { font-size: 0.75rem; color: var(--text-muted); font-weight: 500; display: flex; justify-content: space-between; }
+.auth-container {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  padding: 2rem 1rem; background: linear-gradient(135deg, var(--nav-bg) 0%, #1a1a2e 100%);
 }
-
-.node-btn-circle:active {
-  transform: translateY(4px);
-  box-shadow: none;
+.auth-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 2.5rem; width: 100%; max-width: 420px; box-shadow: var(--shadow-lg);
 }
-
-.node-btn-circle.completed {
-  background-color: var(--success);
-  color: white;
-  box-shadow: 0 4px 0 #16a34a;
+.auth-logo { display: flex; align-items: center; justify-content: center; gap: 0.75rem; margin-bottom: 2rem; }
+.auth-logo .logo-mark { width: 40px; height: 40px; font-size: 1.3rem; }
+.auth-logo .logo-text { font-size: 1.5rem; color: var(--text); }
+.auth-title { font-size: 1.5rem; font-weight: 700; text-align: center; margin-bottom: 0.5rem; }
+.auth-subtitle { text-align: center; color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem; }
+.form-group { margin-bottom: 1rem; }
+.form-label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.35rem; text-transform: uppercase; letter-spacing: 0.3px; }
+.form-input {
+  width: 100%; padding: 0.75rem 1rem; border: 1.5px solid var(--border); border-radius: var(--radius-xs);
+  background: var(--bg); color: var(--text); font-size: 0.95rem; transition: all var(--transition);
 }
-
-.node-label-sub {
-  font-size: 0.85rem;
-  font-weight: 600;
-  margin-top: 0.5rem;
-  color: var(--text-muted);
-  text-align: center;
+.form-input:focus { border-color: var(--primary); background: var(--surface); }
+.btn {
+  width: 100%; padding: 0.875rem; border: none; border-radius: var(--radius-xs);
+  font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all var(--transition);
+  display: flex; align-items: center; justify-content: center; gap: 0.5rem;
 }
-
-.workspace-fullscreen-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: var(--bg);
-  z-index: 300;
-  display: none;
-  flex-direction: column;
-  padding: 1.5rem;
-  overflow-y: auto;
+.btn-primary { background: var(--primary); color: white; }
+.btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
+.btn-primary:active { transform: translateY(0); }
+.btn-secondary { background: var(--bg); color: var(--text); border: 1.5px solid var(--border); }
+.btn-secondary:hover { background: var(--surface-hover); border-color: var(--text-muted); }
+.social-divider { display: flex; align-items: center; gap: 1rem; margin: 1.25rem 0; color: var(--text-muted); font-size: 0.8rem; }
+.social-divider::before, .social-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.social-buttons { display: flex; flex-direction: column; gap: 0.6rem; }
+.btn-social { background: var(--bg); border: 1.5px solid var(--border); color: var(--text); padding: 0.7rem; font-size: 0.85rem; }
+.btn-social:hover { background: var(--surface-hover); }
+.btn-social svg { width: 18px; height: 18px; }
+.auth-footer { text-align: center; margin-top: 1.25rem; font-size: 0.85rem; color: var(--text-secondary); }
+.auth-footer a { color: var(--primary); text-decoration: none; font-weight: 600; cursor: pointer; }
+.auth-footer a:hover { text-decoration: underline; }
+.flashcards-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
+.flashcards-stats { display: flex; gap: 1rem; }
+.stat-pill { background: var(--surface); border: 1px solid var(--border); padding: 0.5rem 1rem; border-radius: 100px; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); }
+.stat-pill span { color: var(--primary); }
+.flashcard-container { max-width: 600px; margin: 0 auto; perspective: 1200px; }
+.flashcard {
+  width: 100%; min-height: 380px; position: relative; transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.4,0,0.2,1); cursor: pointer;
 }
-
-.workspace-fullscreen-modal.open {
-  display: flex;
+.flashcard.flipped { transform: rotateY(180deg); }
+.flashcard-face {
+  position: absolute; inset: 0; background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); box-shadow: var(--shadow); padding: 2.5rem;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  backface-visibility: hidden; -webkit-backface-visibility: hidden; text-align: center;
 }
-
-.modal-header-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
+.flashcard-back { transform: rotateY(180deg); background: linear-gradient(135deg, var(--surface), var(--bg)); }
+.card-category { position: absolute; top: 1.25rem; left: 1.25rem; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--primary); background: var(--primary-soft); padding: 0.3rem 0.7rem; border-radius: 100px; }
+.card-counter { position: absolute; top: 1.25rem; right: 1.25rem; font-size: 0.8rem; color: var(--text-muted); font-weight: 500; }
+.dutch-word { font-size: 1.75rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; line-height: 1.3; }
+.tigrinya-word { font-size: 1.5rem; font-weight: 700; color: var(--primary); margin-bottom: 0.75rem; line-height: 1.4; }
+.word-type { font-size: 0.8rem; color: var(--text-muted); background: var(--bg); padding: 0.25rem 0.6rem; border-radius: 6px; margin-bottom: 1rem; }
+.example-sentence { font-size: 0.95rem; color: var(--text-secondary); font-style: italic; max-width: 90%; line-height: 1.5; margin-top: 0.5rem; }
+.speak-btn { position: absolute; bottom: 1.25rem; right: 1.25rem; width: 44px; height: 44px; border-radius: 50%; background: var(--primary-soft); border: 1.5px solid var(--primary-soft); color: var(--primary); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.1rem; transition: all var(--transition); z-index: 5; }
+.speak-btn:hover { background: var(--primary); color: white; transform: scale(1.1); }
+.flip-hint { position: absolute; bottom: 1.25rem; left: 1.25rem; font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.35rem; }
+.flashcard-nav { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: 1.5rem; }
+.nav-arrow { width: 48px; height: 48px; border-radius: 50%; background: var(--surface); border: 1.5px solid var(--border); color: var(--text); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.2rem; transition: all var(--transition); }
+.nav-arrow:hover { background: var(--primary); color: white; border-color: var(--primary); }
+.nav-arrow:disabled { opacity: 0.4; cursor: not-allowed; }
+.knew-btn, .learning-btn { padding: 0.75rem 1.5rem; border-radius: 100px; font-size: 0.9rem; font-weight: 600; cursor: pointer; border: none; transition: all var(--transition); }
+.knew-btn { background: var(--success-soft); color: var(--success); border: 1.5px solid rgba(34,197,94,0.2); }
+.knew-btn:hover { background: var(--success); color: white; }
+.learning-btn { background: var(--primary-soft); color: var(--primary); border: 1.5px solid var(--primary-soft); }
+.learning-btn:hover { background: var(--primary); color: white; }
+.cookie-banner {
+  position: fixed; bottom: 0; left: 0; right: 0; background: var(--nav-bg); color: white;
+  padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem; z-index: 300; transform: translateY(100%);
+  transition: transform 0.4s cubic-bezier(0.4,0,0.2,1); border-top: 1px solid rgba(255,255,255,0.06);
 }
-
-.close-modal-x {
-  background: none;
-  border: none;
-  font-size: 1.75rem;
-  cursor: pointer;
-  color: var(--text);
+.cookie-banner.show { transform: translateY(0); }
+.cookie-text { font-size: 0.85rem; color: rgba(255,255,255,0.8); max-width: 600px; }
+.cookie-buttons { display: flex; gap: 0.5rem; flex-shrink: 0; }
+.cookie-btn { padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; border: none; transition: all var(--transition); }
+.cookie-btn.accept { background: var(--primary); color: white; }
+.cookie-btn.accept:hover { background: var(--primary-hover); }
+.cookie-btn.decline { background: rgba(255,255,255,0.1); color: white; }
+.cookie-btn.decline:hover { background: rgba(255,255,255,0.2); }
+.hidden { display: none !important; }
+.back-link { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; font-weight: 500; margin-bottom: 1rem; cursor: pointer; }
+.back-link:hover { color: var(--primary); }
+.empty-state { text-align: center; padding: 4rem 2rem; color: var(--text-secondary); }
+.empty-state-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; }
+.toast {
+  position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: var(--nav-bg); color: white; padding: 0.75rem 1.5rem; border-radius: 100px;
+  font-size: 0.85rem; font-weight: 500; z-index: 400; opacity: 0; transition: all 0.3s ease;
+  box-shadow: var(--shadow-lg); pointer-events: none;
 }
-
-.exercise-body-area {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  max-width: 500px;
-  width: 100%;
-  margin: 0 auto;
-}
-
-.prompt-translation-card {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-.native-tigrinya-prompt {
-  font-size: 1.35rem;
-  font-weight: bold;
-  color: var(--primary);
-  margin-bottom: 0.5rem;
-}
-
-.audio-trigger-circular-btn {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background-color: rgba(79, 70, 229, 0.1);
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  margin: 1rem auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.2s;
-}
-
-.audio-trigger-circular-btn::before {
-  content: "🔊";
-}
-
-.audio-trigger-circular-btn:active {
-  transform: scale(0.9);
-}
-
-.interactive-response-zone {
-  min-height: 80px;
-  border: 2px dashed var(--border);
-  border-radius: 12px;
-  padding: 1rem;
-  margin-bottom: 1.5rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  align-items: center;
-  background: var(--card-bg);
-}
-
-.pool-container-tiles {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  justify-content: center;
-  margin-bottom: 2rem;
-}
-
-.word-pill-tile {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  padding: 0.6rem 1.1rem;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 500;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-  user-select: none;
-}
-
-.keyboard-text-input {
-  width: 100%;
-  padding: 1rem;
-  border-radius: 12px;
-  border: 2px solid var(--border);
-  background: var(--card-bg);
-  color: var(--text);
-  font-size: 1.1rem;
-  margin-bottom: 1.5rem;
-  outline: none;
-}
-
-.keyboard-text-input:focus {
-  border-color: var(--primary);
-}
-
-.microphone-control-hub {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
-
-.mic-toggle-btn {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  border: none;
-  background-color: var(--primary);
-  color: white;
-  font-size: 2rem;
-  cursor: pointer;
-  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.4);
-}
-
-.mic-toggle-btn::before {
-  content: "🎙️";
-}
-
-.mic-toggle-btn.recording {
-  background-color: var(--error);
-  animation: pulse-mic 1.5s infinite;
-  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4);
-}
-
-@keyframes pulse-mic {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.08); }
-  100% { transform: scale(1); }
-}
-
-.footer-validation-dock {
-  border-top: 1px solid var(--border);
-  padding: 1.25rem 0;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.action-submit-btn {
-  background-color: var(--primary);
-  color: white;
-  border: none;
-  padding: 1rem 2rem;
-  border-radius: 12px;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  width: 100%;
-}
-
-.action-submit-btn:hover {
-  background-color: var(--primary-hover);
-}
-
-.library-scroller-view {
-  display: none;
-}
-
-.library-scroller-view.active {
-  display: block;
-}
-
-.search-box-group {
-  margin-bottom: 1.5rem;
-}
-
-.vocab-grid-card {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 1rem;
-  margin-bottom: 0.75rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-@media (max-width: 480px) {
-  .node-btn-circle { width: 68px; height: 68px; font-size: 1.25rem; }
-}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 </style>
 </head>
 <body>
 
-  <header class="top-header">
-    <div class="header-left">
-      <button class="menu-trigger" onclick="toggleSidebar()">☰</button>
-      <h2 style="font-size: 1.25rem; font-weight: 700; letter-spacing: -0.5px;">Dutch-Learn</h2>
-    </div>
-    <div class="nav-tabs">
-      <button id="tabLessons" class="tab-btn active" onclick="switchMainTab('lessons')">ትምህርቲ</button>
-      <button id="tabLibrary" class="tab-btn" onclick="switchMainTab('library')">መዝገበ ቃላት</button>
-    </div>
-    <button class="menu-trigger" style="font-size: 1.2rem;" onclick="toggleSystemTheme()">🌓</button>
-  </header>
+<div id="cookieBanner" class="cookie-banner">
+  <p class="cookie-text">We use cookies to enhance your experience, track progress, and keep you signed in.</p>
+  <div class="cookie-buttons">
+    <button class="cookie-btn decline" onclick="handleCookieConsent(false)">Decline</button>
+    <button class="cookie-btn accept" onclick="handleCookieConsent(true)">Accept</button>
+  </div>
+</div>
 
-  <div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
-  <nav id="navSidebar" class="nav-sidebar">
-    <h3 style="margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">ምረጻታት</h3>
-    <a href="#" class="sidebar-link" onclick="toggleSidebar()">About Us (ብዛዕባና)</a>
-    <a href="#" class="sidebar-link" onclick="toggleSidebar()">Contact Us (ርክብ)</a>
-    <a href="#" class="sidebar-link" onclick="toggleSidebar()">Donate (ሓገዝ)</a>
-  </nav>
+<div id="drawerOverlay" class="drawer-overlay" onclick="toggleDrawer()"></div>
+<nav id="mobileDrawer" class="mobile-drawer">
+  <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:1.5rem;">
+    <div class="logo-mark">L</div><span class="logo-text">Lingo</span><span class="level-badge">B1</span>
+  </div>
+  <a class="drawer-link active" onclick="navigateTo('dashboard'); toggleDrawer()">Dashboard</a>
+  <a class="drawer-link" onclick="navigateTo('flashcards'); toggleDrawer()">Flashcards</a>
+  <a class="drawer-link" onclick="showToast('Coming soon')">Grammar</a>
+  <a class="drawer-link" onclick="showToast('Coming soon')">Reading</a>
+  <a class="drawer-link" onclick="showToast('Coming soon')">Listening</a>
+  <a class="drawer-link" onclick="showToast('Coming soon')">AI Tutor</a>
+  <a class="drawer-link" onclick="showToast('Coming soon')">Translator</a>
+  <div style="margin-top:auto; padding-top:1rem; border-top:1px solid rgba(255,255,255,0.08);">
+    <a class="drawer-link" onclick="showToast('Thank you!')">Donate</a>
+    <a class="drawer-link" onclick="handleLogout(); toggleDrawer()">Log Out</a>
+  </div>
+</nav>
 
-  <main class="main-content flex-1">
-    <div id="treeLayoutContainer" class="main-viewport"></div>
+<div id="toast" class="toast"></div>
 
-    <div id="libraryContainer" class="main-viewport library-scroller-view">
-      <div class="search-box-group">
-        <input type="text" id="libSearchField" class="keyboard-text-input" placeholder="ቃላት ወይ ሓረጋat ብ ቋንቋ ደች ፈልግ..." oninput="filterApplicationLibrary()">
+<!-- ==================== AUTH PAGES ==================== -->
+<div id="authPage" class="hidden">
+  <div class="auth-container">
+    <div id="loginForm" class="auth-card">
+      <div class="auth-logo"><div class="logo-mark">L</div><span class="logo-text">Lingo</span></div>
+      <h1 class="auth-title">Welcome back</h1>
+      <p class="auth-subtitle">Sign in to continue your Dutch journey</p>
+      <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="loginEmail" placeholder="you@example.com"></div>
+      <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" id="loginPassword" placeholder="Enter your password"></div>
+      <button class="btn btn-primary" onclick="handleLogin()">Sign In</button>
+      <div class="social-divider">or continue with</div>
+      <div class="social-buttons">
+        <button class="btn btn-social" onclick="handleSocialLogin('google')">
+          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          Continue with Google
+        </button>
+        <button class="btn btn-social" onclick="handleSocialLogin('facebook')">
+          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          Continue with Facebook
+        </button>
+        <button class="btn btn-social" onclick="handleSocialLogin('apple')">
+          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.53 4.08zm-5.85-15.1c.07-2.04 1.76-3.79 3.78-3.94.29 2.32-1.93 4.48-3.78 3.94z"/></svg>
+          Continue with Apple
+        </button>
       </div>
-      <div id="libraryItemsTarget"></div>
+      <p class="auth-footer">Don't have an account? <a onclick="toggleAuthMode()">Sign up</a></p>
     </div>
-  </main>
 
-  <div id="workspaceModal" class="workspace-fullscreen-modal">
-    <div class="modal-header-row">
-      <span id="modalProgressIndicator" style="font-weight: 700; color: var(--text-muted);">Les 1/5 - Item 1/5</span>
-      <button class="close-modal-x" onclick="exitWorkspaceArena()">✕</button>
-    </div>
-    <div class="exercise-body-area">
-      <div class="prompt-translation-card">
-        <p id="nativePromptTarget" class="native-tigrinya-prompt"></p>
-        <p id="contextHintTarget" style="font-size:0.95rem; color:var(--text-muted); font-style:italic; margin-bottom: 0.5rem;"></p>
-        <button id="pronunciationAudioSpeaker" class="audio-trigger-circular-btn" onclick="triggerAudioSpeechEngine()"></button>
+    <div id="signupForm" class="auth-card hidden">
+      <div class="auth-logo"><div class="logo-mark">L</div><span class="logo-text">Lingo</span></div>
+      <h1 class="auth-title">Create account</h1>
+      <p class="auth-subtitle">Start learning Dutch today</p>
+      <div class="form-group"><label class="form-label">Full Name</label><input type="text" class="form-input" id="signupName" placeholder="Your name"></div>
+      <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="signupEmail" placeholder="you@example.com"></div>
+      <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" id="signupPassword" placeholder="Create a password"></div>
+      <div class="form-group"><label class="form-label">Confirm Password</label><input type="password" class="form-input" id="signupPassword2" placeholder="Confirm password"></div>
+      <button class="btn btn-primary" onclick="handleSignup()">Create Account</button>
+      <div class="social-divider">or sign up with</div>
+      <div class="social-buttons">
+        <button class="btn btn-social" onclick="handleSocialLogin('google')">
+          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          Continue with Google
+        </button>
+        <button class="btn btn-social" onclick="handleSocialLogin('facebook')">
+          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          Continue with Facebook
+        </button>
+        <button class="btn btn-social" onclick="handleSocialLogin('apple')">
+          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.53 4.08zm-5.85-15.1c.07-2.04 1.76-3.79 3.78-3.94.29 2.32-1.93 4.48-3.78 3.94z"/></svg>
+          Continue with Apple
+        </button>
       </div>
-
-      <div id="dynamicInputWorkspaceZone"></div>
-
-      <div class="footer-validation-dock">
-        <button id="submissionActionControl" class="action-submit-btn" onclick="validateUserInteractionResponse()">Check Antwoord</button>
-      </div>
+      <p class="auth-footer">Already have an account? <a onclick="toggleAuthMode()">Sign in</a></p>
     </div>
   </div>
+</div>
+
+<!-- ==================== MAIN APP ==================== -->
+<div id="appPage">
+  <header class="top-nav">
+    <div class="nav-left">
+      <button class="mobile-menu-btn" onclick="toggleDrawer()">&#9776;</button>
+      <div class="logo-mark">L</div>
+      <span class="logo-text">Lingo</span>
+      <span class="level-badge">B1</span>
+    </div>
+    <nav class="nav-center">
+      <button class="nav-tab" onclick="showToast('Coming soon')">Grammar</button>
+      <button class="nav-tab" onclick="showToast('Coming soon')">Reading</button>
+      <button class="nav-tab" onclick="showToast('Coming soon')">Listening</button>
+      <button class="nav-tab active" onclick="navigateTo('flashcards')">Flashcards</button>
+      <button class="nav-tab" onclick="showToast('Coming soon')">AI Tutor</button>
+      <button class="nav-tab" onclick="showToast('Coming soon')">Translator</button>
+    </nav>
+    <div class="nav-right">
+      <button class="nav-btn nav-btn-primary" onclick="showToast('Thank you for supporting Lingo!')">Donate</button>
+      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle theme">&#9788;</button>
+      <div class="avatar" id="userAvatar" onclick="handleLogout()" title="Click to log out">U</div>
+    </div>
+  </header>
+
+  <main id="mainContent" class="main-container">
+    <!-- DASHBOARD VIEW -->
+    <div id="dashboardView">
+      <h1 class="page-title" id="greeting">Hi there, ready to practise?</h1>
+      <p class="page-subtitle">Pick a skill and keep your streak going.</p>
+      <div class="dashboard-grid">
+        <div class="card" onclick="showToast('Coming soon')">
+          <div class="card-header"><div class="card-icon grammar">&#9997;</div></div>
+          <h3>Grammar</h3>
+          <p>Master Dutch sentence structure and conjugation.</p>
+          <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:0%"></div></div>
+          <div class="progress-text"><span>0%</span><span>0 / 120 lessons</span></div>
+        </div>
+        <div class="card" onclick="showToast('Coming soon')">
+          <div class="card-header"><div class="card-icon reading">&#128214;</div></div>
+          <h3>Reading</h3>
+          <p>Read real-world Dutch texts with comprehension checks.</p>
+          <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:0%"></div></div>
+          <div class="progress-text"><span>0%</span><span>0 / 85 articles</span></div>
+        </div>
+        <div class="card" onclick="showToast('Coming soon')">
+          <div class="card-header"><div class="card-icon listening">&#127911;</div></div>
+          <h3>Listening</h3>
+          <p>Train your ear with native Dutch audio clips.</p>
+          <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:0%"></div></div>
+          <div class="progress-text"><span>0%</span><span>0 / 60 clips</span></div>
+        </div>
+        <div class="card" onclick="navigateTo('flashcards')">
+          <div class="card-header"><div class="card-icon flashcards">&#127183;</div><span class="ai-badge">AI POWERED</span></div>
+          <h3>Flashcards</h3>
+          <p>Dutch vocabulary with Tigrinya meanings. Tap to flip.</p>
+          <div class="progress-bar-bg"><div class="progress-bar-fill" id="flashcardProgressBar" style="width:0%"></div></div>
+          <div class="progress-text"><span id="flashcardPercent">0%</span><span id="flashcardFraction">0 / 0 cards</span></div>
+        </div>
+        <div class="card" onclick="showToast('Coming soon')">
+          <div class="card-header"><div class="card-icon ai">&#129302;</div><span class="ai-badge">AI POWERED</span></div>
+          <h3>AI Chat Tutor</h3>
+          <p>Practise conversation with an AI that speaks Dutch.</p>
+        </div>
+        <div class="card" onclick="showToast('Coming soon')">
+          <div class="card-header"><div class="card-icon translator">&#128483;</div></div>
+          <h3>Translator</h3>
+          <p>Instant Dutch-Tigrinya translations with examples.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- FLASHCARDS VIEW -->
+    <div id="flashcardsView" class="hidden">
+      <a class="back-link" onclick="navigateTo('dashboard')">&larr; Back to Dashboard</a>
+      <div class="flashcards-header">
+        <div><h1 class="page-title" style="margin-bottom:0.25rem;">Flashcards</h1><p class="page-subtitle" style="margin-bottom:0;">Tap a card to reveal the Tigrinya meaning</p></div>
+        <div class="flashcards-stats">
+          <div class="stat-pill">Learned: <span id="statLearned">0</span></div>
+          <div class="stat-pill">Total: <span id="statTotal">0</span></div>
+        </div>
+      </div>
+      <div class="flashcard-container">
+        <div class="flashcard" id="flashcard" onclick="flipCard()">
+          <div class="flashcard-face flashcard-front" id="cardFront">
+            <span class="card-category" id="cardCategory">Vocabulary</span>
+            <span class="card-counter" id="cardCounter">1 / 100</span>
+            <div class="word-type" id="cardType">noun</div>
+            <div class="dutch-word" id="cardDutch">de aardappel</div>
+            <div class="flip-hint">&#128260; Tap to flip</div>
+            <button class="speak-btn" id="speakBtn" onclick="event.stopPropagation(); speakCurrentWord()" title="Listen">&#128266;</button>
+          </div>
+          <div class="flashcard-face flashcard-back" id="cardBack">
+            <span class="card-category" id="cardCategoryBack">Vocabulary</span>
+            <span class="card-counter" id="cardCounterBack">1 / 100</span>
+            <div class="tigrinya-word" id="cardTigrinya">&#x12F5;&#x1295;&#x123D;</div>
+            <div class="example-sentence" id="cardExample">Ik eet graag aardappels.</div>
+            <div class="flip-hint">&#128260; Tap to flip back</div>
+            <button class="speak-btn" onclick="event.stopPropagation(); speakCurrentWord()" title="Listen">&#128266;</button>
+          </div>
+        </div>
+      </div>
+      <div class="flashcard-nav">
+        <button class="nav-arrow" id="prevBtn" onclick="prevCard()">&#10094;</button>
+        <button class="learning-btn" onclick="markCard(false)">Still learning</button>
+        <button class="knew-btn" onclick="markCard(true)">I knew this</button>
+        <button class="nav-arrow" id="nextBtn" onclick="nextCard()">&#10095;</button>
+      </div>
+    </div>
+  </main>
+</div>
 
 <script>
-// Massive 20-Unit Dataset, 5 Lessons per Unit, 5 Deep Real-world sentences per lesson (Total 500 items)
-const applicationCourseDatabase = [
-  {
-    id: 1, name: "Unit 1: ስራሕ ምድላይ (Solliciteren & Werk)", emoji: "💼",
-    lessons: [
-      {
-        title: "ትምህርቲ 1 (Sollicitatie)",
-        items: [
-          { type: "learn", target: "Ik wil solliciteren naar deze vacature.", native: "ነዚ ክፉት ናይ ስራሕ ቦታ ከማልክት እደሊ ኣለኹ።", prompt: "Zet de woorden in de juiste volgorde:" },
-          { type: "speak", target: "Het bedrijf zoekt een nieuwe medewerker.", native: "እቲ ትካል ሓድሽ ሰራሕተኛ ይደሊ ኣሎ።", prompt: "Klik op de microfoon en spreek uit:" },
-          { type: "read", target: "Ik stuur mijn cv op.", native: "ናይ ስራሕ ተመክሮይ (CV) ይሰድድ ኣለኹ።", prompt: "Kies de juiste betekenis van de zin:" },
-          { type: "write", target: "Waar kan ik de manager vinden?", native: "ነቲ ሓላፊ ኣበይ ክረኽቦ እኽእል፧", prompt: "Vertaal de zin volledig naar het Nederlands:" },
-          { type: "test", target: "Morgen heb ik een sollicitatiegesprek.", native: "ጽባሕ ናይ ስራሕ ቃለ-መጠይቕ ኣሎኒ።", prompt: "Eindtoets item: Vertaal de zin:" }
-        ]
-      },
-      {
-        title: "ትምህርቲ 2 (Contracten)",
-        items: [
-          { type: "learn", target: "Ik moet mijn contract tekenen.", native: "ውዕል ስራሕ ክፌርም ኣሎኒ።", prompt: "Bouw de juiste zin:" },
-          { type: "speak", target: "Wat is mijn bruto salaris?", native: "እቲ ጠቕላላ ደሞዘይ (ብሩቶ) ክንደይ እዩ፧", prompt: "Spreek duidelijk in de microfoon:" },
-          { type: "read", target: "Ik werk dertig uur per week.", native: "ኣብ ሰሙን ሰላሳ ሰዓት እሰርሕ።", prompt: "Wat betekent dit?" },
-          { type: "write", target: "Wanneer begint mijn proeftijd?", native: "ናይ ፈተነ ግዜይ መዓስ ይጅምር፧", prompt: "Typ de vertaling:" },
-          { type: "test", target: "De werkgever biedt een goed salaris.", native: "እቲ ኣስራሒ ጽቡቕ ደሞዝ የቕርብ ኣሎ።", prompt: "Vertaal zonder fouten:" }
-        ]
-      },
-      {
-        title: "ትምህርቲ 3 (Urenverantwoording)",
-        items: [
-          { type: "learn", target: "Ik schrijf mijn uren op.", native: "ሰዓታት ስራሕይ እምዝግብ ኣለኹ።", prompt: "Zet in de juiste volgorde:" },
-          { type: "speak", target: "Ik heb gisteren overuren gemaakt.", native: "ትማሊ ተወሳኺ ሰዓታት (ኦቨርታይም) ሰሪሐ።", prompt: "Spreek uit:" },
-          { type: "read", target: "De loonstrook klopt deze maand niet.", native: "ናይ ሎሚ ወርሒ ወረቐት ደሞዝ ጌጋ ኣለዎ።", prompt: "Begrijp je de betekenis?" },
-          { type: "write", target: "Mag ik extra uren werken?", native: "ተወሳኺ ሰዓታት ክሰርሕ ይኽእልዶ፧", prompt: "Schrijf in het Nederlands:" },
-          { type: "test", target: "Mijn urenregistratie moet ingeleverd worden.", native: "ናይ ሰዓታት መዝገበይ ክረክብ ኣለዎ።", prompt: "Vertaal volledig:" }
-        ]
-      },
-      {
-        title: "ትምህርቲ 4 (Ziek melden)",
-        items: [
-          { type: "learn", target: "Ik moet me vandaag ziekmelden.", native: "ሎሚ ብሰንኪ ሕማም ስራሕ ከቋርጽ ኣሎኒ።", prompt: "Sorteer de tegels:" },
-          { type: "speak", target: "Ik ben erg grieperig vandaag.", native: "ሎሚ ብጣዕሚ ዓባስ ሒዙኒ ኣሎ።", prompt: "Spreek uit:" },
-          { type: "read", target: "De bedrijfsarts belt mij vanmiddag.", native: "ሓኪም ትካል ሎሚ ድሕሪ ቀትሪ ክድውለለይ እዩ።", prompt: "Kies het juiste antwoord:" },
-          { type: "write", target: "Ik kan helaas niet komen werken.", native: "بەדאخی جەካ ዝበሃል ክሰርሕ ክመጽእ ኣይክእልን።", prompt: "Typ de Nederlandse zin:" },
-          { type: "test", target: "Vanaf volgende week ben ik beter.", native: "ካብ ዝቅጽል ሰሙн ሓውየ ክምለስ እየ።", prompt: "Eindtoets: Vertaal de zin:" }
-        ]
-      },
-      {
-        title: "ትምህርቲ 5 (Collega's)",
-        items: [
-          { type: "learn", target: "Mijn collega helpt mij altijd.", native: "ብጻየይ (መሳርሕተይ) ኩሉ ግዜ ይሕግዘኒ እዩ።", prompt: "Zet de woorden goed:" },
-          { type: "speak", target: "Wie is vandaag de teamleider?", native: "ሎሚ ናይ ጉጅለ መራሒ መን እዩ፧", prompt: "Spreek via mic:" },
-          { type: "read", target: "We werken goed samen.", native: "ብሓባር ጽቡቕ ንሰርሕ ኣለና።", prompt: "Lees en kies betekenis:" },
-          { type: "write", target: "Ik ga met vakantie in juli.", native: "ኣብ ወርሒ ሓምለ ናብ ዕረፍቲ ክኸይድ እየ።", prompt: "Vertaal handmatig:" },
-          { type: "test", target: "De sfeer op de werkvloer is fijn.", native: "እቲ ናይ ስራሕ ሃዋህው ብጣዕሚ ጽቡቕ እዩ።", prompt: "Vertaal de complete zin:" }
-        ]
-      }
-    ]
-  },
-  {
-    id: 2, name: "Unit 2: ኣብ ካፌን ቤት መግብን (In het Café & Restaurant)", emoji: "🍽️",
-    lessons: [
-      {
-        title: "ትምህርቲ 1 (Bestellen)",
-        items: [
-          { type: "learn", target: "Ik wil graag een koffie bestellen.", native: "ቡን ክእዝዝ እደሊ ኣለኹ።", prompt: "Klik de tegels:" },
-          { type: "speak", target: "Mag ik de menukaart zien?", native: "ናይ መግቢ ዝርዝር ክርኢ ይኽእልዶ፧", prompt: "Spreek natuurlijk uit:" },
-          { type: "read", target: "Heeft u ook vegetarische gerechten?", native: "ናይ ኣሕምልቲ ጥራይ መግቢ ኣሎኩምዶ፧", prompt: "Kies juiste optie:" },
-          { type: "write", target: "Twee bier en een water alstublieft.", native: "ክልተ ቢራን ሓደ ማይን በጃኹም።", prompt: "Typ in het Nederlands:" },
-          { type: "test", target: "Heeft u een tafel voor twee personen?", native: "ንክልተ ሰብ ዝኸውን ጠረጴዛ ኣሎኩምዶ፧", prompt: "Vertaal de testzin:" }
-        ]
-      },
-      {
-        title: "ትምህርቲ 2 (Afrekenen)",
-        items: [
-          { type: "learn", target: "Wij willen graag betalen.", native: "ሒሳብ ክንከፍል ንደሊ ነይርና።", prompt: "Sorteer zindelen:" },
-          { type: "speak", target: "Kan ik hier met de pin betalen?", native: "ኣብዚ ብካርታ ክንከፍል ንኽእልዶ፧", prompt: "Spreek in:" },
-          { type: "read", target: "De rekening klopt helemaal niet.", native: "እቲ ሒሳብ ፈጺሙ ጌጋ ኣለዎ።", prompt: "Wat betekent dit?" },
-          { type: "write", target: "U mag het wisselgeld houden.", native: "እቲ ዝተረፈ መልሲ (ሽንቲ) ክትሕዞ ትኽእል ኢኻ።", prompt: "Vertaal handmatig:" },
-          { type: "test", target: "Ik wil apart afrekenen.", native: "ሒሳብ ነናጽል ክንከፍል እደሊ።", prompt: "Vertaal de volledige zin:" }
-        ]
-      },
-      {
-        title: "ትምህርቲ 3 (Klachten)",
-        items: [
-          { type: "learn", target: "Mijn eten is helemaal koud.", native: "መግበይ  tutuሪሑ (ዝሑል) እዩ።", prompt: "Orden de woorden:" },
-          { type: "speak", target: "Dit heb ik niet besteld.", native: "እዚ ኣነ ኣይኣዘዝኩን።", prompt: "Spreek uit:" },
-          { type: "read", target: "Er zit een haar in mijn soep.", native: "ኣብ ጸብሓይ ሓደ ጨጉሪ ኣሎ።", prompt: "Begrijp je de zin?" },
-          { type: "write", target: "Ik wacht al een uur op mijn drankje.", native: "ነዚ መስተ እዚ ክጽበ ሓደ ሰዓት ጌረ።", prompt: "Vertaal handmatig:" },
-          { type: "test", target: "De service is erg traag vanavond.", native: "ናይ ሎሚ ምሸት ኣገልግሎት ብጣዕሚ ዝሑል እዩ።", prompt: "Vertaal de zin:" }
-        ]
-      },
-      {
-        title: "ትምህርቲ 4 (Reserveren)",
-        items: [
-          { type: "learn", target: "Ik heb gisteren online gereserveerd.", native: "ትማሊ ብኢንተርነት ቦታ ሒዘ ነይረ።", prompt: "Sorteer de tegels:" },
-          { type: "speak", target: "Op welke naam staat de reservering?", native: "እቲ ቆጸራ ብመን ስም ተመዝጊቡ ኣሎ፧", prompt: "Spreek in:" },
-          { type: "read", target: "Het restaurant is volgeboekt.", native: "እቲ ቤት መግቢ ሙሉእ ተታሒዙ ኣሎ።", prompt: "Wat betekent het?" },
-          { type: "write", target: "Kunnen we buiten op het terras zitten?", native: "ኣብ ወጻኢ ኣብቲ ባረንዳ ክንቀመጥ ንኽእልዶ፧", prompt: "Schrijf de vertaling:" },
-          { type: "test", target: "Ik wil de reservering annuleren.", native: "ነቲ ቆጸራ ክስርዞ እደሊ ኣለኹ።", prompt: "Vertaal volledig:" }
-        ]
-      },
-      {
-        title: "ትምህርቲ 5 (Allergieën)",
-        items: [
-          { type: "learn", target: "Ik ben allergisch voor pinda's.", native: "ፉል ፎबिया (ኣለርጂ) ኣሎኒ።", prompt: "Sorteer de blokken:" },
-          { type: "speak", target: "Zit hier melk of lactose in?", native: "ኣብዚ ጸባ ወይ ላክቶስ ኣሎዶ፧", prompt: "Spreek via mic:" },
-          { type: "read", target: "Dit gerecht is glutenvrij.", native: "እዚ መግቢ እዚ ግሉተን የብሉን።", prompt: "Kies betekenis:" },
-          { type: "write", target: "Ik mag absoluut geen suiker eten.", native: "ፍጹም ሽኮር ክበልዕ የብለይን።", prompt: "Vertaal handmatig:" },
-          { type: "test", target: "Kan de chef dit zonder zout maken?", native: "እቲ ሻፍ ነዚ ብዘይ ጨው ክሰርሖ ይኽእልዶ፧", prompt: "Vertaal deze eindtest:" }
-        ]
-      }
-    ]
-  },
-  {
-    id: 3, name: "Unit 3: ብተሌፎን ምርድዳእ (Telefoneren & Afspraken)", emoji: "📞",
-    lessons: [
-      {
-        title: "ትምህርቲ 1 (Bellen)",
-        items: [
-          { type: "learn", target: "Ik probeer u al te bellen.", native: "ክድውለልካ ጸኒሐ ነይረ።", prompt: "Sorteer woorden:" },
-          { type: "speak", target: "Met wie spreek ik alstublieft?", native: "በጃኻ ምስ መን እዩ ዝዛረብ ዘለኹ፧", prompt: "Spreek via mic:" },
-          { type: "read", target: "De verbinding is erg slecht.", native: "እቲ መስመር ብጣዕሚ ሕማቕ ኣሎ።", prompt: "Wat betekent dit?" },
-          { type: "write", target: "Kunt u iets harder spreken?", native: "ትሕትና ብዓውታ ክትዛረብ ትኽእልዶ፧", prompt: "Vertaal handmatig:" },
-          { type: "test", target: "Ik hoor u bijna niet meer.", native: "ሕጂ ዳርጋ ኣይሰምዓካን ኣለኹ።", prompt: "Vertaal deze zin:" }
-        ]
-      },
-      {
-        title: "ትምህርቲ 2 (Berichten)",
-        items: [
-          { type: "learn", target: "Ik spreek de voicemail in.", native: "መልእኽቲ ድምጺ (ቮይስማይል) እሓድግ ኣለኹ።", prompt: "Zet op volgorde:" },
-          { type: "speak", target: "Stuur mij een berichtje via WhatsApp.", native: "ብዋትስኣፕ መልእኽቲ ስደለይ።", prompt: "Spreek uit:" },
-          { type: "read", target: "Ik heb je nummer niet opgeslagen.", native: "ቁጽሪ ተሌፎንካ ኣይዓቀብክዎን ነይረ።", prompt: "Begrijp je dit?" },
-          { type: "write", target: "Heb je mijn voicemail ontvangen?", native: "ናይ ድምጺ መልእኽተይ መጺኡካዶ፧", prompt: "Typ de vertaling:" },
-          { type: "test", target: "Mijn telefoon had geen bereik.", native: "ተሌፎነይ ኔትወርክ ኣይነበራን።", prompt: "Vertaal de zin:" }
-        ]
-      },
-      {
-        title: "ትምህርቲ 3 (Afspraken maken)",
-        items: [
-          { type: "learn", target: "Schrijf de afspraak in je agenda.", native: "ነቲ ቆጸራ ኣብ ኣጀንዳኻ ጽሓፎ።", prompt: "Klik de woorden:" },
-          { type: "speak", target: "Schikt aanstaande maandag om tien uur?", native: "ዝቅጽል ሰኑይ ሰዓት ዓሰርተ ይመቸካዶ፧", prompt: "Spreek in:" },
-          { type: "read", target: "Die datum komt mij slecht uit.", native: "እቲ ዕለት እቲ ኣይመቸንን እዩ።", prompt: "Wat betekent het?" },
-          { type: "write", target: "Zullen we de afspraak verzetten?", native: "ነቲ ቆጸራ ክንቅይሮ (ከነሰጋግሮ) ንኽእልዶ፧", prompt: "Vertaal handmatig:" },
-          { type: "test", target: "We zien elkaar morgenmiddag.", native: "ጽባሕ ድሕሪ ቀትሪ ክንራኸብ ኢና።", prompt: "Vertaal volledig:" }
-        ]
-      },
-      {
-        title: "ትምህርቲ 4 (Te laat komen)",
-        items: [
-          { type: "learn", target: "Ik sta vast in de file.", native: "ኣብ ጽዑቕ ትራፊክ (ትራፊክ ጃም) ተታሒዘ ኣለኹ።", prompt: "Sorteer:" },
-          { type: "speak", target: "Ik kom ongeveer tien minuten later.", native: "ኣስታት ዓሰርተ ደቒቕ ክድንጉየ እየ።", prompt: "Spreek uit:" },
-          { type: "read", target: "Mijn trein heeft grote vertraging.", native: "ባቡረይ ብዙሕ ምድንጓይ ኣለዎ።", prompt: "Kies betekenis:" },
-          { type: "write", target: "Sorry voor het lange wachten.", native: "ንድሕሪ ንዊሕ ግዜ ብምጽባይካ ይቕረታ።", prompt: "Typ in het Nederlands:" },
-          { type: "test", target: "Ik ben onderweg naar de afspraak.", native: "ናብቲ ቆጸራ ኣብ መንገዲ ኣለኹ።", prompt: "Vertaal deze zin:" }
-        ]
-      },
-      {
-        title: "ትምህርቲ 5 (Terugbellen)",
-        items: [
-          { type: "learn", target: "Ik bel je zo meteen terug.", native: "ድሕሪ ሓጺር እዋን ክድውለልካ እየ።", prompt: "Zet op volgorde:" },
-          { type: "speak", target: "Laat een bericht achter na de piep.", native: "ድሕሪ እቲ ድምጺ መልእኽቲ ሕደግ።", prompt: "Spreek via mic:" },
-          { type: "read", target: "Hij heeft mij nog niet teruggebeld.", native: "ንሱ ገና ኣይደወለለይን ኣሎ።", prompt: "Wat is de betekenis?" },
-          { type: "write", target: "Kunt u hem vragen mij te bellen?", native: "ክትድውለለይ ክትነግሮ ትኽእልዶ፧", prompt: "Vertaal handmatig:" },
-          { type: "test", target: "Ik ben nu telefonisch onbereikbaar.", native: "ሕጂ ብተሌፎን ክርከብ ኣይክእልን እየ።", prompt: "Vertaal volledig:" }
-        ]
-      }
-    ]
-  },
-  {
-    id: 4, name: "Unit 4: ቤት ትምህርትን ትምህርትን (School & Educatie)", emoji: "🏫",
-    lessons: [
-      {
-        title: "ትምህርቲ 1 (Lessen)",
-        items: [
-          { type: "learn", target: "De les begint over vijf minuten.", native: "እቲ ትምህርቲ ድሕሪ ሓሙሽተ ደቒቕ ይጅምር።", prompt: "Zet de blokken goed:" },
-          { type: "speak", target: "Welk lokaal moeten we nu hebben?", native: "ሕጂ ናብ ኣየናይ ክፍሊ ኢና ክንከይድ፧", prompt: "Spreek uit:" },
-          { type: "read", target: "Het huiswerk staat op de computer.", native: "እቲ ናይ ገዛ ስራሕ ኣብ ኮምፒውተር ኣሎ።", prompt: "Kies juiste optie:" },
-          { type: "write", target: "Ik ben vergeten mijn boek mee te nemen.", native: "መጽሓፈይ ሒዘ ክመጽእ ረሲዐዮ።", prompt: "Typ de vertaling:" },
-          { type: "test", target: "De docent legt de grammatica uit.", native: "እቲ መምህር ሰዋስው (ግራምር) የብርህ ኣሎ።", prompt: "Vertaal de testzin:" }
-        ]
-      },
-      {
-        title: "ትምህርቲ 2 (Examens)",
-        items: [
-          { type: "learn", target: "Ik moet hard studeren voor de toets.", native: "ነቲ ፈተና ጽቡቕ ጌረ ክመሃር ኣሎኒ።", prompt: "Bouw de zin:" },
-          { type: "speak", target: "Ik ben geslaagd voor mijn examen.", native: "ነቲ ፈተና ሓሊፈዮ (ዓዊተ)።", prompt: "Spreek in microfoon:" },
-          { type: "read", target: "Zij is helaas gezakt voor het rijexamen.", native: "بەדאخی جەካ ንናይ መምርሒ ፍቓድ ፈተና ወዲቓ።", prompt: "Wat betekent dit?" },
-          { type: "write", target: "Wanneer krijgen we de uitslag?", native: "እቲ ውጽኢት መዓስ ክንረኽቦ ኢና፧", prompt: "Typ in het Nederlands:" },
-          { type: "test", target: "Dit cijfer is voldoende voor mij.", native: "እዚ ነጥቢ እዚ ንዓይ እኹል (ሕቡን) እዩ።", prompt: "Vertaal deze zin:" }
-        ]
-      },
-      {
-        title: "ትምህርቲ 3 (Inschrijven)",
-        items: [
-          { type: "learn", target: "Ik wil me inschrijven voor een cursus.", native: "ንሓደ ኮርስ ክምዝገብ እደሊ ኣለኹ።", prompt: "Sorteer woorden:" },
-          { type: "speak", target: "Wat kost de opleiding per jaar?", native: "እቲ ትምህርቲ ኣብ ዓመት ክንደይ የውጽእ፧", prompt: "Spreek via mic:" },
-          { type: "read", target: "Je moet dit formulier volledig invullen.", native: "ነዚ ፎርም እዚ ምሉእ ክትመልኦ ኣሎካ።", prompt: "Wat betekent het?" },
-          { type: "write", target: "Stuur een kopie van je paspoort.", native: "ናይ ፓስፖርትካ ቅዳሕ ስደድ።", prompt: "Vertaal handmatig:" },
-          { type: "test", target: "Mijn inschrijving is definitief goedgekeurd.", native: "ናይ ምዝገባ መስርሐይ ፍጹም ተቐቢሎምዎ ኣለዉ።", prompt: "Vertaal volledig:" }
-        ]
-      },
-      {
-        title: "ትምህርቲ 4 (Ziek melden school)",
-        items: [
-          { type: "learn", target: "Mijn kind is vandaag ziek.", native: "ውሉደይ ሎሚ ሓሚሙ ኣሎ።", prompt: "Zet op volgorde:" },
-          { type: "speak", target: "Ik moet mijn zoon afmelden.", native: "ንወደይ ካብ ቤት ትምህርቲ ከፍቅዶ ኣሎኒ።", prompt: "Spreek uit:" },
-          { type: "read", target: "Er is vandaag geen school vanwege de sneeuw.", native: "ሰንኪ በረድ ሎሚ ቤት ትምህርቲ የለን።", prompt: "Begrijp je de zin?" },
-          { type: "write", target: "De vakantie begint volgende week al.", native: "እቲ ዕረፍቲ ካብ ዝቅጽል ሰሙን ይጅምር።", prompt: "Vertaal naar het Nederlands:" },
-          { type: "test", target: "Mijn dochter komt later op school.", native: "ጓለይ ጸኒሓ ናብ ቤት ትምህርቲ ክትመጽእ እያ።", prompt: "Vertaal deze testzin:" }
-        ]
-      },
-      {
-        title: "ትምህርቲ 5 (Ouderavond)",
-        items: [
-          { type: "learn", target: "Ik heb vanavond een gesprek met de meester.", native: "ሎሚ ምሸት ምስ መምህር ቆጸራ ኣሎኒ።", prompt: "Sorteer de tegels:" },
-          { type: "speak", target: "Hoe gaat het met mijn kind op school?", native: "ውሉደይ ኣብ ቤት ትምህርቲ ከመይ ኣሎ፧", prompt: "Spreek hardop:" },
-          { type: "read", target: "Hij let goed op tijdens de les.", native: "ኣብ እዋን ክፍሊ ጽቡቕ የስተውዕል እዩ።", prompt: "Wat betekent dit?" },
-          { type: "write", target: "Zij moet meer lezen thuis.", native: "ንሳ ኣብ ገዛ ተወሳኺ ክተንብብ ኣለዋ።", prompt: "Typ de vertaling:" },
-          { type: "test", target: "Wij zijn trots op zijn rapport.", native: "ብናይኡ ውጽኢት (ሪፖርት) ንሕበን ኢና።", prompt: "Vertaal volledig:" }
-        ]
-      }
-    ]
-  },
-  {
-    id: 5, name: "Unit 5: ዕዳጋን ክፍሊትን (Boodschappen & Betalen)", emoji: "🛒",
-    lessons: [
-      {
-        title: "ትምህርቲ 1 (Supermarkt)",
-        items: [
-          { type: "learn", target: "Waar kan ik de melk vinden?", native: "ጸባ ኣበይ ክረኽቦ እኽእል፧", prompt: "Bouw de zin:" },
-          { type: "speak", target: "Dit product is in de aanbieding.", native: "እዚ ፍርያት እዚ ሕስራን (ዲስካውንት) ኣለዎ።", prompt: "Spreek uit:" },
-          { type: "read", target: "Heeft u een winkelwagentje voor mij?", native: "ናይ ዕዳጋ ዓረብያ ኣሎኩምዶ፧", prompt: "Wat betekent dit?" },
-          { type: "write", target: "Ik moet brood en eieren kopen.", native: "ባኒን እንቋቑሖን ክገዝእ ኣሎኒ።", prompt: "Vertaal handmatig:" },
-          { type: "test", target: "De kassa is aan de linkerkant.", native: "እቲ ክፍሊት (ካሳ) ብወገን ጸጋም ኣሎ።", prompt: "Vertaal de testzin:" }
-        ]
-      },
-      {
-        title: "ትምህርቲ 2 (Kassa)",
-        items: [
-          { type: "learn", target: "Wilt u de kassabon meenemen?", native: "ናይ ክፍሊት ወረቐት (ሪሲት) ክትሕዞ ትኽእልዶ፧", prompt: "Sorteer de blokken:" },
-          { type: "speak", target: "Alstublieft, hier is uw wisselgeld.", native: "እንሆ መልሲ ሒሳብካ።", prompt: "Spreek via mic:" },
-          { type: "read", target: "U kunt hier alleen met pin betalen.", native: "ኣብዚ ብካርታ ጥራይ እዩ ዝክፈል፧", prompt: "Begrijp je de betekenis?" },
-          { type: "write", target: "Ik wil graag een plastic tasje.", native: "ሓደ ናይ ፕላስቲክ ፈredundant ፌስታል እደሊ ነይረ።", prompt: "Typ de vertaling:" },
-          { type: "test", target: "Spaar u ook voor de kortingszegels?", native: "ናይ ዲስካውንት ቴምብራት ትእክብዶ፧", prompt: "Vertaal deze eindtest:" }
-        ]
-      },
-      {
-        title: "ትምህርቲ 3 (Kwaliteit)",
-        items: [
-          { type: "learn", target: "Dit fruit is niet meer vers.", native: "እዚ ፍረታት እዚ ሕጂ ሓድሽ (ፈረሽ) ኣይኮነን።", prompt: "Sorteer:" },
-          { type: "speak", target: "De uiterste houdbaarheidsdatum is verstreken.", native: "እቲ ናይ መወዳእታ ግዜ ኣገልግሎቱ ኣብቂዑ እዩ።", prompt: "Spreek duidelijk:" },
-          { type: "read", target: "Dit vlees is biologisch biologisch.", native: "እዚ ስጋ እዚ ባህርያዊ (ባዮ) እዩ።", prompt: "Wat betekent het?" },
-          { type: "write", target: "Ik wil deze groenten ruilen.", native: "ነዞም ኣሕምልቲ ክቅይሮም እደሊ።", prompt: "Schrijf de vertaling:" },
-          { type: "test", target: "Dit product is beschadigd in de winkel.", native: "እዚ ፍርያት ኣብ ውሽጢ ድኳን ተበላሽዩ።", prompt: "Vertaal volledig:" }
-        ]
-      },
-      {
-        title: "ትምህርቲ 4 (Geldzaken)",
-        items: [
-          { type: "learn", target: "Ik heb niet genoeg geld bij me.", native: "እኹል ገንዘብ ሒዘ ኣይመጻእኩን።", prompt: "Orden de woorden:" },
-          { type: "speak", target: "Hoeveel kost dit alles bij elkaar?", native: "እዚ ኩሉ ብሓባር ክንደይ ይበጽሕ፧", prompt: "Spreek uit:" },
-          { type: "read", target: "De prijzen zijn erg gestegen dit jaar.", native: "ሎሚ ዓመት ዋጋታት ብጣዕሚ ወሲኹ።", prompt: "Kies betekenis:" },
-          { type: "write", target: "Ik heb mijn portemonnee thuis gelaten.", native: "ናይ ገንዘብ ቦርሳይ (ሃንድባግ) ኣብ ገዛ ሓዲገዮ።", prompt: "Typ de vertaling:" },
-          { type: "test", target: "Krijg ik mijn geld direct terug?", native: "ገንዘበይ ብቐጥታ ክምለሰለይ ድዩ፧", prompt: "Vertaal deze testzin:" }
-        ]
-      },
-      {
-        title: "ትምህርቲ 5 (Markt)",
-        items: [
-          { type: "learn", target: "Op zaterdag ga ik naar de markt.", native: "ቀዳም ቀዳም ናብ ዕዳጋ (ማርኬት) እኸይድ።", prompt: "Zet op volgorde:" },
-          { type: "speak", target: "Deze kaas is erg lekker en goedkoop.", native: "እዚ ፎርማጆ ብጣዕሚ ጥዑምን ሕሱን እዩ።", prompt: "Spreek hardop:" },
-          { type: "read", target: "De marktkoopman roept heel hard.", native: "እቲ ነጋዳይ ብዓውታ ይጭድር ኣሎ።", prompt: "Wat betekent dit?" },
-          { type: "write", target: "Ik koop hier altijd verse vis.", native: "ኣብዚ ኩሉ ግዜ ሓድሽ ዓሳ እገዝእ።", prompt: "Typ in het Nederlands:" },
-          { type: "test", target: "Het is erg druk bij de groenteman.", native: "ኣብቲ ናይ ኣሕምልቲ ድኳን ጽዑቕ ሰብ ኣሎ።", prompt: "Vertaal volledig:" }
-        ]
-      }
-    ]
-  },
-  {
-    id: 6, name: "Unit 6: ናይ መጓዓዝያ መስመር (Openbaar Vervoer)", emoji: "🚂",
-    lessons: [
-      {
-        title: "ትምህርቲ 1 (Trein)",
-        items: [
-          { type: "learn", target: "Van welk spoor vertrekt de trein?", native: "እቲ ባቡር ካብ ኣየናይ መስመር (ስፖር) ይብገስ፧", prompt: "Bouw de zin:" },
-          { type: "speak", target: "Ik moet mijn ov-chipkaart opladen.", native: "ናይ መጓዓዝያ ካርታይ (OV) ክመልኣ ኣሎኒ።", prompt: "Spreek uit:" },
-          { type: "read", target: "De trein heeft een kwartier vertraging.", native: "እቲ ባቡਰ ዓሰርተ ሓሙሽተ ደቒቕ ምድንጓይ ኣለዎ።", prompt: "Wat betekent dit?" },
-          { type: "write", target: "Moet ik op dit station overstappen?", native: "ኣብዚ መደብ ባቡር ክቅይር ኣሎኒዶ፧", prompt: "Vertaal handmatig:" },
-          { type: "test", target: "Ik heb de laatste trein gemist.", native: "ነታ ናይ መወዳእታ ባቡር ኣምሊጣተይ።", prompt: "Vertaal volledig:" }
-        ]
-      },
-      {
-        title: "ትምህርቲ 2 (Bus)",
-        items: [
-          { type: "learn", target: "Waar is de dichtstbijzijnde bushalte?", native: "እቲ ዝቐረበ ናይ ኣውቶቡስ መደብ ኣበይ ኣ|ሎ፧", prompt: "Sorteer de blokken:" },
-          { type: "speak", target: "Stopt deze bus bij het ziekenhuis?", native: "እዚ ኣውቶቡስ ኣብ ሆስፒታል ይውጠጥዶ፧", prompt: "Spreek via mic:" },
-          { type: "read", target: "Je moet achterin de bus instappen.", native: "ብድሕሪት ክትሰቅል ኣሎካ።", prompt: "Begrijp je de zin?" },
-          { type: "write", target: "De bus zit helemaal vol met mensen.", native: "እቲ ኣውቶቡስ ሙሉእ ብሰብ ተጨናኒቑ ኣሎ።", prompt: "Typ de vertaling:" },
-          { type: "test", target: "Ik moet bij de volgende halte uitstappen.", native: "ኣብ ዝቅጽል መደብ ክወርድ ኣሎኒ።", prompt: "Vertaal deze eindtest:" }
-        ]
-      },
-      {
-        title: "ትምህርቲ 3 (Inchecken)",
-        items: [
-          { type: "learn", target: "Vergeet niet uit te checken alstublieft.", native: "በጃኻ ካርታኻ ምውጻእ (ኣውት-check) ኣይትረስዕ።", prompt: "Zet op volgorde:" },
-          { type: "speak", target: "Mijn ov-chipkaart is helaas kapot.", native: "ናይ መጓዓዝያ ካርታይ ተበላሽያ (ተሰይራ)።", prompt: "Spreek hardop:" },
-          { type: "read", target: "De conducteur controleert de vervoersbewijzen.", native: "እቲ ተቖጻጻሪ ትኬት ይፍትሽ ኣሎ።", prompt: "Wat betekent het?" },
-          { type: "write", target: "Ik kan mijn kaart niet vinden.", native: "ካርታይ ክረኽባ ኣይከኣልኩን።", prompt: "Typ in het Nederlands:" },
-          { type: "test", target: "U heeft een boete gekregen hiervoor.", native: "ብሰንኪ እዚ መቕጻዕቲ ተዋሂቡካ ኣሎ።", prompt: "Vertaal volledig:" }
-        ]
-      },
-      {
-        title: "ትምህርቲ 4 (Plannen)",
-        items: [
-          { type: "learn", target: "Ik plan mijn reis via de app.", native: "ገይሸይ ብኣፕሊኬሽን እውጥን ኣለኹ።", prompt: "Sorteer de tegels:" },
-          { type: "speak", target: "Hoe laat komt de volgende bus?", native: "እቲ ዝቅጽል ኣውቶቡስ ሰዓት ክንደይ ይመጽእ፧", prompt: "Spreek uit:" },
-          { type: "read", target: "De dienstregeling is gewijzigd vanaf vandaag.", native: "ናይ ግዜ ሰሌዳ ካብ ሎሚ ተቐይሩ እዩ።", prompt: "Kies betekenis:" },
-          { type: "write", target: "Hoe lang duurt de reis naar Amsterdam?", native: "ናብ ኣምስተርዳም ክንደይ ግዜ ይወስድ፧", prompt: "Typ de vertaling:" },
-          { type: "test", target: "Rijdt er een snelbus naar het vliegveld?", native: "ናብ መዕርፎ ነፈርቲ ቅልጡፍ ኣውቶቡስ ኣሎዶ፧", prompt: "Vertaal deze testzin:" }
-        ]
-      },
-      {
-        title: "ትምህርቲ 5 (Fiets)",
-        items: [
-          { type: "learn", target: "Ik ga altijd op de fiets.", native: "ኩሉ ግዜ ብብስክሌት እኸይድ።", prompt: "Sorteer blokken:" },
-          { type: "speak", target: "Mijn fietsband is vanmorgen lek gegaan.", native: "ናይ ብስክሌተይ ጎማ ሎሚ ንግሆ ተነፊሱ።", prompt: "Spreek via mic:" },
-          { type: "read", target: "Je moet je fiets in de stalling zetten.", native: "ብስክሌትካ ኣብ መቐመጢ ከተንብሮ ኣሎካ።", prompt: "Wat betekent dit?" },
-          { type: "write", target: "Ik moet mijn ketting laten repareren.", native: "ሰንሰለት ብስክሌተይ ከዐርዮ ኣሎኒ።", prompt: "Typ de vertaling:" },
-          { type: "test", target: "Heeft u een fietspomp voor mij?", native: "ናይ ብስክሌት መርፍእ (ፓምፕ) ኣሎካዶ፧", prompt: "Vertaal volledig:" }
-        ]
-      }
-    ]
-  },
-  {
-    id: 7, name: "Unit 7: ክንክን ጥዕና (Gezondheidszorg)", emoji: "🏥",
-    lessons: [
-      {
-        title: "ትምህርቲ 1 (Huisarts)",
-        items: [
-          { type: "learn", target: "Ik moet een afspraak maken bij de huisarts.", native: "ምስ ሓኪም ገዛ (ቤት ጽሕፈት) ቆጸራ ክገብር ኣሎኒ።", prompt: "Zet op volgorde:" },
-          { type: "speak", target: "Waar heeft u precies pijn?", native: "ልክዕ ኣበይ እዩ ዝሕምመካ ዘሎ፧", prompt: "Spreek uit:" },
-          { type: "read", target: "Ik voel me al een paar dagen niet goed.", native: "ካብ ዝሓለፉ ሒደት መዓልታት ጀሚሩ ጽቡቕ ኣይስምዓንን ኣሎ።", prompt: "Wat betekent dit?" },
-          { type: "write", target: "Ik heb last van mijn rug.", native: "ሕቖይ የሕምመኒ ኣሎ።", prompt: "Typ de vertaling:" },
-          { type: "test", target: "De dokter heeft mijn bloeddruk gemeten.", native: "እቲ ሓኪም ናይ ደም ጸቕጠይ ለኪዕዎ።", prompt: "Vertaal volledig:" }
-        ]
-      },
-      {
-        title: "ትምህርቲ 2 (Apotheek)",
-        items: [
-          { type: "learn", target: "Ik haal mijn medicijnen bij de apotheek.", native: "መድሃኒተይ ካብ ቤት መድሃኒት (ኣፖተክ) እወስድ።", prompt: "Sorteer:" },
-          { type: "speak", target: "Hoe vaak per dag moet ik dit innemen?", native: "ኣብ መዓልቲ ክንደይ ግዜ ክወስዶ ኣሎኒ፧", prompt: "Spreek via mic:" },
-          { type: "read", target: "Dit medicijn kan bijwerkingen hebben.", native: "እዚ መድሃኒት እዚ ጎናዊ ጉድኣት (ኣፌክት) ክህልዎ ይኽእል እዩ።", prompt: "Begrijp je dit?" },
-          { type: "write", target: "Heeft u een recept van de arts?", native: "ካብ ሓኪም ዝተዋህበ ወረቐት (ሪሰፕት) ኣሎካዶ፧", prompt: "Typ de vertaling:" },
-          { type: "test", target: "U moet de tabletten met water doorslikken.", native: "ነቲ ጽሩይ መድሃኒት ብማይ ክትውሕጦ ኣሎካ።", prompt: "Vertaal volledig:" }
-        ]
-      },
-      {
-        title: "ትምህርቲ 3 (Symptomen)",
-        items: [
-          { type: "learn", target: "Ik heb hoge koorts en hoofdpijn.", native: "ልዑል ረስንን ርእሲ ሕማምን ኣሎኒ።", prompt: "Sorteer de blokken:" },
-          { type: "speak", target: "Mijn keel is erg pijnlijk en dik.", native: "ጎረሮይ ብጣዕሚ የሕምመንን ሓቢጡን ኣሎ።", prompt: "Spreek uit:" },
-          { type: "read", target: "Ik moet de hele tijd hoesten.", native: "ምሉእ ግዜ ክሰዓል ውዒለ።", prompt: "Wat betekent het?" },
-          { type: "write", target: "Ik ben misselijk en moet overgeven.", native: "ልበይ የዕውሸኒ ኣሎ ክተፍእ ድማ እደሊ።", prompt: "Typ de vertaling:" },
-          { type: "test", target: "Heeft u ook last van uw darmen?", native: "መዓናጡኻ እውን የሕምመካ ኣሎዶ፧", prompt: "Vertaal volledig:" }
-        ]
-      },
-      {
-        title: "ትምህርቲ 4 (Tandarts)",
-        items: [
-          { type: "learn", target: "Ik heb vreselijke kiespijn sinds gisteren.", native: "ካብ ትማሊ ጀሚሩ ብርቱዕ ናይ ስኒ ሕማም ኣሎኒ።", prompt: "Zet de woorden goed:" },
-          { type: "speak", target: "Er moet een gaatje gevuld worden.", native: "ሓደ ነክዕ ስኒ ክድፈን ኣለዎ።", prompt: "Spreek via mic:" },
-          { type: "read", target: "U moet twee keer per dag poetsen.", native: "ኣብ መዓልቲ ክልተ ግዜ ስንኻ ክትሓጽብ ኣሎካ።", prompt: "Kies betekenis:" },
-          { type: "write", target: "Mijn tandvlees bloedt heel snel.", native: "ናይ ስኒ ሙሽሊይ ብቀሊሉ ደም ይፈስሶ።", prompt: "Typ de vertaling:" },
-          { type: "test", target: "De volgende controle is over zes maanden.", native: "እቲ ዝቅጽል መርመራ ድሕሪ ሹድሽተ ወርሒ እዩ።", prompt: "Vertaal volledig:" }
-        ]
-      },
-      {
-        title: "ትምህርቲ 5 (Spoed)",
-        items: [
-          { type: "learn", target: "Bel direct een ambulance voor hem.", native: "ብቕልጡፍ ናይ ሓደጋ መኪና (ኣምቡላንስ) ደውለሉ Sun።", prompt: "Sorteer de tegels:" },
-          { type: "speak", target: "Het is een spoedgeval, haast u.", native: "ህጹጽ ሓደጋ እዩ፥ ተቐልጠፉ።", prompt: "Spreek hardop:" },
-          { type: "read", target: "De eerste hulp is aan de achterkant.", native: "ናይ መጀመርታ ሓገዝ (ክፍሊ ሓደጋ) ብድሕሪት ኣሎ።", prompt: "Wat betekent dit?" },
-          { type: "write", target: "Mijn vinger bloedt heel erg hard.", native: "ዓባይ ኣጻብዕተይ ብርቱዕ ደም ይፈስሳ ኣላ።", prompt: "Typ de vertaling:" },
-          { type: "test", target: "Hij is buiten bewustzijn geraakt net.", native: "ንሱ ሕጂ ውኖኡ ስሒቱ (ወዲቑ) ኣሎ።", prompt: "Vertaal completely:" }
-        ]
-      }
-    ]
-  },
-  {
-    id: 8, name: "Unit 8: ምምዝጋብን መንበሪ ፍቓድን (Gemeente & Vergunning)", emoji: "🏛️",
-    lessons: [
-      {
-        title: "ትምህርቲ 1 (Gemeentehuis)",
-        items: [
-          { type: "learn", target: "Ik moet me inschrijven bij de gemeente.", native: "ኣብ ከተማ (ገመይንተ) ክምዝገብ ኣሎኒ።", prompt: "Zet op volgorde:" },
-          { type: "speak", target: "Heeft u uw identiteitsbewijs bij u?", native: "ናይ መንነት ወረቐትካ (ID) ሒዝካዶ ኣለኻ፧", prompt: "Spreek uit:" },
-          { type: "read", target: "U moet een afspraak maken via internet.", native: "ብኢንተርነት ቆጸራ ክትገብር ኣሎካ።", prompt: "Wat betekent dit?" },
-          { type: "write", target: "Ik ben onlangs verhuisd naar een ander adres.", native: "ናብ ሓድሽ ኣድራሻ ተቐይረ (ተወሲደ) ኣለኹ።", prompt: "Typ de vertaling:" },
-          { type: "test", target: "De wachttijd kan behoorlijk lang zijn.", native: "እቲ ናይ ምጽባይ ግዜ ብጣዕሚ ነዊሕ ክኸውን ይኽእል እዩ።", prompt: "Vertaal volledig:" }
-        ]
-      },
-      {
-        title: "ትምህርቲ 2 (BSN)",
-        items: [
-          { type: "learn", target: "Wat is uw burgerservicenummer precies?", native: "እቲ ናይ ሰብኣዊ ኣገልግሎት ቁጽሪካ (BSN) ክንደይ እዩ፧", prompt: "Sorteer de blokken:" },
-          { type: "speak", target: "Ik heb dit nummer nodig voor mijn werk.", native: "እዚ ቁጽሪ እዚ ንስራሕ የድልየኒ እዩ።", prompt: "Spreek via mic:" },
-          { type: "read", target: "U ontvangt de brief binnen vijf werkdagen.", native: "ነታ ደብዳቤ ውሽጢ ሓሙሽተ መዓልታት ስራሕ ክትረኽባ ኢኻ።", prompt: "Begrijp je dit?" },
-          { type: "write", target: "Heeft u dit formulier al ondertekend?", native: "ነዚ ፎርም እዚ ፈሪምካዮዶ፧", prompt: "Typ de vertaling:" },
-          { type: "test", target: "Dit document is officieel geldig in Nederland.", native: "እዚ ሰነድ እዚ ኣብ ሆላንድ ሕጋዊ ፈቓድ ኣለዎ።", prompt: "Vertaal volledig:" }
-        ]
-      },
-      {
-        title: "ትምህርቲ 3 (Verblijfsvergunning)",
-        items: [
-          { type: "learn", target: "Mijn verblijfsvergunning verloopt volgende maand.", native: "ናይ መንበሪ ፍቓደይ ዝቅጽል ወርሒ ከብቅዕ እዩ።", prompt: "Sorteer:" },
-          { type: "speak", target: "Ik moet een verlenging aanvragen bij de IND.", native: "ኣብ IND ናይ ግዜ መናውሒ ከማልክት ኣሎኒ።", prompt: "Spreek uit:" },
-          { type: "read", target: "De procedure kan veel tijd kosten.", native: "እቲ መስርሕ ብዙሕ ግዜ ክወስድ ይኽእል እዩ።", prompt: "Wat betekent het?" },
-          { type: "write", target: "Heeft u alle documenten compleet verzameld?", native: "ኩሉ ሰነዳት ምሉእ ኣኪብካዮዶ፧", prompt: "Typ de vertaling:" },
-          { type: "test", target: "U krijgt schriftelijk bericht van ons.", native: "ብጽሑፍ መልእኽቲ ክንሰደልካ ኢና።", prompt: "Vertaal volledig:" }
-        ]
-      },
-      {
-        title: "ትምህርቲ 4 (Paspoort)",
-        items: [
-          { type: "learn", target: "Ik wil mijn paspoort vernieuwen.", native: "ፓስፖርተይ ክሕድሶ እደሊ ኣለኹ።", prompt: "Zet de woorden goed:" },
-          { type: "speak", target: "U moet een nieuwe pasfoto inleveren.", native: "ሓዳስ ናይ ፓስፖርት ስእሊ ክተምጽእ ኣሎካ።", prompt: "Spreek via mic:" },
-          { type: "read", target: "Uw oude paspoort moet u inleveren.", native: "ነቲ ድሑር ፓስፖርትካ ክተረክቦ ኣሎካ።", prompt: "Kies betekenis:" },
-          { type: "write", target: "Hoeveel kost het aanvragen van een identiteitskaart?", native: "መንነት ወረቐት ንምስራሕ ክንደይ ይበጽሕ፧", prompt: "Typ de vertaling:" },
-          { type: "test", target: "Het document ligt over een week klaar.", native: "እቲ ሰነድ ድሕሪ ሓደ ሰሙን ድሉው ክኸውን እዩ።", prompt: "Vertaal volledig:" }
-        ]
-      },
-      {
-        title: "ትምህርቲ 5 (Rijbewijs)",
-        items: [
-          { type: "learn", target: "Ik heb mijn Nederlandse rijbewijs gehaald.", native: "ናይ ሆላንድ መምርሒ ፍቓደይ ኣውጺአ ኣለኹ።", prompt: "Sorteer de tegels:" },
-          { type: "speak", target: "Is mijn buitenlandse rijbewijs hier geldig?", native: "ናይ ወጻኢ ሃገር መምርሒ ፍቓደይ ኣብዚ ሕጋዊ ድዩ፧", prompt: "Spreek hardop:" },
-          { type: "read", target: "U moet uw rijbewijs omwisselen bij de gemeente.", native: "ኣብ ከተማ ከተለዋውጦ ኣሎካ።", prompt: "Wat betekent dit?" },
-          { type: "write", target: "Ik ben mijn rijbewijs kwijtgeraakt gisteren.", native: "ትማሊ መምርሒ ፍቓደይ ጠፊኡኒ።", prompt: "Typ de vertaling:" },
-          { type: "test", target: "Het rijden zonder rijbewijs is ten strengste verboden.", native: "ብዘይ መምርሒ ፍቓድ ምዝዋር ፍጹም ክልኩል እዩ።", prompt: "Vertaal completely:" }
-        ]
-      }
-    ]
-  },
-  {
-    id: 9, name: "Unit 9: ሓደጋን ህጹጽ እዋንን (Noodsituaties & Politie)", emoji: "🚨",
-    lessons: [
-      {
-        title: "ትምህርቲ 1 (112)",
-        items: [
-          { type: "learn", target: "Bel direct het alarmnummer honderdtwaalf.", native: "ብቕልጡፍ ናይ ሓደጋ ቁጽሪ 112 ደውል።", prompt: "Zet op volgorde:" },
-          { type: "speak", target: "Er is een ongeluk gebeurd op de snelweg.", native: "ኣብቲ ዓብዪ ጽርግያ ሓደጋ ተፈጢሩ ኣሎ።", prompt: "Spreek uit:" },
-          { type: "read", target: "Blijf rustig en vertel wat er aan de hand is.", native: "ረጋእ በል እሞ እንታይ ከም ዝተፈጥረ ንገረና።", prompt: "Wat betekent dit?" },
-          { type: "write", target: "Er is brand uitgebroken in de keuken.", native: "ኣብ ክሽነ ሓዊ ተ ባሪዑ ኣሎ።", prompt: "Typ de vertaling:" },
-          { type: "test", target: "De ambulance is al onderweg naar u.", native: "ናይ ሓደጋ መኪና ሕጂ ናብኣኻ ይመጽእ ኣሎ።", prompt: "Vertaal volledig:" }
-        ]
-      },
-      {
-        title: "ትምህርቲ 2 (Politie)",
-        items: [
-          { type: "learn", target: "Ik moet aangifte doen van diefstal.", native: "ብዛዕባ ስርቂ ሪፖርት ክገብር (ክጠርሕ) ኣሎኒ።", prompt: "Sorteer:" },
-          { type: "speak", target: "Mijn fiets is vannacht gestolen.", native: "ብስክሌተይ ሎሚ ምሸት ተሰሪቓ።", prompt: "Spreek via mic:" },
-          { type: "read", target: "De politie heeft de dief gelukkig gevangen.", native: "ፖሊስ ነቲ ስራቒ ሒዞምዎ ኣለዉ።", prompt: "Begrijp je dit?" },
-          { type: "write", target: "Mijn tas is uit mijn handen getrokken.", native: "ቦርሳይ ካብ ኣእዳወይ ተመንጢሉ ጠፊኡ።", prompt: "Typ de vertaling:" },
-          { type: "test", target: "Kunt u de dader precies beschrijven?", native: "ነቲ ገበነኛ ልክዕ ክትገልጾ ትኽእልዶ፧", prompt: "Vertaal volledig:" }
-        ]
-      },
-      {
-        title: "ትምህርቲ 3 (Verlies)",
-        items: [
-          { type: "learn", target: "Ik ben al mijn belangrijke documenten kwijt.", native: "ኩሉ ኣገደስቲ ሰነዳተይ ጠፊኡኒ ኣሎ።", prompt: "Sorteer de blokken:" },
-          { type: "speak", target: "Waar kan ik verloren voorwerpen aangeven?", native: "ዝጠፈኣ ነገራት ኣበይ ሪፖርት ክገብር ይኽእል፧", prompt: "Spreek uit:" },
-          { type: "read", target: "Heeft iemand mijn sleutels gevonden?", native: "መፍትሄይ ዝረኸበ ሰብ ኣሎዶ፧", prompt: "Wat betekent it?" },
-          { type: "write", target: "Ik moet mijn bankpas direct blokkeren.", native: "ናይ ባንክ ካርታይ ብቕልጡፍ ክዓጽዎ (ክዓግቶ) ኣሎኒ።", prompt: "Typ de vertaling:" },
-          { type: "test", target: "Ik ben erg opgelucht dat het terug is.", native: "ብምምላሱ ብጣዕሚ ተደሲሰ (ተንፈስኩ) ኣለኹ።", prompt: "Vertaal volledig:" }
-        ]
-      },
-      {
-        title: "ትምህርቲ 4 (Eerste Hulp)",
-        items: [
-          { type: "learn", target: "Heeft u een verbanddoos in de auto?", native: "ኣብ መኪና ናይ መጀመርታ ሓገዝ ሳንዱቕ ኣሎካዶ፧", prompt: "Zet de woorden goed:" },
-          { type: "speak", target: "Hij heeft zijn been gebroken.", native: "እግሩ ተሰይሩ ኣሎ።", prompt: "Spreek via mic:" },
-          { type: "read", target: "Druk stevig op de wond om het bloeden te stoppen.", native: "ነቲ ደም ደው ንምባል ነቲ ማህሰይቲ ጽቡቕ ጌርካ ጸቐጦ።", prompt: "Kies betekenis:" },
-          { type: "write", target: "Ik heb een grote blaar op mijn voet.", native: "ኣብ እግረይ ዓቢ ብላስተር (ሑጓ) ወጺኡኒ።", prompt: "Typ de vertaling:" },
-          { type: "test", target: "Kunt u mij helpen om op te staan?", native: "ክትሕግዘኒ ትኽእልዶ ክትንስእ፧", prompt: "Vertaal volledig:" }
-        ]
-      },
-      {
-        title: "ትምህርቲ 5 (Verzekering)",
-        items: [
-          { type: "learn", target: "Ik moet de schade melden bij mijn verzekering.", native: "ነቲ ዕንወት ንናይ መድሕን (ኢንሹራንስ) ኩባንያ ክሕብር ኣሎኒ።", prompt: "Sorteer de tegels:" },
-          { type: "speak", target: "Ben ik verzekerd voor deze diefstal?", native: "ነዚ ስርቂ እዚ መድሕን ኣሎኒዶ፧", prompt: "Spreek hardop:" },
-          { type: "read", target: "U moet een foto maken van de schade.", native: "ናይቲ ዕንወት ስእሊ ክተልዕል ኣሎካ።", prompt: "Wat betekent ሕጂ?" },
-          { type: "write", target: "Het eigen risico is dit jaar erg hoog.", native: "ናይ ገዛእ ርእስኻ ሓላፍነት (Eigen risico) ሎሚ ዓመት ልዑል እዩ።", prompt: "Typ de vertaling:" },
-          { type: "test", target: "De verzekering betaalt de kosten gelukkig terug.", native: "እቲ ኢንሹራንስ ነቲ ሒሳብ ይኸፍሎ ኣሎ።", prompt: "Vertaal completely:" }
-        ]
-      }
-    ]
-  },
-  {
-    id: 10, name: "Unit 10: መሓዙትን ማሕበራዊ ህይወትን (Vrienden & Vrije Tijd)", emoji: "🥳",
-    lessons: [
-      {
-        title: "ትምህርቲ 1 (Uitnodiging)",
-        items: [
-          { type: "learn", target: "Ik wil je uitnodigen voor mijn verjaardag.", native: "ንልደተይ ክዓድመካ እደሊ ኣለኹ።", prompt: "Zet op volgorde:" },
-          { type: "speak", target: "Kom je ook gezellig op mijn feestje?", native: "ናብቲ ጽንብል (ፓርቲ) ክትመጽእ ኢኻዶ፧", prompt: "Spreek uit:" },
-          { type: "read", target: "Ik kan helaas niet komen vanwege werk.", native: "بەדአኺ جەካ ብሰንኪ ስራሕ ክመጽእ ኣይክእልን።", prompt: "Wat betekent dit?" },
-          { type: "write", target: "Hoe laat begint het feest aanstaande zaterdag?", native: "እቲ ፓርቲ ዝቅጽል ቀዳም ሰዓት ክንደይ ይጀምር፧", prompt: "Typ de vertaling:" },
-          { type: "test", target: "Ik neem een lekker cadeau voor je mee.", native: "ጽቡቕ ህያብ (ጋፍት) ክማልኣልካ እየ።", prompt: "Vertaal volledig:" }
-        ]
-      },
-      {
-        title: "ትምህርቲ 2 (Hobby's)",
-        items: [
-          { type: "learn", target: "In mijn vrije tijd voetbal ik vaak.", native: "ኣብ ናይ ዕረፍቲ ግዜይ ኩዕሶ እጻወት እየ።", prompt: "Sorteer:" },
-          { type: "speak", target: "Wat zijn jouw hobby's eigenlijk?", native: "ናይ መዘናግዒኻ (ሆቢ) እንታይ እዩ፧", prompt: "Spreek via mic:" },
-          { type: "read", target: "Zij houdt erg veel van koken en bakken.", native: "ንሳ ምኽሻንን ባኒ ምስራሕን ብጣዕሚ ትፈቱ።", prompt: "Begrijp je dit?" },
-          { type: "write", target: "Ik luister graag naar muziek tijdens het wandelen.", native: "ኣብ እዋን ጉዕዞ ሙዚቃ ምስማዕ እፈቱ።", prompt: "Typ de vertaling:" },
-          { type: "test", target: "Morgen ga ik naar de sportschool.", native: "ጽባሕ ናይ ምውስዋስ ኣካል ክፍሊ (ጂም) ክኸይድ እየ።", prompt: "Vertaal volledig:" }
-        ]
-      },
-      {
-        title: "ትምህርቲ 3 (Koffie drinken)",
-        items: [
-          { type: "learn", target: "Zullen we samen een kopje koffie drinken?", native: "ብሓባር ሓደ ፊንጃል ቡን ክንሰቲ ንኽእልዶ፧", prompt: "Sorteer de blokken:" },
-          { type: "speak", target: "Ik heb veel te vertellen aan jou.", native: "ብዙሕ ክነግረካ ዝደሊ ነገር ኣሎኒ።", prompt: "Spreek uit:" },
-          { type: "read", target: "Het is alweer een tijdje geleden dat we praatten.", native: "ካብ ዝተዘራረብና ሓጺር እዋን ጌርና ኣለና።", prompt: "Wat betekent het?" },
-          { type: "write", target: "Wanneer heb je tijd om af te spreken?", native: "መዓስ ግዜ ኣሎካ ክንራኸብ፧", prompt: "Typ de vertaling:" },
-          { type: "test", target: "Ik vond het echt heel gezellig vandaag.", native: "ናይ ሎሚ ግዜ ብጣዕሚ ደስ ዝብል ነይሩ።", prompt: "Vertaal volledig:" }
-        ]
-      },
-      {
-        title: "ትምህርቲ 4 (Park)",
-        items: [
-          { type: "learn", target: "Het is heerlijk weer voor een wandeling in het park.", native: "ኣብ ፓርክ ንምጉዓዝ ብጣዕሚ ደስ ዝብል ኣየር እዩ።", prompt: "Zet de woorden goed:" },
-          { type: "speak", target: "Zullen we gaan barbecueën vanavond?", native: "ሎሚ ምሸት ስጋ ክነንድድ (ባርበኪው) ንኽእልዶ፧", prompt: "Spreek via mic:" },
-          { type: "read", target: "Kinderen spelen graag in de speeltuin.", native: "ህጻናት ኣብ መጻወቲ ቦታ ክጻወቱ ይፈትዉ።", prompt: "Kies betekenis:" },
-          { type: "write", target: "Ik neem een kleed mee om op te zitten.", native: "ዝቕመጠሉ ምንጻፍ ሒዘ ክመጽእ እየ።", prompt: "Typ de vertaling:" },
-          { type: "test", target: "Het park is erg druk in het weekend.", native: "እቲ ፓርክ ኣብ መወዳእታ ሰሙን ሰብ ይበዝሖ።", prompt: "Vertaal volledig:" }
-        ]
-      },
-      {
-        title: "ትምህርቲ 5 (Familie)",
-        items: [
-          { type: "learn", target: "Mijn familie woont nog in het buitenland.", native: "ስድራቤተይ ገና ኣብ ወጻኢ ሃገር ይነብሩ ኣለዉ።", prompt: "Sorteer de tegels:" },
-          { type: "speak", target: "Ik mis mijn ouders heel erg.", native: "ንወለደይ ብጣዕሚ ናፊቐዮም ኣለኹ።", prompt: "Spreek hardop:" },
-          { type: "read", target: "Mijn broer komt volgende week op bezoek.", native: "ሓወይ ዝቅጽል ሰሙን ክበጽሓኒ ክመጽእ እዩ。 ", prompt: "Wat betekent dit?" },
-          { type: "write", target: "Ik heb twee zussen en één broer.", native: "ክልተ ኣሓትን ሓደ ሓውን ኣሎኒ።", prompt: "Typ de vertaling:" },
-          { type: "test", target: "We bellen elkaar bijna elke dag via video.", native: "ዳርጋ ኩሉ መዓልቲ ብቪድዮ ንራኸብ ኢና።", prompt: "Vertaal completely:" }
-        ]
-      }
-    ]
-  },
-  // Dynamic expansions for Units 11 to 20 to ensure 500 hardcoded practical real world data sentences function perfectly
-  {
-    id: 11, name: "Unit 11: ስራሕ ቦታን መሳርሕትን (Werkplek & Collega's)", emoji: "🏢",
-    lessons: []
-  },
-  { id: 12, name: "Unit 12: ገዛ ምካራይን ኢንተርነትን (Wonen & Internet)", emoji: "🏠", lessons: [] },
-  { id: 13, name: "Unit 13: ባንክን ኤኮኖምን (Bankzaken & Geld)", emoji: "💳", lessons: [] },
-  { id: 14, name: "Unit 14: ፖስታን መልእኽትታትን (Post & Pakketten)", emoji: "📦", lessons: [] },
-  { id: 15, name: "Unit 15: ክረምትን ኩነታት ኣየርን (Weer & Seizoenen)", emoji: "☀️", lessons: [] },
-  { id: 16, name: "Unit 16: ምምዛጋብ ህጻናትን ኣስተምህሮን (Kinderopvang & Opvoeding)", emoji: "👶", lessons: [] },
-  { id: 17, name: "Unit 17: ስፖርትን ምዝንጋዕን (Sport & Recreatie)", emoji: "⚽", lessons: [] },
-  { id: 18, name: "Unit 18: ክዳውንትን ስፌትን (Kleding & Uiterlijk)", emoji: "👕", lessons: [] },
-  { id: 19, name: "Unit 19: መካይንን ጽገናን (Verkeer & Auto)", emoji: "🚗", lessons: [] },
-  { id: 20, name: "Unit 20: ናይ መወዳእታ ክእለት ፈተና (Gevorderde Conversatie)", emoji: "🏆", lessons: [] }
+// ============================================
+// VOCABULARY DATA: Dutch + Tigrinya
+// Sources: TaalCompleet A1-A2 wordlist + original sentence course
+// ============================================
+const VOCABULARY = [
+  // --- WORDS FROM PDF (TaalCompleet A1-A2) ---
+  { dutch: "aan¹", tigrinya: "+መልኣ/በርሃ\' ኣሎ", type: "word", category: "Prepositions", example: "Het licht staat aan." },
+  { dutch: "aan²", tigrinya: "ኣብ", type: "word", category: "Prepositions", example: "Ik woon aan de straat." },
+  { dutch: "aan de beurt zijn", tigrinya: "+ርእዩ/ርእዩ መቐለ", type: "phrase", category: "Phrases", example: "Jij bent aan de beurt." },
+  { dutch: "aan de linkerkant", tigrinya: "ጸጋም", type: "phrase", category: "Directions", example: "De winkel is aan de linkerkant." },
+  { dutch: "aan de rechterkant", tigrinya: "የማን", type: "phrase", category: "Directions", example: "Het huis staat aan de rechterkant." },
+  { dutch: "aan het eind", tigrinya: "ኣብ መወዳእታ", type: "phrase", category: "Time", example: "Aan het eind van de dag." },
+  { dutch: "aanbieden", tigrinya: "መቅረብ", type: "verb", category: "Verbs", example: "Ik bied je een kopje koffie aan." },
+  { dutch: "de aandacht", tigrinya: "ኣድላል", type: "noun", category: "Nouns", example: "Pay attention!" },
+  { dutch: "aanhebben", tigrinya: "መልበስ", type: "verb", category: "Verbs", example: "Ik heb een jas aan." },
+  { dutch: "aankleden", tigrinya: "መልበስ (ሓደሽ)", type: "verb", category: "Verbs", example: "Kleed je aan, we gaan." },
+  { dutch: "aankomen", tigrinya: "ኣብ ገጽ መምጽእ", type: "verb", category: "Verbs", example: "Wanneer kom je aan?" },
+  { dutch: "zich aanmelden", tigrinya: "ምምዝጋብ መዝገብ", type: "verb", category: "Verbs", example: "Meld je aan voor de cursus." },
+  { dutch: "het aantal", tigrinya: "ብዝሒ: መጠን", type: "noun", category: "Nouns", example: "Het aantal studenten is groot." },
+  { dutch: "aantrekken", tigrinya: "ክዳን መልበስ/መኽደን", type: "verb", category: "Verbs", example: "Trek je jas aan, het is koud." },
+  { dutch: "aanvragen", tigrinya: "ምምልከት", type: "verb", category: "Verbs", example: "Ik vraag een visum aan." },
+  { dutch: "aanwezig", tigrinya: "መህላው", type: "adjective", category: "Adjectives", example: "Is iedereen aanwezig?" },
+  { dutch: "aanwijzen", tigrinya: "መምልከት", type: "verb", category: "Verbs", example: "Wijs de weg aan." },
+  { dutch: "de aardappel", tigrinya: "ድንሽ", type: "noun", category: "Food", example: "Ik eet graag aardappels." },
+  { dutch: "de aarde", tigrinya: "ምድር/መሬት", type: "noun", category: "Nature", example: "De aarde is rond." },
+  { dutch: "aardig", tigrinya: "ርሑስ", type: "adjective", category: "Adjectives", example: "Zij is een aardige vrouw." },
+  { dutch: "acht", tigrinya: "ሸሞንተ", type: "number", category: "Numbers", example: "Ik heb acht appels." },
+  { dutch: "achter", tigrinya: "ብድሕሪ", type: "preposition", category: "Prepositions", example: "De auto staat achter het huis." },
+  { dutch: "de achternaam", tigrinya: "ስም ኣቦ", type: "noun", category: "Identity", example: "Wat is je achternaam?" },
+  { dutch: "achtste", tigrinya: "ሸሞንተይ", type: "number", category: "Numbers", example: "Hij is de achtste in de rij." },
+  { dutch: "achttien", tigrinya: "ዓሰርተ ሸሞንተ", type: "number", category: "Numbers", example: "Ik ben achttien jaar oud." },
+  { dutch: "de activiteit", tigrinya: "ኣንጻ ተዋስኦታት መንቀሳቐሳት", type: "noun", category: "Nouns", example: "Wat is je favoriete activiteit?" },
+  { dutch: "het adres", tigrinya: "ኣድራሻ", type: "noun", category: "Identity", example: "Wat is je adres?" },
+  { dutch: "de advertentie", tigrinya: "ማስታወቂ/ማስተዋወቂ", type: "noun", category: "Media", example: "Ik zag een advertentie in de krant." },
+  { dutch: "het advies", tigrinya: "ምኽር", type: "noun", category: "Nouns", example: "Heb je advies voor mij?" },
+  { dutch: "de advocaat", tigrinya: "ዓቃቢ ሕግ/ሞኽር", type: "noun", category: "Professions", example: "Mijn advocaat helpt mij." },
+  { dutch: "af", tigrinya: "ትሕተይ", type: "adverb", category: "Adverbs", example: "Doe de radio af." },
+  { dutch: "af en toe", tigrinya: "ሓደ ሓደ ግዜ", type: "phrase", category: "Phrases", example: "Af en toe ga ik naar de bioscoop." },
+  { dutch: "de afdeling", tigrinya: "ክፍሊ/መደባ", type: "noun", category: "Work", example: "Ik werk op de verkoopafdeling." },
+  { dutch: "afgelopen", tigrinya: "መወዳእታ/ዝተወዳእ", type: "adjective", category: "Time", example: "Het is afgelopen week gebeurd." },
+  { dutch: "afmaken", tigrinya: "መውዳእ", type: "verb", category: "Verbs", example: "Maak je huiswerk af." },
+  { dutch: "zich afmelden", tigrinya: "ምምዝጋብ መዝገብ", type: "verb", category: "Verbs", example: "Meld je af als je niet komt." },
+  { dutch: "afscheid nemen", tigrinya: "ምብዳህ/ምፍላይ", type: "phrase", category: "Phrases", example: "We nemen afscheid van onze collega." },
+  { dutch: "de afspraak", tigrinya: "ቃለ-መጠይቕ", type: "noun", category: "Social", example: "Ik heb een afspraak met de dokter." },
+  { dutch: "afspreken", tigrinya: "ምምዝጋብ/ውዕል", type: "verb", category: "Verbs", example: "Laten we afspreken in het café." },
+  { dutch: "het afval", tigrinya: "ጓሓፍ", type: "noun", category: "Household", example: "Gooi het afval in de bak." },
+  { dutch: "afwassen", tigrinya: "ድስታት ምሕጻብ", type: "verb", category: "Household", example: "Ik was de borden af." },
+  { dutch: "afwezig", tigrinya: "መበራሪ", type: "adjective", category: "Adjectives", example: "Hij is vandaag afwezig." },
+  { dutch: "de agenda", tigrinya: "መዓልታዊ/ኣጀንዳ", type: "noun", category: "Work", example: "Noteer het in je agenda." },
+  { dutch: "al", tigrinya: "ኩሉ/ኩሉ ግዜ", type: "adverb", category: "Adverbs", example: "Is hij al hier?" },
+  { dutch: "de alcohol", tigrinya: "ኣልኮል", type: "noun", category: "Food", example: "Deze drank bevat alcohol." },
+  { dutch: "alle", tigrinya: "ኩሉ", type: "pronoun", category: "Pronouns", example: "Alle studenten zijn aanwezig." },
+  { dutch: "allebei", tigrinya: "ክልተ/ክልተኦም", type: "pronoun", category: "Pronouns", example: "We gaan allebei mee." },
+  { dutch: "alleen", tigrinya: "ንብረቱ", type: "adverb", category: "Adverbs", example: "Ik woon alleen." },
+  { dutch: "allemaal", tigrinya: "ኩሉ/ዅሉ", type: "pronoun", category: "Pronouns", example: "Dank jullie allemaal!" },
+  { dutch: "allerlei", tigrinya: "ኩሉ ዓይነት/ብምልኣት", type: "adjective", category: "Adjectives", example: "Er zijn allerlei mensen hier." },
+  { dutch: "alles", tigrinya: "ኩሉ ነገር", type: "pronoun", category: "Pronouns", example: "Alles is goed." },
+  { dutch: "als", tigrinya: "ከም/እንተ", type: "conjunction", category: "Grammar", example: "Als het regent, blijf ik thuis." },
+  { dutch: "alsjeblieft", tigrinya: "በጃኻ/በጃኺ", type: "phrase", category: "Phrases", example: "Een koffie, alsjeblieft." },
+  { dutch: "altijd", tigrinya: "ኩሉ ግዜ/ሰላም", type: "adverb", category: "Adverbs", example: "Ik drink altijd koffie in de ochtend." },
+  { dutch: "alvast", tigrinya: "ኩሉ ስዒብ", type: "adverb", category: "Adverbs", example: "Alvast bedankt!" },
+  { dutch: "alweer", tigrinya: "ድጊም", type: "adverb", category: "Adverbs", example: "Ben je alweer terug?" },
+  { dutch: "ander, andere", tigrinya: "ካልእ", type: "adjective", category: "Adjectives", example: "Ik wil een andere kleur." },
+  { dutch: "anders", tigrinya: "ካልእ ኣገባብ", type: "adverb", category: "Adverbs", example: "Doe het anders." },
+  { dutch: "het antwoord", tigrinya: "መልሲ", type: "noun", category: "Nouns", example: "Wat is het antwoord?" },
+  { dutch: "apart", tigrinya: "ብተፈጻሚ/ብሓደ", type: "adjective", category: "Adjectives", example: "We betalen apart." },
+  { dutch: "de apotheek", tigrinya: "ፋርማሲ", type: "noun", category: "Health", example: "Ik ga naar de apotheek." },
+  { dutch: "het apparaat", tigrinya: "መሳርሒ", type: "noun", category: "Technology", example: "Dit apparaat is nieuw." },
+  { dutch: "de appel", tigrinya: "ተፋራስ", type: "noun", category: "Food", example: "Ik eet een appel." },
+  { dutch: "april", tigrinya: "ሚያዝያ", type: "noun", category: "Time", example: "Mijn verjaardag is in april." },
+  { dutch: "de arm", tigrinya: "ክኢል", type: "noun", category: "Body", example: "Mijn arm doet pijn." },
+  { dutch: "de armband", tigrinya: "ንክኢል ዘሎ ጌጢ", type: "noun", category: "Clothing", example: "Ze draagt een mooie armband." },
+  { dutch: "de assistente", tigrinya: "ተሓዋሲት", type: "noun", category: "Professions", example: "De assistente helpt de dokter." },
+  { dutch: "augustus", tigrinya: "ነሓሰ", type: "noun", category: "Time", example: "In augustus is het warm." },
+  { dutch: "de auto", tigrinya: "መኪና", type: "noun", category: "Transport", example: "Ik rij met de auto naar werk." },
+  { dutch: "de avond", tigrinya: "ምሸት", type: "noun", category: "Time", example: "In de avond kijk ik tv." },
+  { dutch: "het avondeten", tigrinya: "ዕረፍቲ", type: "noun", category: "Food", example: "Het avondeten is klaar." },
+  { dutch: "de baan", tigrinya: "ስራሕ", type: "noun", category: "Work", example: "Ik zoek een nieuwe baan." },
+  { dutch: "de baard", tigrinya: "ጽማሚ", type: "noun", category: "Body", example: "Hij heeft een lange baard." },
+  { dutch: "de baas", tigrinya: "ሓላፊ", type: "noun", category: "Work", example: "De baas is vandaag niet hier." },
+  { dutch: "de baby", tigrinya: "ህጻን", type: "noun", category: "Family", example: "De baby slaapt." },
+  { dutch: "het bad", tigrinya: "ናይ መታሓዝ ገዛ", type: "noun", category: "Household", example: "Ik neem een bad." },
+  { dutch: "de badkamer", tigrinya: "መታሓዝ ገዛ ክፍሊ", type: "noun", category: "Household", example: "De badkamer is boven." },
+  { dutch: "bakken", tigrinya: "መሓዊ", type: "verb", category: "Verbs", example: "Ik bak een taart." },
+  { dutch: "de bakker", tigrinya: "እንዳ ዳቦ", type: "noun", category: "Professions", example: "De bakker maakt vers brood." },
+  { dutch: "de bal", tigrinya: "ኩዕሶ", type: "noun", category: "Objects", example: "De kinderen spelen met de bal." },
+  { dutch: "het balkon", tigrinya: "ናይ ገዛ ጣዕሚ ዘሎ ቦታ", type: "noun", category: "Household", example: "Ik zit op het balkon." },
+  { dutch: "de banaan", tigrinya: "ሙዝ", type: "noun", category: "Food", example: "Eet een banaan, het is gezond." },
+  { dutch: "bang", tigrinya: "ፍርሃት", type: "adjective", category: "Adjectives", example: "Ik ben bang voor honden." },
+  { dutch: "de bank", tigrinya: "ሶፋ", type: "noun", category: "Household", example: "Zit op de bank." },
+  { dutch: "de bar", tigrinya: "ባር", type: "noun", category: "Food", example: "We ontmoeten elkaar in de bar." },
+  { dutch: "de basisschool", tigrinya: "መባእታ ቤት ትምህርቲ", type: "noun", category: "Education", example: "Mijn kind zit op de basisschool." },
+  { dutch: "de batterij", tigrinya: "ባትሪ", type: "noun", category: "Technology", example: "De batterij is leeg." },
+  { dutch: "beantwoorden", tigrinya: "መልሲ", type: "verb", category: "Verbs", example: "Beantwoord de vraag." },
+  { dutch: "het bed", tigrinya: "መደቀሲ", type: "noun", category: "Household", example: "Ik ga naar bed." },
+  { dutch: "bedanken", tigrinya: "ምምስጋን", type: "verb", category: "Verbs", example: "Ik bedank je voor je hulp." },
+  { dutch: "bedankt", tigrinya: "ይቕረታ", type: "phrase", category: "Phrases", example: "Bedankt voor alles!" },
+  { dutch: "bedenken", tigrinya: "ብሓሳብ ምሕሳብ", type: "verb", category: "Verbs", example: "Bedenk een goed plan." },
+  { dutch: "bedoelen", tigrinya: "ማለት", type: "verb", category: "Verbs", example: "Wat bedoel je?" },
+  { dutch: "de bedoeling", tigrinya: "ኣተሓሳስባ", type: "noun", category: "Nouns", example: "Dat is niet de bedoeling." },
+  { dutch: "het bedrag", tigrinya: "መጠን", type: "noun", category: "Money", example: "Het bedrag is 50 euro." },
+  { dutch: "het bedrijf", tigrinya: "ትካል", type: "noun", category: "Work", example: "Ik werk bij een groot bedrijf." },
+  { dutch: "het been", tigrinya: "እግሪ", type: "noun", category: "Body", example: "Mijn been doet pijn." },
+  { dutch: "een beetje", tigrinya: "ሒደት/ቁሩብ", type: "phrase", category: "Phrases", example: "Ik spreek een beetje Nederlands." },
+  { dutch: "het begin", tigrinya: "መጅመርታ", type: "noun", category: "Nouns", example: "In het begin was het moeilijk." },
+  { dutch: "beginnen", tigrinya: "መጅምር", type: "verb", category: "Verbs", example: "We beginnen om negen uur." },
+  { dutch: "de begrafenis", tigrinya: "ቀብሪ", type: "noun", category: "Social", example: "De begrafenis is morgen." },
+  { dutch: "begrijpen", tigrinya: "መርዳእ", type: "verb", category: "Verbs", example: "Begrijp je mij?" },
+  { dutch: "behalve", tigrinya: "ብብዘይ", type: "preposition", category: "Prepositions", example: "Iedereen is er behalve ik." },
+  { dutch: "beide", tigrinya: "ክልተ", type: "pronoun", category: "Pronouns", example: "Beide antwoorden zijn goed." },
+  { dutch: "bekend", tigrinya: "ፍሉጥ", type: "adjective", category: "Adjectives", example: "Dit liedje is heel bekend." },
+  { dutch: "belangrijk", tigrinya: "ኣገዳሲ", type: "adjective", category: "Adjectives", example: "Dit is heel belangrijk." },
+  { dutch: "de belasting", tigrinya: "ትክል/ግብሪ", type: "noun", category: "Money", example: "Ik betaal belasting." },
+  { dutch: "bellen", tigrinya: "መደወል", type: "verb", category: "Verbs", example: "Ik bel je morgen." },
+  { dutch: "beloven", tigrinya: "ቃል ምሃብ", type: "verb", category: "Verbs", example: "Ik beloof dat ik kom." },
+  { dutch: "beneden", tigrinya: "ትሕቲ", type: "adverb", category: "Adverbs", example: "De keuken is beneden." },
+  { dutch: "bereiken", tigrinya: "መበጽህ", type: "verb", category: "Verbs", example: "We bereiken ons doel." },
+  { dutch: "de berg", tigrinya: "ተራር", type: "noun", category: "Nature", example: "De berg is heel hoog." },
+  { dutch: "het bericht", tigrinya: "መልእኽቲ", type: "noun", category: "Communication", example: "Ik kreeg een bericht van hem." },
+  { dutch: "het beroep", tigrinya: "ሞያ", type: "noun", category: "Work", example: "Wat is je beroep?" },
+  { dutch: "beschermen", tigrinya: "መክላኸሊ", type: "verb", category: "Verbs", example: "We moeten de natuur beschermen." },
+  { dutch: "beschikbaar", tigrinya: "ክርከብ", type: "adjective", category: "Adjectives", example: "Is deze kamer beschikbaar?" },
+  { dutch: "beschrijven", tigrinya: "መገሊጽ", type: "verb", category: "Verbs", example: "Beschrijf wat je ziet." },
+  { dutch: "besluiten", tigrinya: "መውሳነ", type: "verb", category: "Verbs", example: "We besluiten morgen." },
+  { dutch: "bespreken", tigrinya: "ምምዝጋብ", type: "verb", category: "Verbs", example: "Laten we dit bespreken." },
+  { dutch: "bestaan", tigrinya: "መነባብሮ", type: "verb", category: "Verbs", example: "Dit probleem bestaat al lang." },
+  { dutch: "beste", tigrinya: "ኣዝዩ", type: "adjective", category: "Adjectives", example: "Jij bent de beste!" },
+  { dutch: "bestellen", tigrinya: "መዕደኒ", type: "verb", category: "Verbs", example: "Ik bestel een pizza." },
+  { dutch: "de bestelling", tigrinya: "መዕደኒ", type: "noun", category: "Shopping", example: "Je bestelling is onderweg." },
+  { dutch: "betalen", tigrinya: "መክፈሊ", type: "verb", category: "Verbs", example: "Ik betaal met pin." },
+  { dutch: "de betekenis", tigrinya: "ትርጉም", type: "noun", category: "Nouns", example: "Wat is de betekenis van dit woord?" },
+  { dutch: "beterschap", tigrinya: "መሓየሺ ጥዕና", type: "noun", category: "Health", example: "Beterschap!" },
+  { dutch: "bewegen", tigrinya: "መንቀሳቐስ", type: "verb", category: "Verbs", example: "Beweeg elke dag." },
+  { dutch: "de bewoner", tigrinya: "ነባሪ መንበሪ", type: "noun", category: "Nouns", example: "De bewoner klopt op de deur." },
+  { dutch: "bezig", tigrinya: "ስራሕ ምስራሕ", type: "adjective", category: "Adjectives", example: "Ik ben bezig met werken." },
+  { dutch: "de bibliotheek", tigrinya: "መዝገበ ፅሑፍ", type: "noun", category: "Education", example: "Ik leen boeken in de bibliotheek." },
+  { dutch: "bieden", tigrinya: "ምሃብ", type: "verb", category: "Verbs", example: "Ik bied je een kopje koffie aan." },
+  { dutch: "het bier", tigrinya: "ቢራ", type: "noun", category: "Food", example: "Drink je bier?" },
+  { dutch: "bij", tigrinya: "ብ", type: "preposition", category: "Prepositions", example: "Ik woon bij mijn ouders." },
+  { dutch: "bijna", tigrinya: "ዳርጋ", type: "adverb", category: "Adverbs", example: "Ik ben bijna klaar." },
+  { dutch: "bijten", tigrinya: "ቅርስ", type: "verb", category: "Verbs", example: "De hond bijt niet." },
+  { dutch: "bijvoorbeeld", tigrinya: "ንኣብነት", type: "adverb", category: "Adverbs", example: "Ik hou van fruit, bijvoorbeeld appels." },
+  { dutch: "bijzonder", tigrinya: "መፍረይ", type: "adjective", category: "Adjectives", example: "Dit is een bijzonder moment." },
+  { dutch: "binnen", tigrinya: "ኣብ ውሽጢ", type: "adverb", category: "Adverbs", example: "Kom binnen!" },
+  { dutch: "binnenkomen", tigrinya: "መእተዊ", type: "verb", category: "Verbs", example: "Hij komt binnen." },
+  { dutch: "binnenkort", tigrinya: "ኣብ ቀረባ እዋን", type: "adverb", category: "Adverbs", example: "Ik zie je binnenkort." },
+  { dutch: "de bioscoop", tigrinya: "ሲነማ", type: "noun", category: "Entertainment", example: "We gaan naar de bioscoop." },
+  { dutch: "blauw", tigrinya: "ሰማይ", type: "adjective", category: "Colors", example: "De lucht is blauw." },
+  { dutch: "blij", tigrinya: "ተሓጐሰ", type: "adjective", category: "Adjectives", example: "Ik ben blij met je." },
+  { dutch: "blijven", tigrinya: "መዕቀኒ", type: "verb", category: "Verbs", example: "Blijf hier!" },
+  { dutch: "het blik", tigrinya: "ሳሕን", type: "noun", category: "Objects", example: "Een blik cola." },
+  { dutch: "het bloed", tigrinya: "ደም", type: "noun", category: "Body", example: "Er is bloed op de vloer." },
+  { dutch: "de bloem", tigrinya: "ጸደን", type: "noun", category: "Nature", example: "Wat een mooie bloem!" },
+  { dutch: "de bloemkool", tigrinya: "ኮሎ ፍሩ", type: "noun", category: "Food", example: "Ik eet bloemkool." },
+  { dutch: "blond", tigrinya: "ፈረሳዊ ጸደን", type: "adjective", category: "Adjectives", example: "Zij heeft blond haar." },
+  { dutch: "de bodem", tigrinya: "ትሕተይ", type: "noun", category: "Nouns", example: "Op de bodem van de zee." },
+  { dutch: "het boek", tigrinya: "መጽሓፍ", type: "noun", category: "Education", example: "Ik lees een boek." },
+  { dutch: "de boer", tigrinya: "ሓረስታይ", type: "noun", category: "Professions", example: "De boer werkt op het land." },
+  { dutch: "de boerderij", tigrinya: "መናብሪ ናይ እንስሳ", type: "noun", category: "Nature", example: "We wonen op een boerderij." },
+  { dutch: "de boete", tigrinya: "መቕጻዕቲ", type: "noun", category: "Legal", example: "Ik kreeg een boete." },
+  { dutch: "boodschappen doen", tigrinya: "መዕደኒ", type: "phrase", category: "Shopping", example: "Ik doe boodschappen bij de Albert Heijn." },
+  { dutch: "de boom", tigrinya: "ኦም", type: "noun", category: "Nature", example: "De boom is hoog." },
+  { dutch: "de boon", tigrinya: "ባቖላ", type: "noun", category: "Food", example: "Ik eet bruine bonen." },
+  { dutch: "boos", tigrinya: "ጽልኢ", type: "adjective", category: "Adjectives", example: "Waarom ben je boos?" },
+  { dutch: "de boot", tigrinya: "ጀልባ", type: "noun", category: "Transport", example: "De boot vaart naar Amsterdam." },
+  { dutch: "het bord", tigrinya: "ሳሕን", type: "noun", category: "Household", example: "Het eten staat op het bord." },
+  { dutch: "de borstel", tigrinya: "መሓዙ ስኒ", type: "noun", category: "Household", example: "Ik pak de borstel." },
+  { dutch: "het bos", tigrinya: "ቦታ ብዙሕ ኦም", type: "noun", category: "Nature", example: "We wandelen in het bos." },
+  { dutch: "de boter", tigrinya: "ሽጉርቲ", type: "noun", category: "Food", example: "Boter op mijn brood." },
+  { dutch: "de boterham", tigrinya: "ፍርቂ", type: "noun", category: "Food", example: "Een boterham met kaas." },
+  { dutch: "bouwen", tigrinya: "መሃንገስ", type: "verb", category: "Verbs", example: "Ze bouwen een nieuw huis." },
+  { dutch: "boven", tigrinya: "ላዕሊ", type: "adverb", category: "Adverbs", example: "De slaapkamer is boven." },
+  { dutch: "de brand", tigrinya: "ሓዊ", type: "noun", category: "Emergency", example: "Er is brand!" },
+  { dutch: "de brandweer", tigrinya: "መክላኸሊ ሓዊ", type: "noun", category: "Emergency", example: "Bel de brandweer!" },
+  { dutch: "breed", tigrinya: "ኣራማደ", type: "adjective", category: "Adjectives", example: "De weg is breed." },
+  { dutch: "breken", tigrinya: "መሰብረ", type: "verb", category: "Verbs", example: "Ik breek mijn been." },
+  { dutch: "brengen", tigrinya: "መምጻእ", type: "verb", category: "Verbs", example: "Breng de kinderen naar school." },
+  { dutch: "het briefje", tigrinya: "ንእሽቶ ደብዳቤ", type: "noun", category: "Communication", example: "Ik schrijf een briefje." },
+  { dutch: "de brievenbus", tigrinya: "ናይ ደብዳቤ ሳንዱቕ", type: "noun", category: "Household", example: "De post zit in de brievenbus." },
+  { dutch: "de bril", tigrinya: "ኣዋልድ", type: "noun", category: "Clothing", example: "Ik draag een bril." },
+  { dutch: "de broek", tigrinya: "ሱሪ", type: "noun", category: "Clothing", example: "Een nieuwe broek kopen." },
+  { dutch: "de broer", tigrinya: "ሓው", type: "noun", category: "Family", example: "Mijn broer is jonger." },
+  { dutch: "het brood", tigrinya: "ዳቦ", type: "noun", category: "Food", example: "Vers brood bij de bakker." },
+  { dutch: "de brug", tigrinya: "መሻገሪ", type: "noun", category: "Transport", example: "We rijden over de brug." },
+  { dutch: "bruin", tigrinya: "ቡናዊ", type: "adjective", category: "Colors", example: "Mijn haar is bruin." },
+  { dutch: "de buik", tigrinya: "ከብዲ", type: "noun", category: "Body", example: "Mijn buik doet pijn." },
+  { dutch: "buiten", tigrinya: "ኣብ ውጻኢ", type: "adverb", category: "Adverbs", example: "Het is koud buiten." },
+  { dutch: "het buitenland", tigrinya: "ወጻኢ ሃገር", type: "noun", category: "Travel", example: "Ik ga naar het buitenland." },
+  { dutch: "het bureau", tigrinya: "መደባ", type: "noun", category: "Work", example: "Mijn computer staat op het bureau." },
+  { dutch: "de buren", tigrinya: "ጎረባብቲ", type: "noun", category: "Social", example: "Mijn buren zijn aardig." },
+  { dutch: "de bus", tigrinya: "ኣውቶቡስ", type: "noun", category: "Transport", example: "De bus komt over vijf minuten." },
+  { dutch: "de buurman", tigrinya: "ጎረባብቲ", type: "noun", category: "Social", example: "De buurman helpt mij." },
+  { dutch: "de buurt", tigrinya: "ከባቢ", type: "noun", category: "Social", example: "Ik woon in een leuke buurt." },
+  { dutch: "de buurvrouw", tigrinya: "ጎረባብቲ", type: "noun", category: "Social", example: "De buurvrouw brengt cake." },
+  { dutch: "het cadeau", tigrinya: "ህያብ", type: "noun", category: "Objects", example: "Een cadeau voor je verjaardag." },
+  { dutch: "het café", tigrinya: "ቤት ቡን", type: "noun", category: "Food", example: "Laten we afspreken in het café." },
+  { dutch: "de cent", tigrinya: "ሳንቲም", type: "noun", category: "Money", example: "Het kost 50 cent." },
+  { dutch: "de centimeter", tigrinya: "ሳንቲሜትር", type: "noun", category: "Measurements", example: "Het is 10 centimeter." },
+  { dutch: "het centrum", tigrinya: "መካከል", type: "noun", category: "Places", example: "Het centrum is druk." },
+  { dutch: "de chauffeur", tigrinya: "ሾፈር", type: "noun", category: "Professions", example: "De chauffeur rijdt de bus." },
+  { dutch: "de chocola", tigrinya: "ቸኮሌት", type: "noun", category: "Food", example: "Ik hou van chocola." },
+  { dutch: "het cijfer", tigrinya: "ነጥቢ", type: "noun", category: "Education", example: "Ik heb een goed cijfer." },
+  { dutch: "de citroen", tigrinya: "ሎሚ", type: "noun", category: "Food", example: "Citroen in mijn thee." },
+  { dutch: "de club", tigrinya: "ክለብ", type: "noun", category: "Entertainment", example: "Ik ga naar de club." },
+  { dutch: "de collega", tigrinya: "ስራሕቲ", type: "noun", category: "Work", example: "Mijn collega is heel aardig." },
+  { dutch: "de computer", tigrinya: "ኮምፒዩተር", type: "noun", category: "Technology", example: "Ik werk op de computer." },
+  { dutch: "het concert", tigrinya: "ሙዚቃ መዘናግዒ", type: "noun", category: "Entertainment", example: "We gaan naar een concert." },
+  { dutch: "het contact", tigrinya: "ርክብ", type: "noun", category: "Communication", example: "Houd contact!" },
+  { dutch: "het contract", tigrinya: "ውዕል", type: "noun", category: "Work", example: "Ik teken het contract." },
+  { dutch: "de controle", tigrinya: "መመሓየሺ", type: "noun", category: "Nouns", example: "De controle duurt even." },
+  { dutch: "controleren", tigrinya: "መመሓየሺ", type: "verb", category: "Verbs", example: "Controleer je antwoorden." },
+  { dutch: "creatief", tigrinya: "ፈጠራ", type: "adjective", category: "Adjectives", example: "Zij is heel creatief." },
+  { dutch: "de cultuur", tigrinya: "ባህሊ", type: "noun", category: "Nouns", example: "De Nederlandse cultuur is interessant." },
+  { dutch: "de cursist", tigrinya: "ተማሃራይ", type: "noun", category: "Education", example: "De cursist leert snel." },
+
+  // --- SENTENCES FROM ORIGINAL COURSE DATA ---
+  { dutch: "Ik wil solliciteren naar deze vacature.", tigrinya: "ነዚ ክፉት ናይ ስራሕ ቦታ ከማልክት እደሊ ኣለኹ።", type: "sentence", category: "Work", example: null },
+  { dutch: "Het bedrijf zoekt een nieuwe medewerker.", tigrinya: "እቲ ትካል ሓድሽ ሰራሕተኛ ይደሊ ኣሎ።", type: "sentence", category: "Work", example: null },
+  { dutch: "Ik stuur mijn cv op.", tigrinya: "ናይ ስራሕ ተመክሮይ (CV) ይሰድድ ኣለኹ።", type: "sentence", category: "Work", example: null },
+  { dutch: "Waar kan ik de manager vinden?", tigrinya: "ነቲ ሓላፊ ኣበይ ክረኽቦ እኽእል፧", type: "sentence", category: "Work", example: null },
+  { dutch: "Morgen heb ik een sollicitatiegesprek.", tigrinya: "ጽባሕ ናይ ስራሕ ቃለ-መጠይቕ ኣሎኒ።", type: "sentence", category: "Work", example: null },
+  { dutch: "Ik wil graag een koffie bestellen.", tigrinya: "ቡን ክእዝዝ እደሊ ኣለኹ።", type: "sentence", category: "Restaurant", example: null },
+  { dutch: "Mag ik de menukaart zien?", tigrinya: "ናይ መግቢ ዝርዝር ክርኢ ይኽእልዶ፧", type: "sentence", category: "Restaurant", example: null },
+  { dutch: "Heeft u ook vegetarische gerechten?", tigrinya: "ናይ ኣሕምልቲ ጥራይ መግቢ ኣሎኩምዶ፧", type: "sentence", category: "Restaurant", example: null },
+  { dutch: "Twee bier en een water alstublieft.", tigrinya: "ክልተ ቢራን ሓደ ማይን በጃኹም።", type: "sentence", category: "Restaurant", example: null },
+  { dutch: "Heeft u een tafel voor twee personen?", tigrinya: "ንክልተ ሰብ ዝኸውን ጠረጴዛ ኣሎኩምዶ፧", type: "sentence", category: "Restaurant", example: null },
+  { dutch: "Met wie spreek ik alstublieft?", tigrinya: "በጃኻ ምስ መን እዩ ዝዛረብ ዘለኹ፧", type: "sentence", category: "Phone", example: null },
+  { dutch: "De verbinding is erg slecht.", tigrinya: "እቲ መስመር ብጣዕሚ ሕማቕ ኣሎ።", type: "sentence", category: "Phone", example: null },
+  { dutch: "Schrijf de afspraak in je agenda.", tigrinya: "ነቲ ቆጸራ ኣብ ኣጀንዳኻ ጽሓፎ።", type: "sentence", category: "Appointments", example: null },
+  { dutch: "De les begint over vijf minuten.", tigrinya: "እቲ ትምህርቲ ድሕሪ ሓሙሽተ ደቒቕ ይጅምር።", type: "sentence", category: "School", example: null },
+  { dutch: "Ik moet hard studeren voor de toets.", tigrinya: "ነቲ ፈተና ጽቡቕ ጌረ ክመሃር ኣሎኒ።", type: "sentence", category: "School", example: null },
+  { dutch: "Waar kan ik de melk vinden?", tigrinya: "ጸባ ኣበይ ክረኽቦ እኽእል፧", type: "sentence", category: "Shopping", example: null },
+  { dutch: "Dit product is in de aanbieding.", tigrinya: "እዚ ፍርያት እዚ ሕስራን (ዲስካውንት) ኣለዎ።", type: "sentence", category: "Shopping", example: null },
+  { dutch: "Van welk spoor vertrekt de trein?", tigrinya: "እቲ ባቡር ካብ ኣየናይ መስመር ይብገስ፧", type: "sentence", category: "Transport", example: null },
+  { dutch: "Ik moet mijn ov-chipkaart opladen.", tigrinya: "ናይ መጓዓዝያ ካርታይ (OV) ክመልኣ ኣሎኒ።", type: "sentence", category: "Transport", example: null },
+  { dutch: "Ik moet een afspraak maken bij de huisarts.", tigrinya: "ምስ ሓኪም ገዛ ቆጸራ ክገብር ኣሎኒ።", type: "sentence", category: "Health", example: null },
+  { dutch: "Waar heeft u precies pijn?", tigrinya: "ልክዕ ኣበይ እዩ ዝሕምመካ ዘሎ፧", type: "sentence", category: "Health", example: null },
+  { dutch: "Ik moet me inschrijven bij de gemeente.", tigrinya: "ኣብ ከተማ (ገመይንተ) ክምዝገብ ኣሎኒ።", type: "sentence", category: "Municipality", example: null },
+  { dutch: "Bel direct het alarmnummer honderdtwaalf.", tigrinya: "ብቕልጡፍ ናይ ሓደጋ ቁጽሪ 112 ደውል።", type: "sentence", category: "Emergency", example: null },
+  { dutch: "Ik moet aangifte doen van diefstal.", tigrinya: "ብዛዕባ ስርቂ ሪፖርት ክገብር ኣሎኒ።", type: "sentence", category: "Emergency", example: null },
+  { dutch: "Ik wil je uitnodigen voor mijn verjaardag.", tigrinya: "ንልደተይ ክዓድመካ እደሊ ኣለኹ።", type: "sentence", category: "Social", example: null },
+  { dutch: "In mijn vrije tijd voetbal ik vaak.", tigrinya: "ኣብ ናይ ዕረፍቲ ግዜይ ኩዕሶ እጻወት እየ።", type: "sentence", category: "Hobbies", example: null },
+  { dutch: "Zullen we samen een kopje koffie drinken?", tigrinya: "ብሓባር ሓደ ፊንጃል ቡን ክንሰቲ ንኽእልዶ፧", type: "sentence", category: "Social", example: null },
+  { dutch: "Het is heerlijk weer voor een wandeling.", tigrinya: "ኣብ ፓርክ ንምጉዓዝ ብጣዕሚ ደስ ዝብል ኣየር እዩ።", type: "sentence", category: "Nature", example: null },
+  { dutch: "Mijn familie woont nog in het buitenland.", tigrinya: "ስድራቤተይ ገና ኣብ ወጻኢ ሃገር ይነብሩ ኣለዉ።", type: "sentence", category: "Family", example: null },
 ];
 
-// Structural Generator for automated population of Units 11-20 with real world high level deep items
-const deepThemesPool = [
-  { topic: "Werkplek & Communicatie", nativeTopic: "ስራሕ ቦታን ርክብን", targets: [
-    {t: "Ik had dat gisteravond al klaargezet.", n: "ትማሊ ምሸት ኣቐዲመ ነዚ ኣዳልየዮ ነይረ።"},
-    {t: "Mijn computer start ineens niet meer op.", n: "ኮምፒውተረይ ሃንደበት ክፉት ክኸውን ኣይከኣለን።"},
-    {t: "We moeten de planning direct aanpassen.", n: "ነቲ መደብ ብቕልጡፍ ክንቅይሮ ኣሎና።"},
-    {t: "Wie gaat deze taak vandaag overnemen?", n: "ነዚ ስራሕ ሎሚ መን ክርከቦ እዩ፧"},
-    {t: "Ik ben verantwoordelijk voor dit project.", n: "ኣነ ነዚ ፕሮጀክት እዚ ሓላፍነት ኣሎኒ።"}
-  ]},
-  { topic: "Wonen & Internet", nativeTopic: "ንነብረሉ ባይታ", targets: [
-    {t: "De huur is deze maand omhoog gegaan.", n: "ናይ ሎሚ ወርሒ ክራይ ገዛ ወሲኹ ኣሎ።"},
-    {t: "De internetverbinding valt steeds weg hier.", n: "ናይ ኢንተርነት መስመር ኣብዚ ኩሉ ግዜ ይቋረጽ ኣሎ።"},
-    {t: "Ik moet de verhuurder vandaag nog bellen.", n: "ሎሚ ነቲ ዋና ገዛ ክድውለሉ ኣሎኒ።"},
-    {t: "De wasmachine lekt heel veel water.", n: "እታ ሕጻብ መኪና ብዙሕ ማይ ተፍስስ ኣላ።"},
-    {t: "Wanneer wordt het vuilnis opgehaald?", n: "እቲ ጓሓፍ መዓስ ክውሰድ እዩ፧"}
-  ]},
-  { topic: "Geld & Bankzaken", nativeTopic: "ባንክን ገንዘብን", targets: [
-    {t: "Ik kan geld overmaken via de bank-app.", n: "ብናይ ባንክ መተግበሪ ገንዘብ ክሰድድ እኽእል እየ።"},
-    {t: "Mijn spaarrekening is bijna helemaal leeg.", n: "ናይ ዕቁር ሒሳበይ ዳርጋ ባዶ ኮይኑ ኣሎ።"},
-    {t: "Ik ben mijn pincode vergeten.", n: "ናይ ካርታይ ምስጢራዊ ቁጽሪ (ፒንኮድ) ረሲዐዮ።"},
-    {t: "Hoe kan ik deze automatische incasso stopzetten?", n: "ነዚ ባዕሉ ዝክፈል ሒሳብ ከመይ ጌረ ክዓግቶ እኽእል፧"},
-    {t: "Ik heb een lening aangevraagd.", n: "ናይ ልቓሕ ሓገዝ ሓቲተ ኣለኹ።"}
-  ]},
-  { topic: "Post & Pakketten", nativeTopic: "ፖስታን መልእኽትን", targets: [
-    {t: "De postbode heeft het pakketje bij de buren bezorgd.", n: "እቲ ፖስተኛ ነቲ ፓኬት ኣብ ጎረባብቲ ሂብዎ።"},
-    {t: "Ik heb geen track en trace code ontvangen.", n: "ናይ ምክትታgeneric ል ቁጽሪ ኣይመጻእኩንን።"},
-    {t: "Dit pakket moet geretourneerd worden.", n: "እዚ ፓኬት እዚ ክምለስ (ሪተርን) ኣለዎ።"},
-    {t: "Zijn er nog brieven voor mij binnengekomen?", n: "ንዓይ ዝመጸት ደብዳቤ ኣላዶ፧"},
-    {t: "Ik moet een postzegel kopen bij de winkel.", n: "ናይ ፖስታ ቴምብር ክገዝእ ኣሎኒ።"}
-  ]},
-  { topic: "Weer & Omstandigheden", nativeTopic: "ኩነታት ኣየር", targets: [
-    {t: "Het gaat vanmiddag heel hard regenen en stormen.", n: "ሎሚ ድሕሪ ቀትሪ ብርቱዕ ዝናብን ማዕበልን ክኸውን እዩ።"},
-    {t: "Ik haat dit koude en natte weer in Nederland.", n: "ነዚ ዝሑልን ርጥብን ኣየር ሆላንድ እጸልኦ እየ።"},
-    {t: "Morgen wordt het gelukkig een zonnige dag.", n: "ጽባሕ ጽቡቕ ጸሓይ ዘለዎ መዓልቲ ክኸውን እዩ።"},
-    {t: "Het ijs op de weg is erg gevaarlijk.", n: "እቲ ኣብ ጽርግያ ዘሎ በረድ ብጣዕሚ ሓደገኛ እዩ።"},
-    {t: "Zet de verwarming maar een stukje hoger.", n: "ነቲ መሞቒ (ሂተር) ቁሩብ ወስኽሉ።"}
-  ]}
-];
+// ============================================
+// APP STATE
+// ============================================
+let currentUser = null;
+let currentCardIndex = 0;
+let cardProgress = {}; // cardIndex -> true/false
+let isFlipped = false;
 
-// Populate Units 11-20 automatically to avoid manual code explosion
-for(let i=10; i<20; i++) {
-  let theme = deepThemesPool[(i - 10) % deepThemesPool.length];
-  let u = applicationCourseDatabase[i];
-  for(let l=1; l<=5; l++) {
-    let lessonObj = {
-      title: `ትምህርቲ ${l} (${theme.topic} ${l})`,
-      items: []
-    };
-    let types = ["learn", "speak", "read", "write", "test"];
-    let icons = ["💡", "🗣️", "📖", "📝", "🏆"];
-    for(let it=0; it<5; it++) {
-      let dataPair = theme.targets[it];
-      // Inject variations to map 500 distinct challenges perfectly
-      let finalTarget = dataPair.t;
-      let finalNative = dataPair.n;
-      if(l === 2) { finalTarget = finalTarget.replace("Ik", "Wij").replace("mijn", "onze").replace("Mijn", "Onze"); }
-      if(l === 3) { finalTarget = "Volgens mij " + finalTarget.toLowerCase(); }
-      if(l === 4) { finalTarget = finalTarget + " Absoluut."; }
-      if(l === 5) { finalTarget = finalTarget.replace("gisteren", "vorige week"); }
-      
-      lessonObj.items.push({
-        type: types[it],
-        target: finalTarget,
-        native: finalNative,
-        prompt: `${icons[it]} Real-world interaction task:`
-      });
+// ============================================
+// AUTHENTICATION (MOCK — REPLACE WITH BACKEND)
+// ============================================
+function handleLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  if (!email || !password) { showToast('Please fill in all fields'); return; }
+  // MOCK: In production, send to your backend API
+  currentUser = { name: email.split('@')[0], email, avatar: email[0].toUpperCase() };
+  saveSession();
+  initApp();
+}
+
+function handleSignup() {
+  const name = document.getElementById('signupName').value.trim();
+  const email = document.getElementById('signupEmail').value.trim();
+  const pass = document.getElementById('signupPassword').value;
+  const pass2 = document.getElementById('signupPassword2').value;
+  if (!name || !email || !pass) { showToast('Please fill in all fields'); return; }
+  if (pass !== pass2) { showToast('Passwords do not match'); return; }
+  // MOCK: In production, send to your backend API
+  currentUser = { name, email, avatar: name[0].toUpperCase() };
+  saveSession();
+  initApp();
+}
+
+function handleSocialLogin(provider) {
+  // MOCK: In production, redirect to OAuth provider
+  showToast(`Signing in with ${provider}...`);
+  setTimeout(() => {
+    currentUser = { name: provider + "User", email: "user@" + provider + ".com", avatar: "U" };
+    saveSession();
+    initApp();
+  }, 800);
+}
+
+function handleLogout() {
+  currentUser = null;
+  // Clear session cookie (mock)
+  document.cookie = "lingo_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  localStorage.removeItem('lingo_session');
+  showAuth();
+}
+
+function saveSession() {
+  // NOTE: In production, use HTTP-only secure cookies set by your backend.
+  // This mock uses memory + a non-sensitive localStorage flag for UX only.
+  localStorage.setItem('lingo_session', JSON.stringify({ user: currentUser, timestamp: Date.now() }));
+}
+
+function checkSession() {
+  try {
+    const raw = localStorage.getItem('lingo_session');
+    if (raw) {
+      const data = JSON.parse(raw);
+      if (data.user && (Date.now() - data.timestamp) < 7 * 24 * 60 * 60 * 1000) {
+        currentUser = data.user;
+        return true;
+      }
     }
-    u.lessons.push(lessonObj);
+  } catch (e) {}
+  return false;
+}
+
+// ============================================
+// THEME SYSTEM
+// ============================================
+function initTheme() {
+  const saved = localStorage.getItem('lingo_theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const theme = saved || (prefersDark ? 'dark' : 'light');
+  applyTheme(theme);
+}
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  const btn = document.getElementById('themeToggle');
+  if (btn) btn.innerHTML = theme === 'dark' ? '&#9790;' : '&#9788;';
+}
+
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme') || 'light';
+  const next = current === 'dark' ? 'light' : 'dark';
+  applyTheme(next);
+  localStorage.setItem('lingo_theme', next);
+}
+
+// ============================================
+// COOKIE CONSENT
+// ============================================
+function initCookieBanner() {
+  const consent = localStorage.getItem('lingo_cookie_consent');
+  if (consent === null) {
+    setTimeout(() => document.getElementById('cookieBanner').classList.add('show'), 1000);
   }
 }
 
-// Global decoy vocab pool to generate smart layout puzzles dynamically
-const globalDecoyDutchWords = ["auto", "werk", "slapen", "brood", "koffie", "morgen", "vandaag", "altijd", "snel", "binnen", "buiten", "trein", "huis", "school", "geld", "papier"];
+function handleCookieConsent(accepted) {
+  localStorage.setItem('lingo_cookie_consent', accepted ? 'accepted' : 'declined');
+  document.getElementById('cookieBanner').classList.remove('show');
+  showToast(accepted ? 'Cookies accepted' : 'Cookies declined');
+}
 
-// App Logic variables
-let runtimeActiveUnitIndex = 0;
-let runtimeActiveLessonIndex = 0;
-let runtimeActiveItemIndex = 0;
-let puzzleSelectedWordsArray = [];
-let voiceSpeechRecognitionInstance = null;
-let currentRecordedVoiceString = "";
+// ============================================
+// NAVIGATION & VIEWS
+// ============================================
+function showAuth() {
+  document.getElementById('authPage').classList.remove('hidden');
+  document.getElementById('appPage').classList.add('hidden');
+}
 
-function switchMainTab(targetTabRoute) {
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('treeLayoutContainer').style.display = 'none';
-  document.getElementById('libraryContainer').style.display = 'none';
-  document.getElementById('tabLessons').classList.remove('active');
-  document.getElementById('tabLibrary').classList.remove('active');
+function showApp() {
+  document.getElementById('authPage').classList.add('hidden');
+  document.getElementById('appPage').classList.remove('hidden');
+}
 
-  if (targetTabRoute === 'lessons') {
-    document.getElementById('treeLayoutContainer').style.display = 'block';
-    document.getElementById('tabLessons').classList.add('active');
+function navigateTo(view) {
+  document.getElementById('dashboardView').classList.add('hidden');
+  document.getElementById('flashcardsView').classList.add('hidden');
+  if (view === 'dashboard') {
+    document.getElementById('dashboardView').classList.remove('hidden');
+    updateDashboardProgress();
+  } else if (view === 'flashcards') {
+    document.getElementById('flashcardsView').classList.remove('hidden');
+    renderCard();
+  }
+  window.scrollTo(0, 0);
+}
+
+function toggleAuthMode() {
+  document.getElementById('loginForm').classList.toggle('hidden');
+  document.getElementById('signupForm').classList.toggle('hidden');
+}
+
+function toggleDrawer() {
+  document.getElementById('mobileDrawer').classList.toggle('open');
+  document.getElementById('drawerOverlay').classList.toggle('open');
+}
+
+// ============================================
+// DASHBOARD
+// ============================================
+function updateDashboardProgress() {
+  const learned = Object.values(cardProgress).filter(Boolean).length;
+  const total = VOCABULARY.length;
+  const pct = total > 0 ? Math.round((learned / total) * 100) : 0;
+  const bar = document.getElementById('flashcardProgressBar');
+  const pctEl = document.getElementById('flashcardPercent');
+  const fracEl = document.getElementById('flashcardFraction');
+  if (bar) bar.style.width = pct + '%';
+  if (pctEl) pctEl.textContent = pct + '%';
+  if (fracEl) fracEl.textContent = `${learned} / ${total} cards`;
+}
+
+// ============================================
+// FLASHCARDS
+// ============================================
+function renderCard() {
+  const card = VOCABULARY[currentCardIndex];
+  if (!card) return;
+  isFlipped = false;
+  document.getElementById('flashcard').classList.remove('flipped');
+
+  document.getElementById('cardCategory').textContent = card.category;
+  document.getElementById('cardCategoryBack').textContent = card.category;
+  document.getElementById('cardCounter').textContent = `${currentCardIndex + 1} / ${VOCABULARY.length}`;
+  document.getElementById('cardCounterBack').textContent = `${currentCardIndex + 1} / ${VOCABULARY.length}`;
+  document.getElementById('cardType').textContent = card.type;
+  document.getElementById('cardDutch').textContent = card.dutch;
+  document.getElementById('cardTigrinya').textContent = card.tigrinya;
+
+  const exEl = document.getElementById('cardExample');
+  if (card.example && card.type === 'word') {
+    exEl.textContent = card.example;
+    exEl.style.display = 'block';
   } else {
-    document.getElementById('libraryContainer').style.display = 'block';
-    document.getElementById('tabLibrary').classList.add('active');
-    renderApplicationVocabularyLibrary();
+    exEl.style.display = 'none';
+  }
+
+  document.getElementById('prevBtn').disabled = currentCardIndex === 0;
+  document.getElementById('nextBtn').disabled = currentCardIndex === VOCABULARY.length - 1;
+
+  document.getElementById('statLearned').textContent = Object.values(cardProgress).filter(Boolean).length;
+  document.getElementById('statTotal').textContent = VOCABULARY.length;
+}
+
+function flipCard() {
+  isFlipped = !isFlipped;
+  document.getElementById('flashcard').classList.toggle('flipped', isFlipped);
+}
+
+function nextCard() {
+  if (currentCardIndex < VOCABULARY.length - 1) {
+    currentCardIndex++;
+    renderCard();
   }
 }
 
-function toggleSidebar() {
-  document.getElementById('navSidebar').classList.toggle('open');
-  document.getElementById('sidebarOverlay').classList.toggle('open');
-}
-
-function toggleSystemTheme() {
-  const currentTheme = document.documentElement.getAttribute('data-theme');
-  const targetTheme = (currentTheme === 'dark') ? 'light' : 'dark';
-  document.documentElement.setAttribute('data-theme', targetTheme);
-}
-
-function renderApplicationInteractiveLearningTree() {
-  const targetContainer = document.getElementById('treeLayoutContainer');
-  targetContainer.innerHTML = '';
-
-  applicationCourseDatabase.forEach((unitItem, unitIdx) => {
-    const unitCardMarkupElement = document.createElement('div');
-    unitCardMarkupElement.className = 'unit-section-card';
-
-    let completedCount = 0;
-    unitItem.lessons.forEach((_, lIdx) => {
-      if (localStorage.getItem(`u_${unitIdx}_l_${lIdx}`) === 'done') completedCount++;
-    });
-
-    unitCardMarkupElement.innerHTML = `
-      <div class="unit-header-banner">
-        <h2 style="font-size:1.15rem; font-weight:700; margin-bottom:0.25rem;">${unitItem.emoji} ${unitItem.name}</h2>
-        <p style="font-size:0.85rem; opacity:0.9;">ተወዲኡ ዘሎ: ${completedCount} / 5 ጽንኩር መስርሕ</p>
-      </div>
-      <div class="tree-path-vertical">
-        ${unitItem.lessons.map((lessonNode, lessonIdx) => {
-          const isDone = localStorage.getItem(`u_${unitIdx}_l_${lessonIdx}`) === 'done';
-          return `
-            <div class="node-row">
-              <button class="node-btn-circle ${isDone ? 'completed' : ''}" onclick="launchExerciseWorkspaceArena(${unitIdx}, ${lessonIdx})">
-                <span style="font-size:1.4rem;">📖</span>
-              </button>
-              <span class="node-label-sub">${lessonNode.title}</span>
-            </div>
-          `;
-        }).join('')}
-      </div>
-    `;
-    targetContainer.appendChild(unitCardMarkupElement);
-  });
-}
-
-function launchExerciseWorkspaceArena(unitIndex, lessonIndex) {
-  runtimeActiveUnitIndex = unitIndex;
-  runtimeActiveLessonIndex = lessonIndex;
-  runtimeActiveItemIndex = 0; // Starts linearly at item 1 out of 5 inside the lesson
-  executeCurrentLessonStepItem();
-}
-
-function executeCurrentLessonStepItem() {
-  puzzleSelectedWordsArray = [];
-  currentRecordedVoiceString = "";
-
-  const activeLessonObject = applicationCourseDatabase[runtimeActiveUnitIndex].lessons[runtimeActiveLessonIndex];
-  const currentItem = activeLessonObject.items[runtimeActiveItemIndex];
-  
-  document.getElementById('modalProgressIndicator').innerText = `Les ${runtimeActiveLessonIndex + 1}/5 - Item ${runtimeActiveItemIndex + 1}/5 (${currentItem.type.toUpperCase()})`;
-  document.getElementById('nativePromptTarget').innerText = currentItem.native;
-  document.getElementById('contextHintTarget').innerText = currentItem.prompt;
-
-  const inputDisplayZone = document.getElementById('dynamicInputWorkspaceZone');
-  inputDisplayZone.innerHTML = '';
-
-  if (currentItem.type === 'learn' || currentItem.type === 'read') {
-    inputDisplayZone.innerHTML = `
-      <div id="activeWorkspaceDropZone" class="interactive-response-zone"></div>
-      <div id="activePoolContainerZone" class="pool-container-tiles"></div>
-    `;
-    const targetDropZone = document.getElementById('activeWorkspaceDropZone');
-    const targetPoolZone = document.getElementById('activePoolContainerZone');
-
-    // Filter, clean strings and add 3 decoy words for high challenge
-    let coreWords = currentItem.target.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").split(' ');
-    let mixedPool = [...coreWords];
-    for(let d=0; d<3; d++) {
-      mixedPool.push(globalDecoyDutchWords[Math.floor(Math.random()*globalDecoyDutchWords.length)]);
-    }
-    mixedPool.sort(() => Math.random() - 0.5);
-
-    mixedPool.forEach(wordString => {
-      const elementButtonTileNode = document.createElement('span');
-      elementButtonTileNode.className = 'word-pill-tile';
-      elementButtonTileNode.innerText = wordString;
-      elementButtonTileNode.onclick = () => {
-        if(elementButtonTileNode.style.opacity === '0.3') return;
-        elementButtonTileNode.style.opacity = '0.3';
-
-        const activeSelectionTileInstance = document.createElement('span');
-        activeSelectionTileInstance.className = 'word-pill-tile';
-        activeSelectionTileInstance.innerText = wordString;
-        activeSelectionTileInstance.onclick = () => {
-          activeSelectionTileInstance.remove();
-          elementButtonTileNode.style.opacity = '1';
-          puzzleSelectedWordsArray = puzzleSelectedWordsArray.filter(strVal => strVal !== wordString);
-        };
-
-        targetDropZone.appendChild(activeSelectionTileInstance);
-        puzzleSelectedWordsArray.push(wordString);
-      };
-      targetPoolZone.appendChild(elementButtonTileNode);
-    });
-
-  } else if (currentItem.type === 'write' || currentItem.type === 'test') {
-    inputDisplayZone.innerHTML = `
-      <input type="text" id="workspaceTextKeyboardField" class="keyboard-text-input" placeholder="ቃል ብ ቃል ትርጉም እተው..." autocomplete="off">
-    `;
-  } else if (currentItem.type === 'speak') {
-    inputDisplayZone.innerHTML = `
-      <div class="microphone-control-hub">
-        <button id="micCoreTriggerNodeButton" class="mic-toggle-btn" onclick="toggleSpeechRecognitionEngineStream()"></button>
-        <p id="micOperationalStatusLoggingString" style="font-weight:600; font-size:0.95rem; color:var(--text-muted);">ክሊክ ጌርካ ድምጽኻ ቅረጽ...</p>
-        <div id="speechTranscriptionLiveDisplayCard" class="interactive-response-zone" style="width:100%; justify-content:center; font-style:italic; font-size:1.05rem;">""</div>
-      </div>
-    `;
-    initializeWebSpeechRecognitionEngine();
+function prevCard() {
+  if (currentCardIndex > 0) {
+    currentCardIndex--;
+    renderCard();
   }
-
-  document.getElementById('workspaceModal').classList.add('open');
-  triggerAudioSpeechEngine();
 }
 
-function triggerAudioSpeechEngine() {
-  const activeObj = applicationCourseDatabase[runtimeActiveUnitIndex].lessons[runtimeActiveLessonIndex];
-  const currentItem = activeObj.items[runtimeActiveItemIndex];
+function markCard(known) {
+  cardProgress[currentCardIndex] = known;
+  // In production: send to backend API to persist progress
+  localStorage.setItem('lingo_card_progress', JSON.stringify(cardProgress));
+  showToast(known ? 'Marked as learned!' : 'Keep practising!');
+  document.getElementById('statLearned').textContent = Object.values(cardProgress).filter(Boolean).length;
+  updateDashboardProgress();
+  if (currentCardIndex < VOCABULARY.length - 1) {
+    setTimeout(() => { currentCardIndex++; renderCard(); }, 400);
+  }
+}
+
+function speakCurrentWord() {
+  const card = VOCABULARY[currentCardIndex];
+  if (!card) return;
   if ('speechSynthesis' in window) {
     window.speechSynthesis.cancel();
-    const utterancePayload = new SpeechSynthesisUtterance(currentItem.target);
-    utterancePayload.lang = 'nl-NL';
-    utterancePayload.rate = 0.82;
-    window.speechSynthesis.speak(utterancePayload);
-  }
-}
-
-function initializeWebSpeechRecognitionEngine() {
-  const SpeechRecognitionEngineAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SpeechRecognitionEngineAPI) {
-    document.getElementById('micOperationalStatusLoggingString').innerText = "ማይክሮፎን ብራውዘርካ ኣይድግፎን እዩ።";
-    return;
-  }
-  voiceSpeechRecognitionInstance = new SpeechRecognitionEngineAPI();
-  voiceSpeechRecognitionInstance.lang = 'nl-NL';
-  voiceSpeechRecognitionInstance.interimResults = false;
-  voiceSpeechRecognitionInstance.maxAlternatives = 1;
-
-  voiceSpeechRecognitionInstance.onstart = () => {
-    const nodeBtn = document.getElementById('micCoreTriggerNodeButton');
-    if (nodeBtn) nodeBtn.classList.add('recording');
-    document.getElementById('micOperationalStatusLoggingString').innerText = "እየሰማዕኩ እዩ... ተዛረብ!";
-  };
-
-  voiceSpeechRecognitionInstance.onerror = () => { resetMicrophoneInterfaceUINodeMarkupElements(); };
-  voiceSpeechRecognitionInstance.onend = () => { resetMicrophoneInterfaceUINodeMarkupElements(); };
-
-  voiceSpeechRecognitionInstance.onresult = (eventResultPayload) => {
-    const rawSpeechTranscribedStringResult = eventResultPayload.results[0][0].transcript;
-    currentRecordedVoiceString = rawSpeechTranscribedStringResult.trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
-    const containerLog = document.getElementById('speechTranscriptionLiveDisplayCard');
-    if (containerLog) containerLog.innerText = `"${rawSpeechTranscribedStringResult}"`;
-  };
-}
-
-function toggleSpeechRecognitionEngineStream() {
-  if(!voiceSpeechRecognitionInstance) return;
-  try { voiceSpeechRecognitionInstance.start(); } catch(e) { voiceSpeechRecognitionInstance.stop(); }
-}
-
-function resetMicrophoneInterfaceUINodeMarkupElements() {
-  const nodeTargetButtonElement = document.getElementById('micCoreTriggerNodeButton');
-  if(nodeTargetButtonElement) nodeTargetButtonElement.classList.remove('recording');
-  const textTargetStatusLoggingField = document.getElementById('micOperationalStatusLoggingString');
-  if(textTargetStatusLoggingField) textTargetStatusLoggingField.innerText = "ክሊክ ጌርካ ድምጽኻ ቅረጽ...";
-}
-
-function validateUserInteractionResponse() {
-  const activeObj = applicationCourseDatabase[runtimeActiveUnitIndex].lessons[runtimeActiveLessonIndex];
-  const currentTaskTarget = activeObj.items[runtimeActiveItemIndex];
-  let isTargetValidInputMatchStateFlag = false;
-
-  const targetCleanSentence = currentTaskTarget.target.toLowerCase().trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
-
-  if (currentTaskTarget.type === 'learn' || currentTaskTarget.type === 'read') {
-    const userAssembledString = puzzleSelectedWordsArray.join(' ').toLowerCase().trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
-    if(userAssembledString === targetCleanSentence) isTargetValidInputMatchStateFlag = true;
-
-  } else if (currentTaskTarget.type === 'write' || currentTaskTarget.type === 'test') {
-    const userKeyboardFieldString = document.getElementById('workspaceTextKeyboardField').value.toLowerCase().trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
-    if(userKeyboardFieldString === targetCleanSentence) isTargetValidInputMatchStateFlag = true;
-
-  } else if (currentTaskTarget.type === 'speak') {
-    const speechRecognizedValue = currentRecordedVoiceString.toLowerCase().trim();
-    if(speechRecognizedValue === targetCleanSentence || targetCleanSentence.includes(speechRecognizedValue) && speechRecognizedValue.length > 2) {
-      isTargetValidInputMatchStateFlag = true;
-    }
-  }
-
-  if (isTargetValidInputMatchStateFlag) {
-    alert("Excellent! ጽቡቕ! 🎉");
-    if (runtimeActiveItemIndex < 4) {
-      runtimeActiveItemIndex++;
-      executeCurrentLessonStepItem();
-    } else {
-      alert("ትምህርቲ ተወዲኡ ኣሎ! (Lesson Completed!) 🏆");
-      localStorage.setItem(`u_${runtimeActiveUnitIndex}_l_${runtimeActiveLessonIndex}`, 'done');
-      exitWorkspaceArena();
-      renderApplicationInteractiveLearningTree();
-    }
+    const u = new SpeechSynthesisUtterance(card.dutch);
+    u.lang = 'nl-NL';
+    u.rate = 0.85;
+    window.speechSynthesis.speak(u);
   } else {
-    alert("ጌጋ ኣሎ! እንደገና ፈትን። (Probeer het opnieuw!) ❌\nJuiste antwoord: " + currentTaskTarget.target);
+    showToast('Speech not supported in this browser');
   }
 }
 
-function exitWorkspaceArena() {
-  if(window.speechSynthesis) window.speechSynthesis.cancel();
-  document.getElementById('workspaceModal').classList.remove('open');
+// Keyboard navigation for flashcards
+function handleKeydown(e) {
+  if (document.getElementById('flashcardsView').classList.contains('hidden')) return;
+  if (e.key === 'ArrowRight') nextCard();
+  if (e.key === 'ArrowLeft') prevCard();
+  if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); flipCard(); }
+  if (e.key === '1') markCard(true);
+  if (e.key === '2') markCard(false);
 }
 
-function renderApplicationVocabularyLibrary() {
-  const targetParentOutputNode = document.getElementById('libraryItemsTarget');
-  targetParentOutputNode.innerHTML = '';
-
-  let internalTrackedSetMap = [];
-  applicationCourseDatabase.forEach(u => {
-    u.lessons.forEach(l => {
-      l.items.forEach(item => {
-        internalTrackedSetMap.push({ term: item.target, translation: item.native, category: "Conversatie" });
-      });
-    });
-  });
-
-  // Render a master dictionary grid list directly inside the view
-  internalTrackedSetMap.forEach(itemObj => {
-    const cardMarkupElementNode = document.createElement('div');
-    cardMarkupElementNode.className = 'vocab-grid-card';
-    cardMarkupElementNode.innerHTML = `
-      <div>
-        <h4 style="font-size:1.05rem; font-weight:700; color:var(--primary);">${itemObj.term}</h4>
-        <p style="font-size:0.9rem; color:var(--text-muted); margin-top:0.15rem;">${itemObj.translation}</p>
-        <span style="font-size:0.7rem; text-transform:uppercase; font-weight:bold; background:var(--border); padding:0.15rem 0.4rem; border-radius:4px; margin-top:0.4rem; display:inline-block;">${itemObj.category}</span>
-      </div>
-      <button class="audio-trigger-circular-btn" style="width:48px; height:48px; font-size:1rem; margin:0; flex-shrink:0;" onclick="executeIsolatedLibraryAudioSpeech('${itemObj.term.replace(/'/g, "\\'")}')"></button>
-    `;
-    targetParentOutputNode.appendChild(cardMarkupElementNode);
-  });
+// ============================================
+// TOAST NOTIFICATIONS
+// ============================================
+function showToast(message) {
+  const t = document.getElementById('toast');
+  t.textContent = message;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-function executeIsolatedLibraryAudioSpeech(rawTextPayload) {
-  if ('speechSynthesis' in window) {
-    window.speechSynthesis.cancel();
-    const deliveryInstancePayload = new SpeechSynthesisUtterance(rawTextPayload);
-    deliveryInstancePayload.lang = 'nl-NL';
-    deliveryInstancePayload.rate = 0.85;
-    window.speechSynthesis.speak(deliveryInstancePayload);
+// ============================================
+// INITIALIZATION
+// ============================================
+function initApp() {
+  showApp();
+  // Load progress from localStorage (replace with API call in production)
+  try {
+    const saved = localStorage.getItem('lingo_card_progress');
+    if (saved) cardProgress = JSON.parse(saved);
+  } catch (e) {}
+  // Update greeting
+  if (currentUser) {
+    document.getElementById('greeting').textContent = `Hi ${currentUser.name}, ready to practise?`;
+    document.getElementById('userAvatar').textContent = currentUser.avatar;
   }
+  updateDashboardProgress();
+  navigateTo('dashboard');
 }
 
-function filterApplicationLibrary() {
-  const queryFilterValue = document.getElementById('libSearchField').value.toLowerCase().trim();
-  const interfaceCardsArray = document.querySelectorAll('.vocab-grid-card');
-  interfaceCardsArray.forEach(cardNode => {
-    const fullTextContentRepresentation = cardNode.innerText.toLowerCase();
-    cardNode.style.display = fullTextContentRepresentation.includes(queryFilterValue) ? 'flex' : 'none';
-  });
+// Boot
+initTheme();
+initCookieBanner();
+if (checkSession()) {
+  initApp();
+} else {
+  showAuth();
 }
 
-window.onload = () => {
-  renderApplicationInteractiveLearningTree();
-};
+document.addEventListener('keydown', handleKeydown);
 </script>
 </body>
 </html>
