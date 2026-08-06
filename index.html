@@ -120,7 +120,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .drawer-overlay.open { display: block; }
 .drawer-link {
   color: var(--nav-text-muted); text-decoration: none; padding: 0.75rem 1rem;
-  border-radius: 8px; font-weight: 500; transition: all var(--transition);
+  border-radius: 8px; font-weight: 500; transition: all var(--transition); cursor: pointer;
 }
 .drawer-link:hover, .drawer-link.active { color: white; background: rgba(255,255,255,0.08); }
 .main-container { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
@@ -268,6 +268,111 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   box-shadow: var(--shadow-lg); pointer-events: none;
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ---- New: shared "lesson list" pattern used by Grammar/Reading/Listening ---- */
+.lesson-list { display: flex; flex-direction: column; gap: 0.75rem; max-width: 700px; }
+.lesson-row {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  padding: 1rem 1.25rem; display: flex; align-items: center; gap: 1rem; cursor: pointer;
+  transition: all var(--transition);
+}
+.lesson-row:hover { border-color: var(--primary-soft); transform: translateX(2px); }
+.lesson-row .lesson-num {
+  width: 36px; height: 36px; border-radius: 50%; background: var(--bg); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem;
+  color: var(--text-secondary); flex-shrink: 0;
+}
+.lesson-row.done .lesson-num { background: var(--success); color: white; border-color: var(--success); }
+.lesson-row .lesson-info { flex: 1; }
+.lesson-row .lesson-info h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 2px; }
+.lesson-row .lesson-info p { font-size: 0.8rem; color: var(--text-secondary); }
+.lesson-row .lesson-arrow { color: var(--text-muted); font-size: 1.1rem; }
+
+.exercise-panel { max-width: 640px; margin: 0 auto; }
+.exercise-progress { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; }
+.exercise-progress .progress-bar-bg { flex: 1; margin-bottom: 0; }
+.exercise-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 2rem; box-shadow: var(--shadow-sm);
+}
+.exercise-question { font-size: 1.15rem; font-weight: 700; margin-bottom: 1.25rem; line-height: 1.4; }
+.exercise-explainer {
+  background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-xs);
+  padding: 1rem; font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.25rem; line-height: 1.5;
+}
+.option-list { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.25rem; }
+.option-btn {
+  text-align: left; padding: 0.85rem 1rem; border-radius: var(--radius-xs);
+  border: 1.5px solid var(--border); background: var(--bg); color: var(--text);
+  font-size: 0.95rem; cursor: pointer; transition: all var(--transition);
+}
+.option-btn:hover { border-color: var(--primary); }
+.option-btn.correct { border-color: var(--success); background: var(--success-soft); color: var(--success); font-weight: 600; }
+.option-btn.incorrect { border-color: var(--error); background: rgba(239,68,68,0.08); color: var(--error); font-weight: 600; }
+.option-btn:disabled { cursor: default; }
+.exercise-feedback { font-size: 0.9rem; font-weight: 600; margin-bottom: 1rem; min-height: 1.3rem; }
+.exercise-feedback.correct { color: var(--success); }
+.exercise-feedback.incorrect { color: var(--error); }
+.reading-passage {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1.75rem; margin-bottom: 1.5rem; font-size: 1rem; line-height: 1.8; color: var(--text);
+}
+.reading-passage .translate-toggle {
+  font-size: 0.78rem; color: var(--primary); cursor: pointer; font-weight: 600; margin-top: 1rem; display: inline-block;
+}
+.reading-translation { font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.75rem; font-style: italic; display: none; }
+.reading-translation.show { display: block; }
+.listening-play-area {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 2.5rem 2rem; text-align: center; margin-bottom: 1.5rem;
+}
+.big-play-btn {
+  width: 80px; height: 80px; border-radius: 50%; background: var(--primary); color: white;
+  border: none; font-size: 1.8rem; cursor: pointer; margin-bottom: 1rem; transition: all var(--transition);
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.big-play-btn:hover { background: var(--primary-hover); transform: scale(1.05); }
+.chat-window {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  max-width: 640px; margin: 0 auto; display: flex; flex-direction: column; height: 60vh; min-height: 420px;
+}
+.chat-messages { flex: 1; overflow-y: auto; padding: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem; }
+.chat-bubble { max-width: 80%; padding: 0.7rem 1rem; border-radius: 14px; font-size: 0.9rem; line-height: 1.4; }
+.chat-bubble.bot { background: var(--bg); color: var(--text); align-self: flex-start; border-bottom-left-radius: 4px; }
+.chat-bubble.user { background: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+.chat-bubble .translation-note { display: block; font-size: 0.75rem; opacity: 0.7; margin-top: 4px; font-style: italic; }
+.chat-input-row { display: flex; gap: 0.6rem; padding: 1rem; border-top: 1px solid var(--border); }
+.chat-input-row input {
+  flex: 1; padding: 0.7rem 1rem; border-radius: 100px; border: 1.5px solid var(--border);
+  background: var(--bg); color: var(--text); font-size: 0.9rem;
+}
+.chat-send-btn {
+  width: 42px; height: 42px; border-radius: 50%; background: var(--primary); color: white;
+  border: none; cursor: pointer; font-size: 1rem; flex-shrink: 0;
+}
+.translator-panel { max-width: 640px; margin: 0 auto; }
+.translator-box {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1.5rem; margin-bottom: 1rem;
+}
+.translator-box textarea, .translator-box input[type=text] {
+  width: 100%; border: none; background: transparent; color: var(--text); font-size: 1.05rem;
+  resize: none; min-height: 60px; font-family: inherit;
+}
+.translator-swap {
+  display: flex; align-items: center; justify-content: center; margin: -0.5rem 0; position: relative; z-index: 2;
+}
+.translator-swap button {
+  width: 40px; height: 40px; border-radius: 50%; background: var(--surface); border: 1.5px solid var(--border);
+  color: var(--primary); cursor: pointer; font-size: 1rem;
+}
+.translator-results { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem; }
+.translator-result-row {
+  background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-xs);
+  padding: 0.75rem 1rem; display: flex; justify-content: space-between; align-items: center; gap: 0.75rem;
+}
+.translator-result-row .word-pair { font-size: 0.9rem; }
+.translator-result-row .word-pair b { color: var(--primary); }
 </style>
 </head>
 <body>
@@ -286,12 +391,12 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
     <div class="logo-mark">L</div><span class="logo-text">Lingo</span><span class="level-badge">B1</span>
   </div>
   <a class="drawer-link active" onclick="navigateTo('dashboard'); toggleDrawer()">Dashboard</a>
+  <a class="drawer-link" onclick="navigateTo('grammar'); toggleDrawer()">Grammar</a>
+  <a class="drawer-link" onclick="navigateTo('reading'); toggleDrawer()">Reading</a>
+  <a class="drawer-link" onclick="navigateTo('listening'); toggleDrawer()">Listening</a>
   <a class="drawer-link" onclick="navigateTo('flashcards'); toggleDrawer()">Flashcards</a>
-  <a class="drawer-link" onclick="showToast('Coming soon')">Grammar</a>
-  <a class="drawer-link" onclick="showToast('Coming soon')">Reading</a>
-  <a class="drawer-link" onclick="showToast('Coming soon')">Listening</a>
-  <a class="drawer-link" onclick="showToast('Coming soon')">AI Tutor</a>
-  <a class="drawer-link" onclick="showToast('Coming soon')">Translator</a>
+  <a class="drawer-link" onclick="navigateTo('aitutor'); toggleDrawer()">AI Tutor</a>
+  <a class="drawer-link" onclick="navigateTo('translator'); toggleDrawer()">Translator</a>
   <div style="margin-top:auto; padding-top:1rem; border-top:1px solid rgba(255,255,255,0.08);">
     <a class="drawer-link" onclick="showToast('Thank you!')">Donate</a>
     <a class="drawer-link" onclick="handleLogout(); toggleDrawer()">Log Out</a>
@@ -312,18 +417,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
       <button class="btn btn-primary" onclick="handleLogin()">Sign In</button>
       <div class="social-divider">or continue with</div>
       <div class="social-buttons">
-        <button class="btn btn-social" onclick="handleSocialLogin('google')">
-          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-          Continue with Google
-        </button>
-        <button class="btn btn-social" onclick="handleSocialLogin('facebook')">
-          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-          Continue with Facebook
-        </button>
-        <button class="btn btn-social" onclick="handleSocialLogin('apple')">
-          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.53 4.08zm-5.85-15.1c.07-2.04 1.76-3.79 3.78-3.94.29 2.32-1.93 4.48-3.78 3.94z"/></svg>
-          Continue with Apple
-        </button>
+        <button class="btn btn-social" onclick="handleSocialLogin('google')">Continue with Google</button>
+        <button class="btn btn-social" onclick="handleSocialLogin('facebook')">Continue with Facebook</button>
+        <button class="btn btn-social" onclick="handleSocialLogin('apple')">Continue with Apple</button>
       </div>
       <p class="auth-footer">Don't have an account? <a onclick="toggleAuthMode()">Sign up</a></p>
     </div>
@@ -339,18 +435,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
       <button class="btn btn-primary" onclick="handleSignup()">Create Account</button>
       <div class="social-divider">or sign up with</div>
       <div class="social-buttons">
-        <button class="btn btn-social" onclick="handleSocialLogin('google')">
-          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-          Continue with Google
-        </button>
-        <button class="btn btn-social" onclick="handleSocialLogin('facebook')">
-          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-          Continue with Facebook
-        </button>
-        <button class="btn btn-social" onclick="handleSocialLogin('apple')">
-          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.53 4.08zm-5.85-15.1c.07-2.04 1.76-3.79 3.78-3.94.29 2.32-1.93 4.48-3.78 3.94z"/></svg>
-          Continue with Apple
-        </button>
+        <button class="btn btn-social" onclick="handleSocialLogin('google')">Continue with Google</button>
+        <button class="btn btn-social" onclick="handleSocialLogin('facebook')">Continue with Facebook</button>
+        <button class="btn btn-social" onclick="handleSocialLogin('apple')">Continue with Apple</button>
       </div>
       <p class="auth-footer">Already have an account? <a onclick="toggleAuthMode()">Sign in</a></p>
     </div>
@@ -367,12 +454,12 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
       <span class="level-badge">B1</span>
     </div>
     <nav class="nav-center">
-      <button class="nav-tab" onclick="showToast('Coming soon')">Grammar</button>
-      <button class="nav-tab" onclick="showToast('Coming soon')">Reading</button>
-      <button class="nav-tab" onclick="showToast('Coming soon')">Listening</button>
-      <button class="nav-tab active" onclick="navigateTo('flashcards')">Flashcards</button>
-      <button class="nav-tab" onclick="showToast('Coming soon')">AI Tutor</button>
-      <button class="nav-tab" onclick="showToast('Coming soon')">Translator</button>
+      <button class="nav-tab" id="navTabGrammar" onclick="navigateTo('grammar')">Grammar</button>
+      <button class="nav-tab" id="navTabReading" onclick="navigateTo('reading')">Reading</button>
+      <button class="nav-tab" id="navTabListening" onclick="navigateTo('listening')">Listening</button>
+      <button class="nav-tab" id="navTabFlashcards" onclick="navigateTo('flashcards')">Flashcards</button>
+      <button class="nav-tab" id="navTabAiTutor" onclick="navigateTo('aitutor')">AI Tutor</button>
+      <button class="nav-tab" id="navTabTranslator" onclick="navigateTo('translator')">Translator</button>
     </nav>
     <div class="nav-right">
       <button class="nav-btn nav-btn-primary" onclick="showToast('Thank you for supporting Lingo!')">Donate</button>
@@ -387,43 +474,124 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
       <h1 class="page-title" id="greeting">Hi there, ready to practise?</h1>
       <p class="page-subtitle">Pick a skill and keep your streak going.</p>
       <div class="dashboard-grid">
-        <div class="card" onclick="showToast('Coming soon')">
+        <div class="card" onclick="navigateTo('grammar')">
           <div class="card-header"><div class="card-icon grammar">&#9997;</div></div>
           <h3>Grammar</h3>
           <p>Master Dutch sentence structure and conjugation.</p>
-          <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:0%"></div></div>
-          <div class="progress-text"><span>0%</span><span>0 / 120 lessons</span></div>
+          <div class="progress-bar-bg"><div class="progress-bar-fill" id="grammarProgressBar" style="width:0%"></div></div>
+          <div class="progress-text"><span id="grammarPercent">0%</span><span id="grammarFraction">0 / 0 lessons</span></div>
         </div>
-        <div class="card" onclick="showToast('Coming soon')">
+        <div class="card" onclick="navigateTo('reading')">
           <div class="card-header"><div class="card-icon reading">&#128214;</div></div>
           <h3>Reading</h3>
           <p>Read real-world Dutch texts with comprehension checks.</p>
-          <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:0%"></div></div>
-          <div class="progress-text"><span>0%</span><span>0 / 85 articles</span></div>
+          <div class="progress-bar-bg"><div class="progress-bar-fill" id="readingProgressBar" style="width:0%"></div></div>
+          <div class="progress-text"><span id="readingPercent">0%</span><span id="readingFraction">0 / 0 passages</span></div>
         </div>
-        <div class="card" onclick="showToast('Coming soon')">
+        <div class="card" onclick="navigateTo('listening')">
           <div class="card-header"><div class="card-icon listening">&#127911;</div></div>
           <h3>Listening</h3>
           <p>Train your ear with native Dutch audio clips.</p>
-          <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:0%"></div></div>
-          <div class="progress-text"><span>0%</span><span>0 / 60 clips</span></div>
+          <div class="progress-bar-bg"><div class="progress-bar-fill" id="listeningProgressBar" style="width:0%"></div></div>
+          <div class="progress-text"><span id="listeningPercent">0%</span><span id="listeningFraction">0 / 0 clips</span></div>
         </div>
         <div class="card" onclick="navigateTo('flashcards')">
-          <div class="card-header"><div class="card-icon flashcards">&#127183;</div><span class="ai-badge">AI POWERED</span></div>
+          <div class="card-header"><div class="card-icon flashcards">&#127183;</div></div>
           <h3>Flashcards</h3>
           <p>Dutch vocabulary with Tigrinya meanings. Tap to flip.</p>
           <div class="progress-bar-bg"><div class="progress-bar-fill" id="flashcardProgressBar" style="width:0%"></div></div>
           <div class="progress-text"><span id="flashcardPercent">0%</span><span id="flashcardFraction">0 / 0 cards</span></div>
         </div>
-        <div class="card" onclick="showToast('Coming soon')">
-          <div class="card-header"><div class="card-icon ai">&#129302;</div><span class="ai-badge">AI POWERED</span></div>
+        <div class="card" onclick="navigateTo('aitutor')">
+          <div class="card-header"><div class="card-icon ai">&#129302;</div></div>
           <h3>AI Chat Tutor</h3>
-          <p>Practise conversation with an AI that speaks Dutch.</p>
+          <p>Practise real conversations with guided dialogue.</p>
         </div>
-        <div class="card" onclick="showToast('Coming soon')">
+        <div class="card" onclick="navigateTo('translator')">
           <div class="card-header"><div class="card-icon translator">&#128483;</div></div>
           <h3>Translator</h3>
-          <p>Instant Dutch-Tigrinya translations with examples.</p>
+          <p>Look up Dutch-Tigrinya words instantly.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- GRAMMAR: LESSON LIST -->
+    <div id="grammarListView" class="hidden">
+      <h1 class="page-title">Grammar</h1>
+      <p class="page-subtitle">Short lessons, then a few practice questions each.</p>
+      <div class="lesson-list" id="grammarLessonList"></div>
+    </div>
+
+    <!-- GRAMMAR: EXERCISE -->
+    <div id="grammarExerciseView" class="hidden">
+      <a class="back-link" onclick="navigateTo('grammar')">&larr; Back to Grammar</a>
+      <div class="exercise-panel">
+        <div class="exercise-progress">
+          <span class="progress-text" id="grammarExProgressLabel" style="white-space:nowrap;">1 / 5</span>
+          <div class="progress-bar-bg"><div class="progress-bar-fill" id="grammarExProgressBar" style="width:0%"></div></div>
+        </div>
+        <div class="exercise-card">
+          <div class="exercise-explainer" id="grammarExplainer"></div>
+          <div class="exercise-question" id="grammarQuestion"></div>
+          <div class="option-list" id="grammarOptions"></div>
+          <div class="exercise-feedback" id="grammarFeedback"></div>
+          <button class="btn btn-primary hidden" id="grammarNextBtn" onclick="grammarNextQuestion()">Continue</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- READING: LESSON LIST -->
+    <div id="readingListView" class="hidden">
+      <h1 class="page-title">Reading</h1>
+      <p class="page-subtitle">Short Dutch passages with comprehension questions.</p>
+      <div class="lesson-list" id="readingLessonList"></div>
+    </div>
+
+    <!-- READING: PASSAGE + QUESTIONS -->
+    <div id="readingExerciseView" class="hidden">
+      <a class="back-link" onclick="navigateTo('reading')">&larr; Back to Reading</a>
+      <div class="exercise-panel">
+        <div class="reading-passage" id="readingPassageText">
+          <span class="translate-toggle" onclick="toggleReadingTranslation()">Show Tigrinya translation</span>
+          <div class="reading-translation" id="readingTranslationText"></div>
+        </div>
+        <div class="exercise-progress">
+          <span class="progress-text" id="readingExProgressLabel" style="white-space:nowrap;">1 / 3</span>
+          <div class="progress-bar-bg"><div class="progress-bar-fill" id="readingExProgressBar" style="width:0%"></div></div>
+        </div>
+        <div class="exercise-card">
+          <div class="exercise-question" id="readingQuestion"></div>
+          <div class="option-list" id="readingOptions"></div>
+          <div class="exercise-feedback" id="readingFeedback"></div>
+          <button class="btn btn-primary hidden" id="readingNextBtn" onclick="readingNextQuestion()">Continue</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- LISTENING: LESSON LIST -->
+    <div id="listeningListView" class="hidden">
+      <h1 class="page-title">Listening</h1>
+      <p class="page-subtitle">Listen to a Dutch clip, then answer a question about it.</p>
+      <div class="lesson-list" id="listeningLessonList"></div>
+    </div>
+
+    <!-- LISTENING: EXERCISE -->
+    <div id="listeningExerciseView" class="hidden">
+      <a class="back-link" onclick="navigateTo('listening')">&larr; Back to Listening</a>
+      <div class="exercise-panel">
+        <div class="listening-play-area">
+          <button class="big-play-btn" onclick="playListeningClip()">&#128266;</button>
+          <p style="color:var(--text-secondary); font-size:0.85rem;">Tap to play the clip (can replay as many times as you like)</p>
+        </div>
+        <div class="exercise-progress">
+          <span class="progress-text" id="listeningExProgressLabel" style="white-space:nowrap;">1 / 3</span>
+          <div class="progress-bar-bg"><div class="progress-bar-fill" id="listeningExProgressBar" style="width:0%"></div></div>
+        </div>
+        <div class="exercise-card">
+          <div class="exercise-question" id="listeningQuestion"></div>
+          <div class="option-list" id="listeningOptions"></div>
+          <div class="exercise-feedback" id="listeningFeedback"></div>
+          <button class="btn btn-primary hidden" id="listeningNextBtn" onclick="listeningNextQuestion()">Continue</button>
         </div>
       </div>
     </div>
@@ -465,226 +633,118 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
         <button class="nav-arrow" id="nextBtn" onclick="nextCard()">&#10095;</button>
       </div>
     </div>
+
+    <!-- AI TUTOR VIEW -->
+    <div id="aitutorView" class="hidden">
+      <a class="back-link" onclick="navigateTo('dashboard')">&larr; Back to Dashboard</a>
+      <h1 class="page-title" style="margin-bottom:0.25rem;">AI Chat Tutor</h1>
+      <p class="page-subtitle">Guided conversation practice — pick a scenario and type your reply.</p>
+      <div class="lesson-list" id="aitutorScenarioList" style="margin-bottom:1.5rem;"></div>
+      <div class="chat-window hidden" id="chatWindow">
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-input-row">
+          <input type="text" id="chatInput" placeholder="Typ je antwoord in het Nederlands..." onkeydown="if(event.key==='Enter') sendChatMessage()">
+          <button class="chat-send-btn" onclick="sendChatMessage()">&#10148;</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRANSLATOR VIEW -->
+    <div id="translatorView" class="hidden">
+      <a class="back-link" onclick="navigateTo('dashboard')">&larr; Back to Dashboard</a>
+      <h1 class="page-title" style="margin-bottom:0.25rem;">Translator</h1>
+      <p class="page-subtitle">Dictionary lookup across Dutch and Tigrinya vocabulary.</p>
+      <div class="translator-panel">
+        <div class="translator-box">
+          <input type="text" id="translatorInput" placeholder="Typ een Nederlands of Tigrinya woord..." oninput="runTranslatorSearch()">
+        </div>
+        <div class="translator-results" id="translatorResults"></div>
+      </div>
+    </div>
   </main>
 </div>
 
 <script>
 // ============================================
 // VOCABULARY DATA: Dutch + Tigrinya
-// Sources: TaalCompleet A1-A2 wordlist + original sentence course
 // ============================================
 const VOCABULARY = [
-  // --- WORDS FROM PDF (TaalCompleet A1-A2) ---
-  { dutch: "aan¹", tigrinya: "+መልኣ/በርሃ\' ኣሎ", type: "word", category: "Prepositions", example: "Het licht staat aan." },
-  { dutch: "aan²", tigrinya: "ኣብ", type: "word", category: "Prepositions", example: "Ik woon aan de straat." },
-  { dutch: "aan de beurt zijn", tigrinya: "+ርእዩ/ርእዩ መቐለ", type: "phrase", category: "Phrases", example: "Jij bent aan de beurt." },
-  { dutch: "aan de linkerkant", tigrinya: "ጸጋም", type: "phrase", category: "Directions", example: "De winkel is aan de linkerkant." },
-  { dutch: "aan de rechterkant", tigrinya: "የማን", type: "phrase", category: "Directions", example: "Het huis staat aan de rechterkant." },
-  { dutch: "aan het eind", tigrinya: "ኣብ መወዳእታ", type: "phrase", category: "Time", example: "Aan het eind van de dag." },
-  { dutch: "aanbieden", tigrinya: "መቅረብ", type: "verb", category: "Verbs", example: "Ik bied je een kopje koffie aan." },
-  { dutch: "de aandacht", tigrinya: "ኣድላል", type: "noun", category: "Nouns", example: "Pay attention!" },
-  { dutch: "aanhebben", tigrinya: "መልበስ", type: "verb", category: "Verbs", example: "Ik heb een jas aan." },
-  { dutch: "aankleden", tigrinya: "መልበስ (ሓደሽ)", type: "verb", category: "Verbs", example: "Kleed je aan, we gaan." },
-  { dutch: "aankomen", tigrinya: "ኣብ ገጽ መምጽእ", type: "verb", category: "Verbs", example: "Wanneer kom je aan?" },
-  { dutch: "zich aanmelden", tigrinya: "ምምዝጋብ መዝገብ", type: "verb", category: "Verbs", example: "Meld je aan voor de cursus." },
-  { dutch: "het aantal", tigrinya: "ብዝሒ: መጠን", type: "noun", category: "Nouns", example: "Het aantal studenten is groot." },
-  { dutch: "aantrekken", tigrinya: "ክዳን መልበስ/መኽደን", type: "verb", category: "Verbs", example: "Trek je jas aan, het is koud." },
-  { dutch: "aanvragen", tigrinya: "ምምልከት", type: "verb", category: "Verbs", example: "Ik vraag een visum aan." },
-  { dutch: "aanwezig", tigrinya: "መህላው", type: "adjective", category: "Adjectives", example: "Is iedereen aanwezig?" },
-  { dutch: "aanwijzen", tigrinya: "መምልከት", type: "verb", category: "Verbs", example: "Wijs de weg aan." },
   { dutch: "de aardappel", tigrinya: "ድንሽ", type: "noun", category: "Food", example: "Ik eet graag aardappels." },
   { dutch: "de aarde", tigrinya: "ምድር/መሬት", type: "noun", category: "Nature", example: "De aarde is rond." },
   { dutch: "aardig", tigrinya: "ርሑስ", type: "adjective", category: "Adjectives", example: "Zij is een aardige vrouw." },
   { dutch: "acht", tigrinya: "ሸሞንተ", type: "number", category: "Numbers", example: "Ik heb acht appels." },
   { dutch: "achter", tigrinya: "ብድሕሪ", type: "preposition", category: "Prepositions", example: "De auto staat achter het huis." },
-  { dutch: "de achternaam", tigrinya: "ስም ኣቦ", type: "noun", category: "Identity", example: "Wat is je achternaam?" },
-  { dutch: "achtste", tigrinya: "ሸሞንተይ", type: "number", category: "Numbers", example: "Hij is de achtste in de rij." },
-  { dutch: "achttien", tigrinya: "ዓሰርተ ሸሞንተ", type: "number", category: "Numbers", example: "Ik ben achttien jaar oud." },
-  { dutch: "de activiteit", tigrinya: "ኣንጻ ተዋስኦታት መንቀሳቐሳት", type: "noun", category: "Nouns", example: "Wat is je favoriete activiteit?" },
   { dutch: "het adres", tigrinya: "ኣድራሻ", type: "noun", category: "Identity", example: "Wat is je adres?" },
-  { dutch: "de advertentie", tigrinya: "ማስታወቂ/ማስተዋወቂ", type: "noun", category: "Media", example: "Ik zag een advertentie in de krant." },
   { dutch: "het advies", tigrinya: "ምኽር", type: "noun", category: "Nouns", example: "Heb je advies voor mij?" },
   { dutch: "de advocaat", tigrinya: "ዓቃቢ ሕግ/ሞኽር", type: "noun", category: "Professions", example: "Mijn advocaat helpt mij." },
-  { dutch: "af", tigrinya: "ትሕተይ", type: "adverb", category: "Adverbs", example: "Doe de radio af." },
-  { dutch: "af en toe", tigrinya: "ሓደ ሓደ ግዜ", type: "phrase", category: "Phrases", example: "Af en toe ga ik naar de bioscoop." },
-  { dutch: "de afdeling", tigrinya: "ክፍሊ/መደባ", type: "noun", category: "Work", example: "Ik werk op de verkoopafdeling." },
-  { dutch: "afgelopen", tigrinya: "መወዳእታ/ዝተወዳእ", type: "adjective", category: "Time", example: "Het is afgelopen week gebeurd." },
-  { dutch: "afmaken", tigrinya: "መውዳእ", type: "verb", category: "Verbs", example: "Maak je huiswerk af." },
-  { dutch: "zich afmelden", tigrinya: "ምምዝጋብ መዝገብ", type: "verb", category: "Verbs", example: "Meld je af als je niet komt." },
-  { dutch: "afscheid nemen", tigrinya: "ምብዳህ/ምፍላይ", type: "phrase", category: "Phrases", example: "We nemen afscheid van onze collega." },
   { dutch: "de afspraak", tigrinya: "ቃለ-መጠይቕ", type: "noun", category: "Social", example: "Ik heb een afspraak met de dokter." },
-  { dutch: "afspreken", tigrinya: "ምምዝጋብ/ውዕል", type: "verb", category: "Verbs", example: "Laten we afspreken in het café." },
   { dutch: "het afval", tigrinya: "ጓሓፍ", type: "noun", category: "Household", example: "Gooi het afval in de bak." },
-  { dutch: "afwassen", tigrinya: "ድስታት ምሕጻብ", type: "verb", category: "Household", example: "Ik was de borden af." },
-  { dutch: "afwezig", tigrinya: "መበራሪ", type: "adjective", category: "Adjectives", example: "Hij is vandaag afwezig." },
   { dutch: "de agenda", tigrinya: "መዓልታዊ/ኣጀንዳ", type: "noun", category: "Work", example: "Noteer het in je agenda." },
-  { dutch: "al", tigrinya: "ኩሉ/ኩሉ ግዜ", type: "adverb", category: "Adverbs", example: "Is hij al hier?" },
   { dutch: "de alcohol", tigrinya: "ኣልኮል", type: "noun", category: "Food", example: "Deze drank bevat alcohol." },
-  { dutch: "alle", tigrinya: "ኩሉ", type: "pronoun", category: "Pronouns", example: "Alle studenten zijn aanwezig." },
-  { dutch: "allebei", tigrinya: "ክልተ/ክልተኦም", type: "pronoun", category: "Pronouns", example: "We gaan allebei mee." },
   { dutch: "alleen", tigrinya: "ንብረቱ", type: "adverb", category: "Adverbs", example: "Ik woon alleen." },
-  { dutch: "allemaal", tigrinya: "ኩሉ/ዅሉ", type: "pronoun", category: "Pronouns", example: "Dank jullie allemaal!" },
-  { dutch: "allerlei", tigrinya: "ኩሉ ዓይነት/ብምልኣት", type: "adjective", category: "Adjectives", example: "Er zijn allerlei mensen hier." },
-  { dutch: "alles", tigrinya: "ኩሉ ነገር", type: "pronoun", category: "Pronouns", example: "Alles is goed." },
-  { dutch: "als", tigrinya: "ከም/እንተ", type: "conjunction", category: "Grammar", example: "Als het regent, blijf ik thuis." },
-  { dutch: "alsjeblieft", tigrinya: "በጃኻ/በጃኺ", type: "phrase", category: "Phrases", example: "Een koffie, alsjeblieft." },
-  { dutch: "altijd", tigrinya: "ኩሉ ግዜ/ሰላም", type: "adverb", category: "Adverbs", example: "Ik drink altijd koffie in de ochtend." },
-  { dutch: "alvast", tigrinya: "ኩሉ ስዒብ", type: "adverb", category: "Adverbs", example: "Alvast bedankt!" },
-  { dutch: "alweer", tigrinya: "ድጊም", type: "adverb", category: "Adverbs", example: "Ben je alweer terug?" },
-  { dutch: "ander, andere", tigrinya: "ካልእ", type: "adjective", category: "Adjectives", example: "Ik wil een andere kleur." },
-  { dutch: "anders", tigrinya: "ካልእ ኣገባብ", type: "adverb", category: "Adverbs", example: "Doe het anders." },
+  { dutch: "altijd", tigrinya: "ኩሉ ግዜ", type: "adverb", category: "Adverbs", example: "Ik drink altijd koffie." },
   { dutch: "het antwoord", tigrinya: "መልሲ", type: "noun", category: "Nouns", example: "Wat is het antwoord?" },
-  { dutch: "apart", tigrinya: "ብተፈጻሚ/ብሓደ", type: "adjective", category: "Adjectives", example: "We betalen apart." },
   { dutch: "de apotheek", tigrinya: "ፋርማሲ", type: "noun", category: "Health", example: "Ik ga naar de apotheek." },
-  { dutch: "het apparaat", tigrinya: "መሳርሒ", type: "noun", category: "Technology", example: "Dit apparaat is nieuw." },
   { dutch: "de appel", tigrinya: "ተፋራስ", type: "noun", category: "Food", example: "Ik eet een appel." },
-  { dutch: "april", tigrinya: "ሚያዝያ", type: "noun", category: "Time", example: "Mijn verjaardag is in april." },
   { dutch: "de arm", tigrinya: "ክኢል", type: "noun", category: "Body", example: "Mijn arm doet pijn." },
-  { dutch: "de armband", tigrinya: "ንክኢል ዘሎ ጌጢ", type: "noun", category: "Clothing", example: "Ze draagt een mooie armband." },
-  { dutch: "de assistente", tigrinya: "ተሓዋሲት", type: "noun", category: "Professions", example: "De assistente helpt de dokter." },
   { dutch: "augustus", tigrinya: "ነሓሰ", type: "noun", category: "Time", example: "In augustus is het warm." },
   { dutch: "de auto", tigrinya: "መኪና", type: "noun", category: "Transport", example: "Ik rij met de auto naar werk." },
   { dutch: "de avond", tigrinya: "ምሸት", type: "noun", category: "Time", example: "In de avond kijk ik tv." },
-  { dutch: "het avondeten", tigrinya: "ዕረፍቲ", type: "noun", category: "Food", example: "Het avondeten is klaar." },
   { dutch: "de baan", tigrinya: "ስራሕ", type: "noun", category: "Work", example: "Ik zoek een nieuwe baan." },
-  { dutch: "de baard", tigrinya: "ጽማሚ", type: "noun", category: "Body", example: "Hij heeft een lange baard." },
-  { dutch: "de baas", tigrinya: "ሓላፊ", type: "noun", category: "Work", example: "De baas is vandaag niet hier." },
   { dutch: "de baby", tigrinya: "ህጻን", type: "noun", category: "Family", example: "De baby slaapt." },
-  { dutch: "het bad", tigrinya: "ናይ መታሓዝ ገዛ", type: "noun", category: "Household", example: "Ik neem een bad." },
   { dutch: "de badkamer", tigrinya: "መታሓዝ ገዛ ክፍሊ", type: "noun", category: "Household", example: "De badkamer is boven." },
-  { dutch: "bakken", tigrinya: "መሓዊ", type: "verb", category: "Verbs", example: "Ik bak een taart." },
   { dutch: "de bakker", tigrinya: "እንዳ ዳቦ", type: "noun", category: "Professions", example: "De bakker maakt vers brood." },
   { dutch: "de bal", tigrinya: "ኩዕሶ", type: "noun", category: "Objects", example: "De kinderen spelen met de bal." },
-  { dutch: "het balkon", tigrinya: "ናይ ገዛ ጣዕሚ ዘሎ ቦታ", type: "noun", category: "Household", example: "Ik zit op het balkon." },
   { dutch: "de banaan", tigrinya: "ሙዝ", type: "noun", category: "Food", example: "Eet een banaan, het is gezond." },
-  { dutch: "bang", tigrinya: "ፍርሃት", type: "adjective", category: "Adjectives", example: "Ik ben bang voor honden." },
   { dutch: "de bank", tigrinya: "ሶፋ", type: "noun", category: "Household", example: "Zit op de bank." },
-  { dutch: "de bar", tigrinya: "ባር", type: "noun", category: "Food", example: "We ontmoeten elkaar in de bar." },
   { dutch: "de basisschool", tigrinya: "መባእታ ቤት ትምህርቲ", type: "noun", category: "Education", example: "Mijn kind zit op de basisschool." },
-  { dutch: "de batterij", tigrinya: "ባትሪ", type: "noun", category: "Technology", example: "De batterij is leeg." },
-  { dutch: "beantwoorden", tigrinya: "መልሲ", type: "verb", category: "Verbs", example: "Beantwoord de vraag." },
   { dutch: "het bed", tigrinya: "መደቀሲ", type: "noun", category: "Household", example: "Ik ga naar bed." },
-  { dutch: "bedanken", tigrinya: "ምምስጋን", type: "verb", category: "Verbs", example: "Ik bedank je voor je hulp." },
-  { dutch: "bedankt", tigrinya: "ይቕረታ", type: "phrase", category: "Phrases", example: "Bedankt voor alles!" },
-  { dutch: "bedenken", tigrinya: "ብሓሳብ ምሕሳብ", type: "verb", category: "Verbs", example: "Bedenk een goed plan." },
-  { dutch: "bedoelen", tigrinya: "ማለት", type: "verb", category: "Verbs", example: "Wat bedoel je?" },
-  { dutch: "de bedoeling", tigrinya: "ኣተሓሳስባ", type: "noun", category: "Nouns", example: "Dat is niet de bedoeling." },
-  { dutch: "het bedrag", tigrinya: "መጠን", type: "noun", category: "Money", example: "Het bedrag is 50 euro." },
+  { dutch: "bedankt", tigrinya: "የቐንየለይ", type: "phrase", category: "Phrases", example: "Bedankt voor alles!" },
   { dutch: "het bedrijf", tigrinya: "ትካል", type: "noun", category: "Work", example: "Ik werk bij een groot bedrijf." },
   { dutch: "het been", tigrinya: "እግሪ", type: "noun", category: "Body", example: "Mijn been doet pijn." },
-  { dutch: "een beetje", tigrinya: "ሒደት/ቁሩብ", type: "phrase", category: "Phrases", example: "Ik spreek een beetje Nederlands." },
-  { dutch: "het begin", tigrinya: "መጅመርታ", type: "noun", category: "Nouns", example: "In het begin was het moeilijk." },
-  { dutch: "beginnen", tigrinya: "መጅምር", type: "verb", category: "Verbs", example: "We beginnen om negen uur." },
-  { dutch: "de begrafenis", tigrinya: "ቀብሪ", type: "noun", category: "Social", example: "De begrafenis is morgen." },
-  { dutch: "begrijpen", tigrinya: "መርዳእ", type: "verb", category: "Verbs", example: "Begrijp je mij?" },
-  { dutch: "behalve", tigrinya: "ብብዘይ", type: "preposition", category: "Prepositions", example: "Iedereen is er behalve ik." },
-  { dutch: "beide", tigrinya: "ክልተ", type: "pronoun", category: "Pronouns", example: "Beide antwoorden zijn goed." },
+  { dutch: "beginnen", tigrinya: "ምጅማር", type: "verb", category: "Verbs", example: "We beginnen om negen uur." },
+  { dutch: "begrijpen", tigrinya: "ምርዳእ", type: "verb", category: "Verbs", example: "Begrijp je mij?" },
   { dutch: "bekend", tigrinya: "ፍሉጥ", type: "adjective", category: "Adjectives", example: "Dit liedje is heel bekend." },
   { dutch: "belangrijk", tigrinya: "ኣገዳሲ", type: "adjective", category: "Adjectives", example: "Dit is heel belangrijk." },
-  { dutch: "de belasting", tigrinya: "ትክል/ግብሪ", type: "noun", category: "Money", example: "Ik betaal belasting." },
-  { dutch: "bellen", tigrinya: "መደወል", type: "verb", category: "Verbs", example: "Ik bel je morgen." },
-  { dutch: "beloven", tigrinya: "ቃል ምሃብ", type: "verb", category: "Verbs", example: "Ik beloof dat ik kom." },
-  { dutch: "beneden", tigrinya: "ትሕቲ", type: "adverb", category: "Adverbs", example: "De keuken is beneden." },
-  { dutch: "bereiken", tigrinya: "መበጽህ", type: "verb", category: "Verbs", example: "We bereiken ons doel." },
-  { dutch: "de berg", tigrinya: "ተራር", type: "noun", category: "Nature", example: "De berg is heel hoog." },
+  { dutch: "de belasting", tigrinya: "ግብሪ", type: "noun", category: "Money", example: "Ik betaal belasting." },
+  { dutch: "bellen", tigrinya: "ምድዋል", type: "verb", category: "Verbs", example: "Ik bel je morgen." },
   { dutch: "het bericht", tigrinya: "መልእኽቲ", type: "noun", category: "Communication", example: "Ik kreeg een bericht van hem." },
   { dutch: "het beroep", tigrinya: "ሞያ", type: "noun", category: "Work", example: "Wat is je beroep?" },
-  { dutch: "beschermen", tigrinya: "መክላኸሊ", type: "verb", category: "Verbs", example: "We moeten de natuur beschermen." },
-  { dutch: "beschikbaar", tigrinya: "ክርከብ", type: "adjective", category: "Adjectives", example: "Is deze kamer beschikbaar?" },
-  { dutch: "beschrijven", tigrinya: "መገሊጽ", type: "verb", category: "Verbs", example: "Beschrijf wat je ziet." },
-  { dutch: "besluiten", tigrinya: "መውሳነ", type: "verb", category: "Verbs", example: "We besluiten morgen." },
-  { dutch: "bespreken", tigrinya: "ምምዝጋብ", type: "verb", category: "Verbs", example: "Laten we dit bespreken." },
-  { dutch: "bestaan", tigrinya: "መነባብሮ", type: "verb", category: "Verbs", example: "Dit probleem bestaat al lang." },
-  { dutch: "beste", tigrinya: "ኣዝዩ", type: "adjective", category: "Adjectives", example: "Jij bent de beste!" },
-  { dutch: "bestellen", tigrinya: "መዕደኒ", type: "verb", category: "Verbs", example: "Ik bestel een pizza." },
-  { dutch: "de bestelling", tigrinya: "መዕደኒ", type: "noun", category: "Shopping", example: "Je bestelling is onderweg." },
-  { dutch: "betalen", tigrinya: "መክፈሊ", type: "verb", category: "Verbs", example: "Ik betaal met pin." },
-  { dutch: "de betekenis", tigrinya: "ትርጉም", type: "noun", category: "Nouns", example: "Wat is de betekenis van dit woord?" },
-  { dutch: "beterschap", tigrinya: "መሓየሺ ጥዕና", type: "noun", category: "Health", example: "Beterschap!" },
-  { dutch: "bewegen", tigrinya: "መንቀሳቐስ", type: "verb", category: "Verbs", example: "Beweeg elke dag." },
-  { dutch: "de bewoner", tigrinya: "ነባሪ መንበሪ", type: "noun", category: "Nouns", example: "De bewoner klopt op de deur." },
-  { dutch: "bezig", tigrinya: "ስራሕ ምስራሕ", type: "adjective", category: "Adjectives", example: "Ik ben bezig met werken." },
   { dutch: "de bibliotheek", tigrinya: "መዝገበ ፅሑፍ", type: "noun", category: "Education", example: "Ik leen boeken in de bibliotheek." },
-  { dutch: "bieden", tigrinya: "ምሃብ", type: "verb", category: "Verbs", example: "Ik bied je een kopje koffie aan." },
   { dutch: "het bier", tigrinya: "ቢራ", type: "noun", category: "Food", example: "Drink je bier?" },
-  { dutch: "bij", tigrinya: "ብ", type: "preposition", category: "Prepositions", example: "Ik woon bij mijn ouders." },
   { dutch: "bijna", tigrinya: "ዳርጋ", type: "adverb", category: "Adverbs", example: "Ik ben bijna klaar." },
-  { dutch: "bijten", tigrinya: "ቅርስ", type: "verb", category: "Verbs", example: "De hond bijt niet." },
-  { dutch: "bijvoorbeeld", tigrinya: "ንኣብነት", type: "adverb", category: "Adverbs", example: "Ik hou van fruit, bijvoorbeeld appels." },
-  { dutch: "bijzonder", tigrinya: "መፍረይ", type: "adjective", category: "Adjectives", example: "Dit is een bijzonder moment." },
   { dutch: "binnen", tigrinya: "ኣብ ውሽጢ", type: "adverb", category: "Adverbs", example: "Kom binnen!" },
-  { dutch: "binnenkomen", tigrinya: "መእተዊ", type: "verb", category: "Verbs", example: "Hij komt binnen." },
-  { dutch: "binnenkort", tigrinya: "ኣብ ቀረባ እዋን", type: "adverb", category: "Adverbs", example: "Ik zie je binnenkort." },
   { dutch: "de bioscoop", tigrinya: "ሲነማ", type: "noun", category: "Entertainment", example: "We gaan naar de bioscoop." },
-  { dutch: "blauw", tigrinya: "ሰማይ", type: "adjective", category: "Colors", example: "De lucht is blauw." },
+  { dutch: "blauw", tigrinya: "ሰማያዊ", type: "adjective", category: "Colors", example: "De lucht is blauw." },
   { dutch: "blij", tigrinya: "ተሓጐሰ", type: "adjective", category: "Adjectives", example: "Ik ben blij met je." },
-  { dutch: "blijven", tigrinya: "መዕቀኒ", type: "verb", category: "Verbs", example: "Blijf hier!" },
-  { dutch: "het blik", tigrinya: "ሳሕን", type: "noun", category: "Objects", example: "Een blik cola." },
-  { dutch: "het bloed", tigrinya: "ደም", type: "noun", category: "Body", example: "Er is bloed op de vloer." },
-  { dutch: "de bloem", tigrinya: "ጸደን", type: "noun", category: "Nature", example: "Wat een mooie bloem!" },
-  { dutch: "de bloemkool", tigrinya: "ኮሎ ፍሩ", type: "noun", category: "Food", example: "Ik eet bloemkool." },
-  { dutch: "blond", tigrinya: "ፈረሳዊ ጸደን", type: "adjective", category: "Adjectives", example: "Zij heeft blond haar." },
-  { dutch: "de bodem", tigrinya: "ትሕተይ", type: "noun", category: "Nouns", example: "Op de bodem van de zee." },
   { dutch: "het boek", tigrinya: "መጽሓፍ", type: "noun", category: "Education", example: "Ik lees een boek." },
   { dutch: "de boer", tigrinya: "ሓረስታይ", type: "noun", category: "Professions", example: "De boer werkt op het land." },
-  { dutch: "de boerderij", tigrinya: "መናብሪ ናይ እንስሳ", type: "noun", category: "Nature", example: "We wonen op een boerderij." },
-  { dutch: "de boete", tigrinya: "መቕጻዕቲ", type: "noun", category: "Legal", example: "Ik kreeg een boete." },
-  { dutch: "boodschappen doen", tigrinya: "መዕደኒ", type: "phrase", category: "Shopping", example: "Ik doe boodschappen bij de Albert Heijn." },
   { dutch: "de boom", tigrinya: "ኦም", type: "noun", category: "Nature", example: "De boom is hoog." },
-  { dutch: "de boon", tigrinya: "ባቖላ", type: "noun", category: "Food", example: "Ik eet bruine bonen." },
-  { dutch: "boos", tigrinya: "ጽልኢ", type: "adjective", category: "Adjectives", example: "Waarom ben je boos?" },
   { dutch: "de boot", tigrinya: "ጀልባ", type: "noun", category: "Transport", example: "De boot vaart naar Amsterdam." },
-  { dutch: "het bord", tigrinya: "ሳሕን", type: "noun", category: "Household", example: "Het eten staat op het bord." },
-  { dutch: "de borstel", tigrinya: "መሓዙ ስኒ", type: "noun", category: "Household", example: "Ik pak de borstel." },
-  { dutch: "het bos", tigrinya: "ቦታ ብዙሕ ኦም", type: "noun", category: "Nature", example: "We wandelen in het bos." },
-  { dutch: "de boter", tigrinya: "ሽጉርቲ", type: "noun", category: "Food", example: "Boter op mijn brood." },
+  { dutch: "boos", tigrinya: "ጽልኢ", type: "adjective", category: "Adjectives", example: "Waarom ben je boos?" },
   { dutch: "de boterham", tigrinya: "ፍርቂ", type: "noun", category: "Food", example: "Een boterham met kaas." },
-  { dutch: "bouwen", tigrinya: "መሃንገስ", type: "verb", category: "Verbs", example: "Ze bouwen een nieuw huis." },
   { dutch: "boven", tigrinya: "ላዕሊ", type: "adverb", category: "Adverbs", example: "De slaapkamer is boven." },
   { dutch: "de brand", tigrinya: "ሓዊ", type: "noun", category: "Emergency", example: "Er is brand!" },
-  { dutch: "de brandweer", tigrinya: "መክላኸሊ ሓዊ", type: "noun", category: "Emergency", example: "Bel de brandweer!" },
-  { dutch: "breed", tigrinya: "ኣራማደ", type: "adjective", category: "Adjectives", example: "De weg is breed." },
-  { dutch: "breken", tigrinya: "መሰብረ", type: "verb", category: "Verbs", example: "Ik breek mijn been." },
-  { dutch: "brengen", tigrinya: "መምጻእ", type: "verb", category: "Verbs", example: "Breng de kinderen naar school." },
-  { dutch: "het briefje", tigrinya: "ንእሽቶ ደብዳቤ", type: "noun", category: "Communication", example: "Ik schrijf een briefje." },
-  { dutch: "de brievenbus", tigrinya: "ናይ ደብዳቤ ሳንዱቕ", type: "noun", category: "Household", example: "De post zit in de brievenbus." },
-  { dutch: "de bril", tigrinya: "ኣዋልድ", type: "noun", category: "Clothing", example: "Ik draag een bril." },
+  { dutch: "breken", tigrinya: "ምስባር", type: "verb", category: "Verbs", example: "Ik breek mijn been." },
+  { dutch: "brengen", tigrinya: "ምምጻእ", type: "verb", category: "Verbs", example: "Breng de kinderen naar school." },
+  { dutch: "de bril", tigrinya: "መነጽር", type: "noun", category: "Clothing", example: "Ik draag een bril." },
   { dutch: "de broek", tigrinya: "ሱሪ", type: "noun", category: "Clothing", example: "Een nieuwe broek kopen." },
   { dutch: "de broer", tigrinya: "ሓው", type: "noun", category: "Family", example: "Mijn broer is jonger." },
   { dutch: "het brood", tigrinya: "ዳቦ", type: "noun", category: "Food", example: "Vers brood bij de bakker." },
   { dutch: "de brug", tigrinya: "መሻገሪ", type: "noun", category: "Transport", example: "We rijden over de brug." },
-  { dutch: "bruin", tigrinya: "ቡናዊ", type: "adjective", category: "Colors", example: "Mijn haar is bruin." },
   { dutch: "de buik", tigrinya: "ከብዲ", type: "noun", category: "Body", example: "Mijn buik doet pijn." },
   { dutch: "buiten", tigrinya: "ኣብ ውጻኢ", type: "adverb", category: "Adverbs", example: "Het is koud buiten." },
   { dutch: "het buitenland", tigrinya: "ወጻኢ ሃገር", type: "noun", category: "Travel", example: "Ik ga naar het buitenland." },
-  { dutch: "het bureau", tigrinya: "መደባ", type: "noun", category: "Work", example: "Mijn computer staat op het bureau." },
   { dutch: "de buren", tigrinya: "ጎረባብቲ", type: "noun", category: "Social", example: "Mijn buren zijn aardig." },
   { dutch: "de bus", tigrinya: "ኣውቶቡስ", type: "noun", category: "Transport", example: "De bus komt over vijf minuten." },
-  { dutch: "de buurman", tigrinya: "ጎረባብቲ", type: "noun", category: "Social", example: "De buurman helpt mij." },
-  { dutch: "de buurt", tigrinya: "ከባቢ", type: "noun", category: "Social", example: "Ik woon in een leuke buurt." },
-  { dutch: "de buurvrouw", tigrinya: "ጎረባብቲ", type: "noun", category: "Social", example: "De buurvrouw brengt cake." },
   { dutch: "het cadeau", tigrinya: "ህያብ", type: "noun", category: "Objects", example: "Een cadeau voor je verjaardag." },
   { dutch: "het café", tigrinya: "ቤት ቡን", type: "noun", category: "Food", example: "Laten we afspreken in het café." },
-  { dutch: "de cent", tigrinya: "ሳንቲም", type: "noun", category: "Money", example: "Het kost 50 cent." },
-  { dutch: "de centimeter", tigrinya: "ሳንቲሜትር", type: "noun", category: "Measurements", example: "Het is 10 centimeter." },
   { dutch: "het centrum", tigrinya: "መካከል", type: "noun", category: "Places", example: "Het centrum is druk." },
-  { dutch: "de chauffeur", tigrinya: "ሾፈር", type: "noun", category: "Professions", example: "De chauffeur rijdt de bus." },
   { dutch: "de chocola", tigrinya: "ቸኮሌት", type: "noun", category: "Food", example: "Ik hou van chocola." },
-  { dutch: "het cijfer", tigrinya: "ነጥቢ", type: "noun", category: "Education", example: "Ik heb een goed cijfer." },
-  { dutch: "de citroen", tigrinya: "ሎሚ", type: "noun", category: "Food", example: "Citroen in mijn thee." },
-  { dutch: "de club", tigrinya: "ክለብ", type: "noun", category: "Entertainment", example: "Ik ga naar de club." },
   { dutch: "de collega", tigrinya: "ስራሕቲ", type: "noun", category: "Work", example: "Mijn collega is heel aardig." },
   { dutch: "de computer", tigrinya: "ኮምፒዩተር", type: "noun", category: "Technology", example: "Ik werk op de computer." },
-  { dutch: "het concert", tigrinya: "ሙዚቃ መዘናግዒ", type: "noun", category: "Entertainment", example: "We gaan naar een concert." },
-  { dutch: "het contact", tigrinya: "ርክብ", type: "noun", category: "Communication", example: "Houd contact!" },
   { dutch: "het contract", tigrinya: "ውዕል", type: "noun", category: "Work", example: "Ik teken het contract." },
-  { dutch: "de controle", tigrinya: "መመሓየሺ", type: "noun", category: "Nouns", example: "De controle duurt even." },
-  { dutch: "controleren", tigrinya: "መመሓየሺ", type: "verb", category: "Verbs", example: "Controleer je antwoorden." },
-  { dutch: "creatief", tigrinya: "ፈጠራ", type: "adjective", category: "Adjectives", example: "Zij is heel creatief." },
-  { dutch: "de cultuur", tigrinya: "ባህሊ", type: "noun", category: "Nouns", example: "De Nederlandse cultuur is interessant." },
   { dutch: "de cursist", tigrinya: "ተማሃራይ", type: "noun", category: "Education", example: "De cursist leert snel." },
-
-  // --- SENTENCES FROM ORIGINAL COURSE DATA ---
   { dutch: "Ik wil solliciteren naar deze vacature.", tigrinya: "ነዚ ክፉት ናይ ስራሕ ቦታ ከማልክት እደሊ ኣለኹ።", type: "sentence", category: "Work", example: null },
   { dutch: "Het bedrijf zoekt een nieuwe medewerker.", tigrinya: "እቲ ትካል ሓድሽ ሰራሕተኛ ይደሊ ኣሎ።", type: "sentence", category: "Work", example: null },
   { dutch: "Ik stuur mijn cv op.", tigrinya: "ናይ ስራሕ ተመክሮይ (CV) ይሰድድ ኣለኹ።", type: "sentence", category: "Work", example: null },
@@ -692,27 +752,13 @@ const VOCABULARY = [
   { dutch: "Morgen heb ik een sollicitatiegesprek.", tigrinya: "ጽባሕ ናይ ስራሕ ቃለ-መጠይቕ ኣሎኒ።", type: "sentence", category: "Work", example: null },
   { dutch: "Ik wil graag een koffie bestellen.", tigrinya: "ቡን ክእዝዝ እደሊ ኣለኹ።", type: "sentence", category: "Restaurant", example: null },
   { dutch: "Mag ik de menukaart zien?", tigrinya: "ናይ መግቢ ዝርዝር ክርኢ ይኽእልዶ፧", type: "sentence", category: "Restaurant", example: null },
-  { dutch: "Heeft u ook vegetarische gerechten?", tigrinya: "ናይ ኣሕምልቲ ጥራይ መግቢ ኣሎኩምዶ፧", type: "sentence", category: "Restaurant", example: null },
   { dutch: "Twee bier en een water alstublieft.", tigrinya: "ክልተ ቢራን ሓደ ማይን በጃኹም።", type: "sentence", category: "Restaurant", example: null },
   { dutch: "Heeft u een tafel voor twee personen?", tigrinya: "ንክልተ ሰብ ዝኸውን ጠረጴዛ ኣሎኩምዶ፧", type: "sentence", category: "Restaurant", example: null },
-  { dutch: "Met wie spreek ik alstublieft?", tigrinya: "በጃኻ ምስ መን እዩ ዝዛረብ ዘለኹ፧", type: "sentence", category: "Phone", example: null },
-  { dutch: "De verbinding is erg slecht.", tigrinya: "እቲ መስመር ብጣዕሚ ሕማቕ ኣሎ።", type: "sentence", category: "Phone", example: null },
-  { dutch: "Schrijf de afspraak in je agenda.", tigrinya: "ነቲ ቆጸራ ኣብ ኣጀንዳኻ ጽሓፎ።", type: "sentence", category: "Appointments", example: null },
-  { dutch: "De les begint over vijf minuten.", tigrinya: "እቲ ትምህርቲ ድሕሪ ሓሙሽተ ደቒቕ ይጅምር።", type: "sentence", category: "School", example: null },
-  { dutch: "Ik moet hard studeren voor de toets.", tigrinya: "ነቲ ፈተና ጽቡቕ ጌረ ክመሃር ኣሎኒ።", type: "sentence", category: "School", example: null },
   { dutch: "Waar kan ik de melk vinden?", tigrinya: "ጸባ ኣበይ ክረኽቦ እኽእል፧", type: "sentence", category: "Shopping", example: null },
-  { dutch: "Dit product is in de aanbieding.", tigrinya: "እዚ ፍርያት እዚ ሕስራን (ዲስካውንት) ኣለዎ።", type: "sentence", category: "Shopping", example: null },
   { dutch: "Van welk spoor vertrekt de trein?", tigrinya: "እቲ ባቡር ካብ ኣየናይ መስመር ይብገስ፧", type: "sentence", category: "Transport", example: null },
-  { dutch: "Ik moet mijn ov-chipkaart opladen.", tigrinya: "ናይ መጓዓዝያ ካርታይ (OV) ክመልኣ ኣሎኒ።", type: "sentence", category: "Transport", example: null },
   { dutch: "Ik moet een afspraak maken bij de huisarts.", tigrinya: "ምስ ሓኪም ገዛ ቆጸራ ክገብር ኣሎኒ።", type: "sentence", category: "Health", example: null },
-  { dutch: "Waar heeft u precies pijn?", tigrinya: "ልክዕ ኣበይ እዩ ዝሕምመካ ዘሎ፧", type: "sentence", category: "Health", example: null },
-  { dutch: "Ik moet me inschrijven bij de gemeente.", tigrinya: "ኣብ ከተማ (ገመይንተ) ክምዝገብ ኣሎኒ።", type: "sentence", category: "Municipality", example: null },
   { dutch: "Bel direct het alarmnummer honderdtwaalf.", tigrinya: "ብቕልጡፍ ናይ ሓደጋ ቁጽሪ 112 ደውል።", type: "sentence", category: "Emergency", example: null },
-  { dutch: "Ik moet aangifte doen van diefstal.", tigrinya: "ብዛዕባ ስርቂ ሪፖርት ክገብር ኣሎኒ።", type: "sentence", category: "Emergency", example: null },
   { dutch: "Ik wil je uitnodigen voor mijn verjaardag.", tigrinya: "ንልደተይ ክዓድመካ እደሊ ኣለኹ።", type: "sentence", category: "Social", example: null },
-  { dutch: "In mijn vrije tijd voetbal ik vaak.", tigrinya: "ኣብ ናይ ዕረፍቲ ግዜይ ኩዕሶ እጻወት እየ።", type: "sentence", category: "Hobbies", example: null },
-  { dutch: "Zullen we samen een kopje koffie drinken?", tigrinya: "ብሓባር ሓደ ፊንጃል ቡን ክንሰቲ ንኽእልዶ፧", type: "sentence", category: "Social", example: null },
-  { dutch: "Het is heerlijk weer voor een wandeling.", tigrinya: "ኣብ ፓርክ ንምጉዓዝ ብጣዕሚ ደስ ዝብል ኣየር እዩ።", type: "sentence", category: "Nature", example: null },
   { dutch: "Mijn familie woont nog in het buitenland.", tigrinya: "ስድራቤተይ ገና ኣብ ወጻኢ ሃገር ይነብሩ ኣለዉ።", type: "sentence", category: "Family", example: null },
 ];
 
@@ -721,7 +767,7 @@ const VOCABULARY = [
 // ============================================
 let currentUser = null;
 let currentCardIndex = 0;
-let cardProgress = {}; // cardIndex -> true/false
+let cardProgress = {};
 let isFlipped = false;
 
 // ============================================
@@ -731,7 +777,6 @@ function handleLogin() {
   const email = document.getElementById('loginEmail').value.trim();
   const password = document.getElementById('loginPassword').value;
   if (!email || !password) { showToast('Please fill in all fields'); return; }
-  // MOCK: In production, send to your backend API
   currentUser = { name: email.split('@')[0], email, avatar: email[0].toUpperCase() };
   saveSession();
   initApp();
@@ -744,14 +789,12 @@ function handleSignup() {
   const pass2 = document.getElementById('signupPassword2').value;
   if (!name || !email || !pass) { showToast('Please fill in all fields'); return; }
   if (pass !== pass2) { showToast('Passwords do not match'); return; }
-  // MOCK: In production, send to your backend API
   currentUser = { name, email, avatar: name[0].toUpperCase() };
   saveSession();
   initApp();
 }
 
 function handleSocialLogin(provider) {
-  // MOCK: In production, redirect to OAuth provider
   showToast(`Signing in with ${provider}...`);
   setTimeout(() => {
     currentUser = { name: provider + "User", email: "user@" + provider + ".com", avatar: "U" };
@@ -762,15 +805,12 @@ function handleSocialLogin(provider) {
 
 function handleLogout() {
   currentUser = null;
-  // Clear session cookie (mock)
   document.cookie = "lingo_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
   localStorage.removeItem('lingo_session');
   showAuth();
 }
 
 function saveSession() {
-  // NOTE: In production, use HTTP-only secure cookies set by your backend.
-  // This mock uses memory + a non-sensitive localStorage flag for UX only.
   localStorage.setItem('lingo_session', JSON.stringify({ user: currentUser, timestamp: Date.now() }));
 }
 
@@ -797,13 +837,11 @@ function initTheme() {
   const theme = saved || (prefersDark ? 'dark' : 'light');
   applyTheme(theme);
 }
-
 function applyTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
   const btn = document.getElementById('themeToggle');
   if (btn) btn.innerHTML = theme === 'dark' ? '&#9790;' : '&#9788;';
 }
-
 function toggleTheme() {
   const current = document.documentElement.getAttribute('data-theme') || 'light';
   const next = current === 'dark' ? 'light' : 'dark';
@@ -820,7 +858,6 @@ function initCookieBanner() {
     setTimeout(() => document.getElementById('cookieBanner').classList.add('show'), 1000);
   }
 }
-
 function handleCookieConsent(accepted) {
   localStorage.setItem('lingo_cookie_consent', accepted ? 'accepted' : 'declined');
   document.getElementById('cookieBanner').classList.remove('show');
@@ -828,27 +865,57 @@ function handleCookieConsent(accepted) {
 }
 
 // ============================================
-// NAVIGATION & VIEWS
+// NAVIGATION
 // ============================================
+const ALL_VIEWS = ['dashboardView','grammarListView','grammarExerciseView','readingListView','readingExerciseView','listeningListView','listeningExerciseView','flashcardsView','aitutorView','translatorView'];
+const NAV_TAB_MAP = { grammar: 'navTabGrammar', reading: 'navTabReading', listening: 'navTabListening', flashcards: 'navTabFlashcards', aitutor: 'navTabAiTutor', translator: 'navTabTranslator' };
+
 function showAuth() {
   document.getElementById('authPage').classList.remove('hidden');
   document.getElementById('appPage').classList.add('hidden');
 }
-
 function showApp() {
   document.getElementById('authPage').classList.add('hidden');
   document.getElementById('appPage').classList.remove('hidden');
 }
 
+function setActiveNavTab(section) {
+  Object.values(NAV_TAB_MAP).forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('active');
+  });
+  const activeId = NAV_TAB_MAP[section];
+  if (activeId) {
+    const el = document.getElementById(activeId);
+    if (el) el.classList.add('active');
+  }
+}
+
 function navigateTo(view) {
-  document.getElementById('dashboardView').classList.add('hidden');
-  document.getElementById('flashcardsView').classList.add('hidden');
+  ALL_VIEWS.forEach(id => document.getElementById(id).classList.add('hidden'));
+  setActiveNavTab(view);
+
   if (view === 'dashboard') {
     document.getElementById('dashboardView').classList.remove('hidden');
-    updateDashboardProgress();
+    updateAllDashboardProgress();
+  } else if (view === 'grammar') {
+    document.getElementById('grammarListView').classList.remove('hidden');
+    renderGrammarLessonList();
+  } else if (view === 'reading') {
+    document.getElementById('readingListView').classList.remove('hidden');
+    renderReadingLessonList();
+  } else if (view === 'listening') {
+    document.getElementById('listeningListView').classList.remove('hidden');
+    renderListeningLessonList();
   } else if (view === 'flashcards') {
     document.getElementById('flashcardsView').classList.remove('hidden');
     renderCard();
+  } else if (view === 'aitutor') {
+    document.getElementById('aitutorView').classList.remove('hidden');
+    renderAiTutorScenarioList();
+  } else if (view === 'translator') {
+    document.getElementById('translatorView').classList.remove('hidden');
+    document.getElementById('translatorResults').innerHTML = '';
   }
   window.scrollTo(0, 0);
 }
@@ -857,25 +924,419 @@ function toggleAuthMode() {
   document.getElementById('loginForm').classList.toggle('hidden');
   document.getElementById('signupForm').classList.toggle('hidden');
 }
-
 function toggleDrawer() {
   document.getElementById('mobileDrawer').classList.toggle('open');
   document.getElementById('drawerOverlay').classList.toggle('open');
 }
 
 // ============================================
-// DASHBOARD
+// DASHBOARD PROGRESS (all sections)
 // ============================================
-function updateDashboardProgress() {
+function updateAllDashboardProgress() {
+  // Flashcards
   const learned = Object.values(cardProgress).filter(Boolean).length;
   const total = VOCABULARY.length;
-  const pct = total > 0 ? Math.round((learned / total) * 100) : 0;
-  const bar = document.getElementById('flashcardProgressBar');
-  const pctEl = document.getElementById('flashcardPercent');
-  const fracEl = document.getElementById('flashcardFraction');
+  setProgressUI('flashcard', learned, total);
+
+  // Grammar
+  const gDone = GRAMMAR_LESSONS.filter((_, i) => localStorage.getItem('lingo_grammar_' + i) === 'done').length;
+  setProgressUI('grammar', gDone, GRAMMAR_LESSONS.length);
+
+  // Reading
+  const rDone = READING_PASSAGES.filter((_, i) => localStorage.getItem('lingo_reading_' + i) === 'done').length;
+  setProgressUI('reading', rDone, READING_PASSAGES.length);
+
+  // Listening
+  const lDone = LISTENING_CLIPS.filter((_, i) => localStorage.getItem('lingo_listening_' + i) === 'done').length;
+  setProgressUI('listening', lDone, LISTENING_CLIPS.length);
+}
+
+function setProgressUI(prefix, done, total) {
+  const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+  const bar = document.getElementById(prefix + 'ProgressBar');
+  const pctEl = document.getElementById(prefix + 'Percent');
+  const fracEl = document.getElementById(prefix + 'Fraction');
+  const nounMap = { flashcard: 'cards', grammar: 'lessons', reading: 'passages', listening: 'clips' };
   if (bar) bar.style.width = pct + '%';
   if (pctEl) pctEl.textContent = pct + '%';
-  if (fracEl) fracEl.textContent = `${learned} / ${total} cards`;
+  if (fracEl) fracEl.textContent = `${done} / ${total} ${nounMap[prefix] || ''}`;
+}
+
+// ============================================
+// GRAMMAR
+// ============================================
+const GRAMMAR_LESSONS = [
+  {
+    title: "De vs Het",
+    desc: "Learn which nouns use 'de' and which use 'het'.",
+    explainer: "Dutch nouns are either 'de' words (most nouns, plus all plurals) or 'het' words (most diminutives and many single-syllable neutral nouns). There's no perfect rule — it helps to learn the article together with each new word.",
+    questions: [
+      { q: "___ huis (house)", options: ["de", "het"], answer: "het" },
+      { q: "___ tafel (table)", options: ["de", "het"], answer: "de" },
+      { q: "___ boek (book)", options: ["de", "het"], answer: "het" },
+      { q: "___ auto (car)", options: ["de", "het"], answer: "de" },
+      { q: "___ kind (child)", options: ["de", "het"], answer: "het" }
+    ]
+  },
+  {
+    title: "Present Tense Verbs",
+    desc: "Conjugate regular verbs in the present tense.",
+    explainer: "Regular Dutch verbs: ik-form drops -en from the infinitive stem. jij/hij/zij add -t to the stem (unless jij comes after the verb, then no -t). wij/jullie/zij use the full infinitive.",
+    questions: [
+      { q: "Ik ___ (werken - to work)", options: ["werk", "werkt", "werken"], answer: "werk" },
+      { q: "Jij ___ (wonen - to live)", options: ["woon", "woont", "wonen"], answer: "woont" },
+      { q: "Hij ___ (praten - to talk)", options: ["praat", "praten", "praatt"], answer: "praat" },
+      { q: "Wij ___ (leren - to learn)", options: ["leer", "leert", "leren"], answer: "leren" },
+      { q: "Zij (they) ___ (spelen - to play)", options: ["speel", "speelt", "spelen"], answer: "spelen" }
+    ]
+  },
+  {
+    title: "Word Order: Main Clauses",
+    desc: "The verb-second (V2) rule in Dutch sentences.",
+    explainer: "In a main clause, the conjugated verb is always the SECOND element — no matter what comes first. 'Vandaag ga ik naar school' (Today go I to school), not 'Vandaag ik ga...'.",
+    questions: [
+      { q: "Choose the correct order:", options: ["Morgen ik werk niet.", "Morgen werk ik niet.", "Ik morgen werk niet."], answer: "Morgen werk ik niet." },
+      { q: "Choose the correct order:", options: ["Vandaag ga ik zwemmen.", "Vandaag ik ga zwemmen.", "Ga ik vandaag zwemmen."], answer: "Vandaag ga ik zwemmen." },
+      { q: "Choose the correct order:", options: ["In de zomer wij reizen veel.", "In de zomer reizen wij veel.", "Wij in de zomer reizen veel."], answer: "In de zomer reizen wij veel." }
+    ]
+  },
+  {
+    title: "Modal Verbs",
+    desc: "Kunnen, willen, moeten, mogen — and how they work.",
+    explainer: "Modal verbs (kunnen=can, willen=want, moeten=must, mogen=may) are followed by an infinitive at the END of the sentence. 'Ik wil koffie drinken' (I want coffee to-drink).",
+    questions: [
+      { q: "Ik wil een appel ___.", options: ["eet", "eten", "at"], answer: "eten" },
+      { q: "Hij moet nu ___.", options: ["gaan", "gaat", "ga"], answer: "gaan" },
+      { q: "Mag ik hier ___?", options: ["zit", "zitten", "zat"], answer: "zitten" },
+      { q: "Wij kunnen morgen ___.", options: ["komen", "komt", "kom"], answer: "komen" }
+    ]
+  },
+  {
+    title: "Plurals",
+    desc: "Forming plural nouns with -en and -s.",
+    explainer: "Most Dutch nouns take -en in the plural (boek → boeken). Nouns ending in an unstressed -e, -el, -er, -en, or a vowel usually take -s (tafel → tafels, auto → auto's).",
+    questions: [
+      { q: "het boek → de ___", options: ["boeken", "boeks", "boekjes"], answer: "boeken" },
+      { q: "de tafel → de ___", options: ["tafelen", "tafels", "tafel's"], answer: "tafels" },
+      { q: "de auto → de ___", options: ["autos", "auto's", "auton"], answer: "auto's" },
+      { q: "het huis → de ___", options: ["huisen", "huizen", "huis's"], answer: "huizen" }
+    ]
+  },
+  {
+    title: "Question Words",
+    desc: "Wie, wat, waar, wanneer, waarom, hoe.",
+    explainer: "wie = who, wat = what, waar = where, wanneer = when, waarom = why, hoe = how. These always come first in a question, followed by the verb.",
+    questions: [
+      { q: "___ ben je? (asking name)", options: ["Wie", "Wat", "Waar"], answer: "Wie" },
+      { q: "___ woon je? (asking location)", options: ["Waar", "Wanneer", "Wat"], answer: "Waar" },
+      { q: "___ ga je naar huis? (asking time)", options: ["Hoe", "Waarom", "Wanneer"], answer: "Wanneer" },
+      { q: "___ heet dit? (asking name of a thing)", options: ["Hoe", "Wat", "Wie"], answer: "Wat" }
+    ]
+  }
+];
+
+let grammarCurrentLesson = 0;
+let grammarCurrentQ = 0;
+let grammarScore = 0;
+
+function renderGrammarLessonList() {
+  const list = document.getElementById('grammarLessonList');
+  list.innerHTML = GRAMMAR_LESSONS.map((lesson, i) => {
+    const done = localStorage.getItem('lingo_grammar_' + i) === 'done';
+    return `
+      <div class="lesson-row ${done ? 'done' : ''}" onclick="startGrammarLesson(${i})">
+        <div class="lesson-num">${done ? '&#10003;' : (i + 1)}</div>
+        <div class="lesson-info"><h4>${lesson.title}</h4><p>${lesson.desc}</p></div>
+        <div class="lesson-arrow">&rsaquo;</div>
+      </div>`;
+  }).join('');
+}
+
+function startGrammarLesson(i) {
+  grammarCurrentLesson = i;
+  grammarCurrentQ = 0;
+  grammarScore = 0;
+  document.getElementById('grammarListView').classList.add('hidden');
+  document.getElementById('grammarExerciseView').classList.remove('hidden');
+  renderGrammarQuestion();
+}
+
+function renderGrammarQuestion() {
+  const lesson = GRAMMAR_LESSONS[grammarCurrentLesson];
+  const q = lesson.questions[grammarCurrentQ];
+  document.getElementById('grammarExplainer').textContent = lesson.explainer;
+  document.getElementById('grammarQuestion').textContent = q.q;
+  document.getElementById('grammarExProgressLabel').textContent = `${grammarCurrentQ + 1} / ${lesson.questions.length}`;
+  document.getElementById('grammarExProgressBar').style.width = Math.round(((grammarCurrentQ) / lesson.questions.length) * 100) + '%';
+  document.getElementById('grammarFeedback').textContent = '';
+  document.getElementById('grammarFeedback').className = 'exercise-feedback';
+  document.getElementById('grammarNextBtn').classList.add('hidden');
+
+  const optionsEl = document.getElementById('grammarOptions');
+  optionsEl.innerHTML = q.options.map(opt =>
+    `<button class="option-btn" onclick="answerGrammarQuestion(this, '${opt.replace(/'/g, "\\'")}', '${q.answer.replace(/'/g, "\\'")}')">${opt}</button>`
+  ).join('');
+}
+
+function answerGrammarQuestion(btn, chosen, correct) {
+  const buttons = document.querySelectorAll('#grammarOptions .option-btn');
+  buttons.forEach(b => b.disabled = true);
+  const feedback = document.getElementById('grammarFeedback');
+  if (chosen === correct) {
+    btn.classList.add('correct');
+    feedback.textContent = 'Correct! Goed zo!';
+    feedback.className = 'exercise-feedback correct';
+    grammarScore++;
+  } else {
+    btn.classList.add('incorrect');
+    buttons.forEach(b => { if (b.textContent === correct) b.classList.add('correct'); });
+    feedback.textContent = `Not quite. The correct answer is "${correct}".`;
+    feedback.className = 'exercise-feedback incorrect';
+  }
+  document.getElementById('grammarNextBtn').classList.remove('hidden');
+}
+
+function grammarNextQuestion() {
+  const lesson = GRAMMAR_LESSONS[grammarCurrentLesson];
+  grammarCurrentQ++;
+  if (grammarCurrentQ < lesson.questions.length) {
+    renderGrammarQuestion();
+  } else {
+    localStorage.setItem('lingo_grammar_' + grammarCurrentLesson, 'done');
+    showToast(`Lesson complete! ${grammarScore}/${lesson.questions.length} correct.`);
+    navigateTo('grammar');
+  }
+}
+
+// ============================================
+// READING
+// ============================================
+const READING_PASSAGES = [
+  {
+    title: "Mijn dag",
+    text: "Ik sta om zeven uur op. Ik eet brood met kaas en ik drink koffie. Om acht uur ga ik naar mijn werk. Ik werk in een winkel in het centrum. Om vijf uur ga ik naar huis. 's Avonds kook ik eten voor mijn familie.",
+    translation: "ኣብ ሰዓት ሸውዓተ እትንስእ። ባኒ ምስ ፎርማጆ እበልዕ ቡን ድማ እሰቲ። ኣብ ሰዓት ሸሞንተ ናብ ስራሐይ እኸይድ። ኣብ ትካል ማእከል ከተማ እሰርሕ። ኣብ ሰዓት ሓሙሽተ ናብ ገዛ እኸይድ። ምሸት ንስድራይ ምግቢ አዳልው።",
+    questions: [
+      { q: "Hoe laat staat de schrijver op?", options: ["Zes uur", "Zeven uur", "Acht uur"], answer: "Zeven uur" },
+      { q: "Wat eet de schrijver 's ochtends?", options: ["Brood met kaas", "Alleen koffie", "Fruit"], answer: "Brood met kaas" },
+      { q: "Waar werkt de schrijver?", options: ["In een school", "In een winkel", "Thuis"], answer: "In een winkel" }
+    ]
+  },
+  {
+    title: "Boodschappen doen",
+    text: "Op zaterdag ga ik naar de supermarkt. Ik koop brood, melk, groente en fruit. Soms ga ik ook naar de markt. Daar zijn de groenten goedkoper. Ik betaal met mijn pinpas, want ik heb bijna nooit contant geld bij me.",
+    translation: "ኣብ ቀዳም ናብ ሱፐርማርክት እኸይድ። ባኒ፡ ጸባ፡ ኣሕምልቲ ከምኡውን ፍረታት እገዝእ። ሓደ ሓደ ግዜ ናብ ዕዳጋ እውን እኸይድ። ኣብኡ ኣሕምልቲ ዝሓሰረ እዩ። ብፓስ ካርታይ እኸፍል፡ ምኽንያቱ ዳርጋ ፈጺመ ካሽ ገንዘብ ኣይሕዝን እየ።",
+    questions: [
+      { q: "Wanneer gaat de schrijver naar de supermarkt?", options: ["Op maandag", "Op zaterdag", "Elke dag"], answer: "Op zaterdag" },
+      { q: "Waarom gaat hij soms naar de markt?", options: ["De groenten zijn goedkoper", "Het is dichterbij", "Er is meer keuze"], answer: "De groenten zijn goedkoper" },
+      { q: "Hoe betaalt de schrijver meestal?", options: ["Met contant geld", "Met een pinpas", "Met een cheque"], answer: "Met een pinpas" }
+    ]
+  },
+  {
+    title: "Een afspraak bij de dokter",
+    text: "Ik voel me al een paar dagen niet goed. Ik heb hoofdpijn en ik ben moe. Ik bel de huisarts en maak een afspraak. De assistente zegt dat ik morgenmiddag om twee uur kan komen. Ik ga op tijd naar de praktijk.",
+    translation: "ካብ ዝሓለፉ ሒደት መዓልታት ጀሚሩ ጽቡቕ ኣይስምዓንን ኣሎ። ርእሲ ሕማምን ድኻምን ኣሎኒ። ንሓፈሻዊ ሓኪመይ ደዊለ ቆጸራ ገበርኩ። እታ ተሓጋጋዚት ጽባሕ ድሕሪ ቀትሪ ሰዓት ክልተ ክመጽእ ትኽእል ትብለኒ። ኣብ ሰዓቱ ናብ ቤት ጽሕፈት ሓኪም ከድኩ።",
+    questions: [
+      { q: "Waarom belt de schrijver de huisarts?", options: ["Hij voelt zich niet goed", "Hij wil medicijnen kopen", "Hij heeft een been gebroken"], answer: "Hij voelt zich niet goed" },
+      { q: "Wanneer is de afspraak?", options: ["Vandaag", "Morgenochtend", "Morgenmiddag"], answer: "Morgenmiddag" },
+      { q: "Wie zegt wanneer hij kan komen?", options: ["De dokter zelf", "De assistente", "Zijn familie"], answer: "De assistente" }
+    ]
+  }
+];
+
+let readingCurrentPassage = 0;
+let readingCurrentQ = 0;
+let readingScore = 0;
+
+function renderReadingLessonList() {
+  const list = document.getElementById('readingLessonList');
+  list.innerHTML = READING_PASSAGES.map((p, i) => {
+    const done = localStorage.getItem('lingo_reading_' + i) === 'done';
+    return `
+      <div class="lesson-row ${done ? 'done' : ''}" onclick="startReadingPassage(${i})">
+        <div class="lesson-num">${done ? '&#10003;' : (i + 1)}</div>
+        <div class="lesson-info"><h4>${p.title}</h4><p>${p.questions.length} comprehension questions</p></div>
+        <div class="lesson-arrow">&rsaquo;</div>
+      </div>`;
+  }).join('');
+}
+
+function startReadingPassage(i) {
+  readingCurrentPassage = i;
+  readingCurrentQ = 0;
+  readingScore = 0;
+  document.getElementById('readingListView').classList.add('hidden');
+  document.getElementById('readingExerciseView').classList.remove('hidden');
+  const p = READING_PASSAGES[i];
+  document.getElementById('readingPassageText').innerHTML =
+    `${p.text}<br><span class="translate-toggle" onclick="toggleReadingTranslation()">Show Tigrinya translation</span>` +
+    `<div class="reading-translation" id="readingTranslationText">${p.translation}</div>`;
+  renderReadingQuestion();
+}
+
+function toggleReadingTranslation() {
+  const el = document.getElementById('readingTranslationText');
+  el.classList.toggle('show');
+}
+
+function renderReadingQuestion() {
+  const p = READING_PASSAGES[readingCurrentPassage];
+  const q = p.questions[readingCurrentQ];
+  document.getElementById('readingQuestion').textContent = q.q;
+  document.getElementById('readingExProgressLabel').textContent = `${readingCurrentQ + 1} / ${p.questions.length}`;
+  document.getElementById('readingExProgressBar').style.width = Math.round((readingCurrentQ / p.questions.length) * 100) + '%';
+  document.getElementById('readingFeedback').textContent = '';
+  document.getElementById('readingFeedback').className = 'exercise-feedback';
+  document.getElementById('readingNextBtn').classList.add('hidden');
+
+  const optionsEl = document.getElementById('readingOptions');
+  optionsEl.innerHTML = q.options.map(opt =>
+    `<button class="option-btn" onclick="answerReadingQuestion(this, '${opt.replace(/'/g, "\\'")}', '${q.answer.replace(/'/g, "\\'")}')">${opt}</button>`
+  ).join('');
+}
+
+function answerReadingQuestion(btn, chosen, correct) {
+  const buttons = document.querySelectorAll('#readingOptions .option-btn');
+  buttons.forEach(b => b.disabled = true);
+  const feedback = document.getElementById('readingFeedback');
+  if (chosen === correct) {
+    btn.classList.add('correct');
+    feedback.textContent = 'Correct!';
+    feedback.className = 'exercise-feedback correct';
+    readingScore++;
+  } else {
+    btn.classList.add('incorrect');
+    buttons.forEach(b => { if (b.textContent === correct) b.classList.add('correct'); });
+    feedback.textContent = `Not quite. The correct answer is "${correct}".`;
+    feedback.className = 'exercise-feedback incorrect';
+  }
+  document.getElementById('readingNextBtn').classList.remove('hidden');
+}
+
+function readingNextQuestion() {
+  const p = READING_PASSAGES[readingCurrentPassage];
+  readingCurrentQ++;
+  if (readingCurrentQ < p.questions.length) {
+    renderReadingQuestion();
+  } else {
+    localStorage.setItem('lingo_reading_' + readingCurrentPassage, 'done');
+    showToast(`Passage complete! ${readingScore}/${p.questions.length} correct.`);
+    navigateTo('reading');
+  }
+}
+
+// ============================================
+// LISTENING
+// ============================================
+const LISTENING_CLIPS = [
+  {
+    title: "Bij de bakker",
+    audioText: "Goedemorgen. Mag ik twee broodjes en een appeltaart, alstublieft?",
+    questions: [
+      { q: "Wat bestelt de klant?", options: ["Twee broodjes en een appeltaart", "Een koffie en een broodje", "Alleen een appeltaart"], answer: "Twee broodjes en een appeltaart" }
+    ]
+  },
+  {
+    title: "Een telefoongesprek",
+    audioText: "Hallo, met Sara. Ik kom morgen iets later, rond half tien. Is dat goed?",
+    questions: [
+      { q: "Wie belt er?", options: ["Sara", "De baas", "Een vriend"], answer: "Sara" },
+      { q: "Hoe laat komt ze morgen?", options: ["Negen uur", "Half tien", "Tien uur"], answer: "Half tien" }
+    ]
+  },
+  {
+    title: "In de trein",
+    audioText: "De trein naar Amsterdam vertrekt over vijf minuten van spoor drie.",
+    questions: [
+      { q: "Van welk spoor vertrekt de trein?", options: ["Spoor twee", "Spoor drie", "Spoor vier"], answer: "Spoor drie" }
+    ]
+  }
+];
+
+let listeningCurrentClip = 0;
+let listeningCurrentQ = 0;
+let listeningScore = 0;
+
+function renderListeningLessonList() {
+  const list = document.getElementById('listeningLessonList');
+  list.innerHTML = LISTENING_CLIPS.map((c, i) => {
+    const done = localStorage.getItem('lingo_listening_' + i) === 'done';
+    return `
+      <div class="lesson-row ${done ? 'done' : ''}" onclick="startListeningClip(${i})">
+        <div class="lesson-num">${done ? '&#10003;' : (i + 1)}</div>
+        <div class="lesson-info"><h4>${c.title}</h4><p>${c.questions.length} question${c.questions.length > 1 ? 's' : ''}</p></div>
+        <div class="lesson-arrow">&rsaquo;</div>
+      </div>`;
+  }).join('');
+}
+
+function startListeningClip(i) {
+  listeningCurrentClip = i;
+  listeningCurrentQ = 0;
+  listeningScore = 0;
+  document.getElementById('listeningListView').classList.add('hidden');
+  document.getElementById('listeningExerciseView').classList.remove('hidden');
+  renderListeningQuestion();
+}
+
+function playListeningClip() {
+  const clip = LISTENING_CLIPS[listeningCurrentClip];
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(clip.audioText);
+    u.lang = 'nl-NL';
+    u.rate = 0.85;
+    window.speechSynthesis.speak(u);
+  } else {
+    showToast('Speech not supported in this browser');
+  }
+}
+
+function renderListeningQuestion() {
+  const clip = LISTENING_CLIPS[listeningCurrentClip];
+  const q = clip.questions[listeningCurrentQ];
+  document.getElementById('listeningQuestion').textContent = q.q;
+  document.getElementById('listeningExProgressLabel').textContent = `${listeningCurrentQ + 1} / ${clip.questions.length}`;
+  document.getElementById('listeningExProgressBar').style.width = Math.round((listeningCurrentQ / clip.questions.length) * 100) + '%';
+  document.getElementById('listeningFeedback').textContent = '';
+  document.getElementById('listeningFeedback').className = 'exercise-feedback';
+  document.getElementById('listeningNextBtn').classList.add('hidden');
+
+  const optionsEl = document.getElementById('listeningOptions');
+  optionsEl.innerHTML = q.options.map(opt =>
+    `<button class="option-btn" onclick="answerListeningQuestion(this, '${opt.replace(/'/g, "\\'")}', '${q.answer.replace(/'/g, "\\'")}')">${opt}</button>`
+  ).join('');
+  playListeningClip();
+}
+
+function answerListeningQuestion(btn, chosen, correct) {
+  const buttons = document.querySelectorAll('#listeningOptions .option-btn');
+  buttons.forEach(b => b.disabled = true);
+  const feedback = document.getElementById('listeningFeedback');
+  if (chosen === correct) {
+    btn.classList.add('correct');
+    feedback.textContent = 'Correct!';
+    feedback.className = 'exercise-feedback correct';
+    listeningScore++;
+  } else {
+    btn.classList.add('incorrect');
+    buttons.forEach(b => { if (b.textContent === correct) b.classList.add('correct'); });
+    feedback.textContent = `Not quite. The correct answer is "${correct}".`;
+    feedback.className = 'exercise-feedback incorrect';
+  }
+  document.getElementById('listeningNextBtn').classList.remove('hidden');
+}
+
+function listeningNextQuestion() {
+  const clip = LISTENING_CLIPS[listeningCurrentClip];
+  listeningCurrentQ++;
+  if (listeningCurrentQ < clip.questions.length) {
+    renderListeningQuestion();
+  } else {
+    localStorage.setItem('lingo_listening_' + listeningCurrentClip, 'done');
+    showToast(`Clip complete! ${listeningScore}/${clip.questions.length} correct.`);
+    navigateTo('listening');
+  }
 }
 
 // ============================================
@@ -886,7 +1347,6 @@ function renderCard() {
   if (!card) return;
   isFlipped = false;
   document.getElementById('flashcard').classList.remove('flipped');
-
   document.getElementById('cardCategory').textContent = card.category;
   document.getElementById('cardCategoryBack').textContent = card.category;
   document.getElementById('cardCounter').textContent = `${currentCardIndex + 1} / ${VOCABULARY.length}`;
@@ -894,7 +1354,6 @@ function renderCard() {
   document.getElementById('cardType').textContent = card.type;
   document.getElementById('cardDutch').textContent = card.dutch;
   document.getElementById('cardTigrinya').textContent = card.tigrinya;
-
   const exEl = document.getElementById('cardExample');
   if (card.example && card.type === 'word') {
     exEl.textContent = card.example;
@@ -902,45 +1361,30 @@ function renderCard() {
   } else {
     exEl.style.display = 'none';
   }
-
   document.getElementById('prevBtn').disabled = currentCardIndex === 0;
   document.getElementById('nextBtn').disabled = currentCardIndex === VOCABULARY.length - 1;
-
   document.getElementById('statLearned').textContent = Object.values(cardProgress).filter(Boolean).length;
   document.getElementById('statTotal').textContent = VOCABULARY.length;
 }
-
 function flipCard() {
   isFlipped = !isFlipped;
   document.getElementById('flashcard').classList.toggle('flipped', isFlipped);
 }
-
 function nextCard() {
-  if (currentCardIndex < VOCABULARY.length - 1) {
-    currentCardIndex++;
-    renderCard();
-  }
+  if (currentCardIndex < VOCABULARY.length - 1) { currentCardIndex++; renderCard(); }
 }
-
 function prevCard() {
-  if (currentCardIndex > 0) {
-    currentCardIndex--;
-    renderCard();
-  }
+  if (currentCardIndex > 0) { currentCardIndex--; renderCard(); }
 }
-
 function markCard(known) {
   cardProgress[currentCardIndex] = known;
-  // In production: send to backend API to persist progress
   localStorage.setItem('lingo_card_progress', JSON.stringify(cardProgress));
   showToast(known ? 'Marked as learned!' : 'Keep practising!');
   document.getElementById('statLearned').textContent = Object.values(cardProgress).filter(Boolean).length;
-  updateDashboardProgress();
   if (currentCardIndex < VOCABULARY.length - 1) {
     setTimeout(() => { currentCardIndex++; renderCard(); }, 400);
   }
 }
-
 function speakCurrentWord() {
   const card = VOCABULARY[currentCardIndex];
   if (!card) return;
@@ -955,18 +1399,141 @@ function speakCurrentWord() {
   }
 }
 
-// Keyboard navigation for flashcards
-function handleKeydown(e) {
-  if (document.getElementById('flashcardsView').classList.contains('hidden')) return;
-  if (e.key === 'ArrowRight') nextCard();
-  if (e.key === 'ArrowLeft') prevCard();
-  if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); flipCard(); }
-  if (e.key === '1') markCard(true);
-  if (e.key === '2') markCard(false);
+// ============================================
+// AI TUTOR (scripted dialogue practice — no live AI backend)
+// ============================================
+const AI_TUTOR_SCENARIOS = [
+  {
+    title: "Koffie bestellen",
+    desc: "Practice ordering a coffee at a café.",
+    steps: [
+      { bot: "Goedemorgen! Wat wilt u drinken?", hint: "Try: 'Een koffie, alstublieft.'", keywords: ["koffie", "thee", "cola", "water"] },
+      { bot: "Met suiker of melk?", hint: "Try: 'Met melk, graag.' or 'Zonder, graag.'", keywords: ["melk", "suiker", "zonder", "graag"] },
+      { bot: "Komt eraan! Nog iets anders?", hint: "Try: 'Nee, dat is alles, dank u.'", keywords: ["nee", "ja", "dank", "alles"] }
+    ]
+  },
+  {
+    title: "Jezelf voorstellen",
+    desc: "Practice introducing yourself to someone new.",
+    steps: [
+      { bot: "Hallo! Hoe heet je?", hint: "Try: 'Ik heet ...' or 'Mijn naam is ...'", keywords: ["heet", "naam", "ik ben"] },
+      { bot: "Leuk je te ontmoeten! Waar kom je vandaan?", hint: "Try: 'Ik kom uit ...'", keywords: ["kom uit", "van"] },
+      { bot: "Mooi! Woon je al lang in Nederland?", hint: "Try: 'Ik woon hier ... jaar.'", keywords: ["woon", "jaar", "maand"] }
+    ]
+  },
+  {
+    title: "De weg vragen",
+    desc: "Practice asking for directions.",
+    steps: [
+      { bot: "Kan ik u helpen?", hint: "Try: 'Ja, waar is het station?'", keywords: ["waar", "station", "help"] },
+      { bot: "Het station is rechtdoor, dan links.", hint: "Try: 'Dank u wel!'", keywords: ["dank", "bedankt"] }
+    ]
+  }
+];
+
+let aiTutorCurrentScenario = null;
+let aiTutorCurrentStep = 0;
+
+function renderAiTutorScenarioList() {
+  const list = document.getElementById('aitutorScenarioList');
+  list.innerHTML = AI_TUTOR_SCENARIOS.map((s, i) =>
+    `<div class="lesson-row" onclick="startAiTutorScenario(${i})">
+      <div class="lesson-num">${i + 1}</div>
+      <div class="lesson-info"><h4>${s.title}</h4><p>${s.desc}</p></div>
+      <div class="lesson-arrow">&rsaquo;</div>
+    </div>`
+  ).join('');
+  document.getElementById('chatWindow').classList.add('hidden');
+}
+
+function startAiTutorScenario(i) {
+  aiTutorCurrentScenario = AI_TUTOR_SCENARIOS[i];
+  aiTutorCurrentStep = 0;
+  document.getElementById('chatWindow').classList.remove('hidden');
+  const messages = document.getElementById('chatMessages');
+  messages.innerHTML = '';
+  pushBotMessage(aiTutorCurrentScenario.steps[0].bot, aiTutorCurrentScenario.steps[0].hint);
+}
+
+function pushBotMessage(text, hint) {
+  const messages = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'chat-bubble bot';
+  div.innerHTML = text + (hint ? `<span class="translation-note">${hint}</span>` : '');
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
+}
+function pushUserMessage(text) {
+  const messages = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'chat-bubble user';
+  div.textContent = text;
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
+}
+
+function sendChatMessage() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text || !aiTutorCurrentScenario) return;
+  pushUserMessage(text);
+  input.value = '';
+
+  const step = aiTutorCurrentScenario.steps[aiTutorCurrentStep];
+  const lower = text.toLowerCase();
+  const matched = step.keywords.some(kw => lower.includes(kw));
+
+  setTimeout(() => {
+    if (matched) {
+      aiTutorCurrentStep++;
+      if (aiTutorCurrentStep < aiTutorCurrentScenario.steps.length) {
+        pushBotMessage(aiTutorCurrentScenario.steps[aiTutorCurrentStep].bot, aiTutorCurrentScenario.steps[aiTutorCurrentStep].hint);
+      } else {
+        pushBotMessage("Goed gedaan! Je hebt dit gesprek afgerond. 🎉");
+      }
+    } else {
+      pushBotMessage("Hmm, probeer het nog eens. " + step.hint);
+    }
+  }, 400);
 }
 
 // ============================================
-// TOAST NOTIFICATIONS
+// TRANSLATOR (dictionary lookup over VOCABULARY)
+// ============================================
+function runTranslatorSearch() {
+  const query = document.getElementById('translatorInput').value.trim().toLowerCase();
+  const resultsEl = document.getElementById('translatorResults');
+  if (!query) { resultsEl.innerHTML = ''; return; }
+
+  const matches = VOCABULARY.filter(item =>
+    item.dutch.toLowerCase().includes(query) || item.tigrinya.includes(query)
+  ).slice(0, 30);
+
+  if (matches.length === 0) {
+    resultsEl.innerHTML = `<div class="translator-result-row">No matches found in the dictionary yet.</div>`;
+    return;
+  }
+
+  resultsEl.innerHTML = matches.map(m => `
+    <div class="translator-result-row">
+      <span class="word-pair"><b>${m.dutch}</b> — ${m.tigrinya}</span>
+      <button class="speak-btn" style="position:static; width:36px; height:36px; font-size:0.95rem;" onclick="speakTranslatorWord('${m.dutch.replace(/'/g, "\\'")}')">&#128266;</button>
+    </div>
+  `).join('');
+}
+
+function speakTranslatorWord(word) {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(word);
+    u.lang = 'nl-NL';
+    u.rate = 0.85;
+    window.speechSynthesis.speak(u);
+  }
+}
+
+// ============================================
+// TOAST
 // ============================================
 function showToast(message) {
   const t = document.getElementById('toast');
@@ -976,25 +1543,21 @@ function showToast(message) {
 }
 
 // ============================================
-// INITIALIZATION
+// INIT
 // ============================================
 function initApp() {
   showApp();
-  // Load progress from localStorage (replace with API call in production)
   try {
     const saved = localStorage.getItem('lingo_card_progress');
     if (saved) cardProgress = JSON.parse(saved);
   } catch (e) {}
-  // Update greeting
   if (currentUser) {
     document.getElementById('greeting').textContent = `Hi ${currentUser.name}, ready to practise?`;
     document.getElementById('userAvatar').textContent = currentUser.avatar;
   }
-  updateDashboardProgress();
   navigateTo('dashboard');
 }
 
-// Boot
 initTheme();
 initCookieBanner();
 if (checkSession()) {
@@ -1002,8 +1565,6 @@ if (checkSession()) {
 } else {
   showAuth();
 }
-
-document.addEventListener('keydown', handleKeydown);
 </script>
 </body>
 </html>
